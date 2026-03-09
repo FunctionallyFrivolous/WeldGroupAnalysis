@@ -1,6 +1,5 @@
 document.getElementById("toggleRx").addEventListener("click", () => {
-    if (showRx) showRx = false
-    else showRx = true
+    showRx = !showRx
     rxVector
         .style("display", showRx ? "block" : "none")
     rxMGroup
@@ -8,8 +7,7 @@ document.getElementById("toggleRx").addEventListener("click", () => {
 })
 
 document.getElementById("toggleStress").addEventListener("click", () => {
-    if (showStress) showStress = false
-    else showStress = true
+    showStress = !showStress
     fShear
         .style("display", showStress ? "block" : "none")
     tmax_circle
@@ -17,10 +15,31 @@ document.getElementById("toggleStress").addEventListener("click", () => {
 })
 
 document.getElementById("toggleTComps").addEventListener("click", () => {
-    if (showTComps) showTComps = false
-    else showTComps = true
+    showTComps = !showTComps
     dShear
         .style("display", showTComps ? "block" : "none")
     tShear
         .style("display", showTComps ? "block" : "none")
+})
+
+document.getElementById("toggleUnits").addEventListener("click", () => {
+    if (units === "metric") {
+        units = "inches";
+        unitConvert = 1;
+    }
+    else {
+        units = "metric";
+        unitConvert = 25.4;
+    }
+
+    const button = document.getElementById("toggleUnits");
+    button.textContent = units === "metric" ? "Metric" : "Inches";
+
+    updateView();
+})
+
+
+document.getElementById("removeWeld").addEventListener("click", () => {
+    test_delWeld();
+    updateView();
 })

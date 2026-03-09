@@ -5,10 +5,13 @@
         <meta charset ="UTF-8">
         <title>Weld Group Analysis</title>
         <script src="https://d3js.org/d3.v7.min.js"></script>
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="style.css">
     </head>
     <body style="margin-left: 20px;">
         <h2>Weld Group Analysis</h2>
+        <b style="margin-top: 4px; font-size: 9pt; font-family: sans-serif;">Units:
+        <button id="toggleUnits">Inches</button>
+        <br>
         <svg id="topView" width="500" height="500" 
                 style="border:1px solid black;"
                 viewBox="0 0 500 500">
@@ -18,8 +21,9 @@
         <button id="toggleRx">Reactions</button>
         <button id="toggleStress">Total Stress</button>
         <button id="toggleTComps">Stress Components</button>
+        <!-- <button id="removeWeld">Remove Weld</button> -->
         </b>
-        <p id="debugOutputs">Something</p>
+        <p id="debugOutputs"></p>
         <script src="conversions.js"></script>
         <script src="handlers.js"></script>
         <script src="functions.js"></script>

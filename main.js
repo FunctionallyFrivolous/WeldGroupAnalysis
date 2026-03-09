@@ -1,14 +1,18 @@
 // Do Next:
-    // Fit View
-        // Via Button OR double click?
-        // Need to get min and max X and Y vals
-        // Center on centroid OR by min/max?
+    // Remove welds - DONE!!!
+        // Double click to remove specific weld
+        // Temp: Start with 4 welds. Easy to remove to get desired qty
+    // Add welds
+        // Initially: button & randomly place weld
+        // Eventually: button to initiate & click to place nodes
+    // Remove Loads
+        // Should be simpler than removing welds?
+    // Add Loads
+        // Logic for new load properties
+    // Drag to move weld
+        //
     // Add Stress Calcs - real units
     // Show/hide things - Reactions, Stress components, Total Stress
-    // Drag Snap
-        // Restrict drag moves to certain precision (user inputs allow arbitrary precision)
-        // Actually seems like zoom already sets drag precision based on zoom scale
-            // Is there a way to directly control/restric this?
     // Lock weld angle?
         // Hold shift when draging weld node to adjust length while keeping initial angle
     // Add user inputs?
@@ -36,7 +40,9 @@
                 // Highlight nodes
                 // Live line preview
             // Newly added elements should be automatically "selected" for editing (manual values)
-            // Need to figure out how to deal with d3 issue...
+    // Fit View?
+        // Need to get min and max X and Y vals
+        // Center on centroid OR by min/max?
     // Add bending?!?
         // There's lots here, so this should be held until all pre-bending functionality is squared away
     // Add applied moments?
@@ -114,6 +120,7 @@ const weldLines = lineGroup.selectAll("polyline")
     .data(weldCoords, d => d.id)
     .enter()
     .append("polyline")
+    .attr("class", "weld")
     .attr("stroke", "black")
     .attr("stroke-width", d => d.thk*weldThkScale)
     .style("stroke-linecap", "round")
@@ -247,7 +254,7 @@ const weldDrag = wDragGroup.selectAll("circle")
     .attr("r", 15)
     .attr("fill", "black")
     .attr("opacity", 0)
-    .attr("cx", d => Math.round(d.x))
+    .attr("cx", d => d.x)
     .attr("cy", d => d.y)
     .call(d3.drag()
         .on("start", (event) => {
@@ -261,7 +268,7 @@ const weldDrag = wDragGroup.selectAll("circle")
         .on("end", (event) => {
             weldDrag.attr("opacity", 0)
         })
-    );
+    )
 
 // Draggable points to change force vector position
 const lDragGroup = zoomGroup.append("g")
@@ -371,6 +378,10 @@ const zoom = d3.zoom()
     });
 svg.call(zoom)
     .on("dblclick.zoom", null);
+svg.selectAll(".weld")
+    .on("dblclick", function(event, d) {
+        removeWeld(d.id);
+    });
 
 // updateCentroid();
 updateView();

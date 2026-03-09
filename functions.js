@@ -69,21 +69,23 @@ function updateView() {
         .style("display", showTComps ? "block" : "none");
     fShear
         .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
-        .style("display", showStress ? "block" : "none");
+        .style("display", showStress ? "block" : "none")
 
-    let dbugTxt = ""
-        // + "t_max: " + `${max_t.toFixed(1)}` + "\n<br>"
-        // + "t0: " + `${nodes[0].t.toFixed(1)}` + ", " + `${nodes[0].display}` + "\n<br>"
-        // + "t1: " + `${nodes[1].t.toFixed(1)}`+ ", " + `${nodes[1].display}` + "\n<br>"
-        // + "t2: " + `${nodes[2].t.toFixed(1)}`+ ", " + `${nodes[2].display}` + "\n<br>"
-        // + "t3: " + `${nodes[3].t.toFixed(1)}`+ ", " + `${nodes[3].display}` + "\n<br>"
-        + "Lx0: " + `${loadPoints[0].points[0].x}` + "\n<br>"
-        + "Wx0: " + `${weldCoords[0].points[0].x}` + "\n<br>"
-        + "rxV: " + `${rxV.mag.toFixed(1)}` + "\n<br>"
-        + "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
+    // let dbugTxt = ""
+    //     // + "t_max: " + `${max_t.toFixed(1)}` + "\n<br>"
+    //     // + "t0: " + `${nodes[0].t.toFixed(1)}` + ", " + `${nodes[0].display}` + "\n<br>"
+    //     // + "t1: " + `${nodes[1].t.toFixed(1)}`+ ", " + `${nodes[1].display}` + "\n<br>"
+    //     // + "t2: " + `${nodes[2].t.toFixed(1)}`+ ", " + `${nodes[2].display}` + "\n<br>"
+    //     // + "t3: " + `${nodes[3].t.toFixed(1)}`+ ", " + `${nodes[3].display}` + "\n<br>"
+    //     + "Lx0: " + `${(loadPoints[0].points[0].x*distConvert*unitConvert).toFixed(2)}` + "\n<br>"
+    //     + "Wx0: " + `${weldCoords[0].points[0].x*distConvert*unitConvert}` + "\n<br>"
+    //     + "rxV: " + `${rxV.mag.toFixed(1)}` + "\n<br>"
+    //     + "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
+    //     + "welds: " + `${weldCount}` + "\n<br>"
+    //     + "units: " + `${units}` + "\n<br>"
 
 
-    document.getElementById("debugOutputs").innerHTML = dbugTxt;
+    // document.getElementById("debugOutputs").innerHTML = dbugTxt;
 }
 
 // This function updates the weldCoords array with latest nodes data
@@ -97,6 +99,9 @@ function updateWelds() {
         const y0 = nodes[i].y;
         const x1 = nodes[i+1].x;
         const y1 = nodes[i+1].y;
+
+        nodes[i].id = "weld"+(w+1)+"_start";
+        nodes[i+1].id = "weld"+(w+1)+"_end";
         // const thk = 0.125;
         const length = Math.sqrt((x1-x0)*(x1-x0)+(y1-y0)*(y1-y0));
         const cx = (x1+x0)/2;
@@ -194,7 +199,7 @@ function updateLoads() {
     updateArrows();
     const loadQty = loadProps.length;
     for (let i = 0; i < loadQty; i++) {
-        loadPoints[i].points = [{x: loadProps[i].x.toFixed(0), y: loadProps[i].y.toFixed(0)}, {x: loadArrows[i].x.toFixed(0), y: loadArrows[i].y.toFixed(0)}];
+        loadPoints[i].points = [{x: loadProps[i].x, y: loadProps[i].y}, {x: loadArrows[i].x, y: loadArrows[i].y}];
     }   
 
 }
@@ -291,6 +296,7 @@ function updateMomentArc() {
 
 function updateDirectShear() {
     for (i = 0; i < nodes.length; i++) {
+        directShear[i].id = nodes[i].id;
         const xa = nodes[i].x;
         const ya = nodes[i].y;
         const w = Math.floor(i/2);
@@ -309,6 +315,8 @@ function updateDirectShear() {
 
 function updateTorsionShear() {
     for (i = 0; i < nodes.length; i++) {
+        torsionShear[i].id = nodes[i].id;
+
         const xa = nodes[i].x;
         const ya = nodes[i].y;
         const xC = centroidTot[0].x;
@@ -346,6 +354,8 @@ function updateTotalShear() {
     for (i = 0; i < nodes.length; i++) {
         // const cent_x = centroidTot.x;
         // const cent_y = centroidTot.y;
+    
+        totalShear[i].id = nodes[i].id;
 
         const dS_mag = directShear[i].mag; // 150
         const dS_th = directShear[i].th; //26.6
@@ -379,6 +389,7 @@ function updateTotalShear() {
 
         if (fS_mag > max_t) max_t = fS_mag
         nodes[i].t = fS_mag
+        
     }
     for (i = 0; i < nodes.length; i++) {
         if (nodes[i].t >= max_t*0.99) nodes[i].display = "block"
@@ -406,4 +417,123 @@ function InitGeom() {
     loadArrows.length = loadCount;
     loadMids.length = loadCount;
     loadPoints.length = loadCount;
+}
+
+function test_delWeld() { // test function to remove one weld
+    if (weldCount === 1) return;
+    weldCoords.length = weldCoords.length-1;
+    nodes.length = nodes.length-2;
+    directShear.length = directShear.length-2;
+    torsionShear.length = torsionShear.length-2;
+    totalShear.length = totalShear.length-2;
+
+    weldCount = weldCount-1;
+
+    weldDrag// = lineGroup.selectAll("polyline")
+        .data(nodes, d => d.id)
+        .exit()
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .remove();
+    weldLines// = lineGroup.selectAll("polyline")
+        .data(weldCoords, d => d.id)
+        .exit()
+            .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
+            .remove();
+    tmax_circle
+        .data(nodes, d => d.id)
+        .exit()
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .remove();
+    dShear
+        .data(directShear, d => d.id)
+        .exit()
+            .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
+            .remove();
+    tShear
+        .data(torsionShear, d => d.id)
+        .exit()
+            .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
+            .remove();
+    fShear
+        .data(totalShear, d => d.id)
+        .exit()
+            .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
+            .remove();
+    
+    // updateWelds();
+    updateView();
+}
+
+function removeWeld(id) { // test function to remove one weld
+    if (weldCount === 1) return;
+    
+    let index = weldCoords.findIndex(obj => obj.id === id);
+    if (index > -1) {
+        weldCoords.splice(index, 1);
+    }
+    for (i = 0; i < 2; i++) {
+        index = nodes.findIndex(obj => obj.id.includes(id));
+        if (index > -1) {
+            nodes.splice(index, 1);
+        }    
+    }
+    for (i = 0; i < 2; i++) {
+        index = directShear.findIndex(obj => obj.id.includes(id));
+        if (index > -1) {
+            directShear.splice(index, 1);
+        }    
+    }
+    for (i = 0; i < 2; i++) {
+        index = torsionShear.findIndex(obj => obj.id.includes(id));
+        if (index > -1) {
+            torsionShear.splice(index, 1);
+        }    
+    }
+    for (i = 0; i < 2; i++) {
+        index = totalShear.findIndex(obj => obj.id.includes(id));
+        if (index > -1) {
+            totalShear.splice(index, 1);
+        }    
+    }
+    
+    weldCount = weldCoords.length;
+
+    weldDrag// = lineGroup.selectAll("polyline")
+        .data(nodes)
+        .join (
+            exit => exit
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y)
+                .remove());
+    weldLines// = lineGroup.selectAll("polyline")
+        .data(weldCoords)
+        .exit()
+                .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
+                .remove();
+    tmax_circle
+        .data(nodes)
+        .exit()
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y)
+                .remove();
+    dShear
+        .data(directShear)
+        .exit()
+                .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
+                .remove();
+    tShear
+        .data(torsionShear)
+        .exit()
+                .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
+                .remove();
+    fShear
+        .data(totalShear)
+        .exit()
+                .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
+                .remove();
+    
+    // updateWelds();
+    updateView();
 }

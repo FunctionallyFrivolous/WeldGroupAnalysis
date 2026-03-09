@@ -3,6 +3,10 @@ let showRx = true;
 let showStress = true;
 let showTComps = false;
 
+let units = "inches";
+let distConvert = 0.1; // svg window units to inches (10:1)
+let unitConvert = 1; // conversion from current units to inches (1 if current units are inches; 25.4 if current metric)
+
 let xMin = 0;
 let xMax = 0;
 let yMin = 0;
@@ -28,7 +32,7 @@ let loadScale = 0.5;
 let stressScale = 10;
 const minLength = 25;
 
-const weldCount = 2;
+let weldCount = 4;
 const loadCount = 1;
 
 // A default set of nodes for two initial welds...
@@ -79,34 +83,34 @@ updateLoads();
 
 // Stress Vectors
 const directShear = [
-    {id: "node1", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node2", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node3", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node4", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node5", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node6", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node7", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node8", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld1_start", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld1_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld2_start", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld2_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld3_start", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld3_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld4_start", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld4_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
 ]
 const torsionShear = [
-    {id: "node1", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node2", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node3", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node4", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node5", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node6", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node7", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node8", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld1_start", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld1_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld2_start", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld2_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld3_start", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld3_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld4_start", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld4_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
 ]
 const totalShear = [
-    {id: "node1", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node2", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node3", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node4", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node5", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node6", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node7", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
-    {id: "node8", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld1_start", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld1_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld2_start", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld2_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld3_start", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld3_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld4_start", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    {id: "weld4_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
 ]
 
 InitGeom();
