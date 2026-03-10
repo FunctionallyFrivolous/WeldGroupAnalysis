@@ -576,7 +576,9 @@ function updateDrags(){
                 d.x = event.x;
                 d.y = event.y;
                 updateArrows();
-                updateView();
+                updateStuff();
+                updateSVGs();
+                updateData();
                 updateAngles();
             })
             .on("end", (event) => {
@@ -743,6 +745,7 @@ function updateData() {
         .data(loadPoints)
     enter = lVectors.enter()
         .append("polyline")
+        .attr("class", "load")
         .attr("stroke", "darkred")
         .attr("stroke-width", 3)
         .attr("opacity", 0.7)
