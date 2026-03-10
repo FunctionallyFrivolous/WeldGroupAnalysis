@@ -1,5 +1,5 @@
 
-function updateView() {
+function updateStuff(){
     updateCentroid();
     updateWelds();
     // updateArea();
@@ -12,9 +12,9 @@ function updateView() {
     updateDirectShear();
     updateTorsionShear();
     updateTotalShear();
+}
 
-    updateData()
-
+function updateSVGs(){
     cMark
         .attr("cx", d => d.x)
         .attr("cy", d => d.y);
@@ -49,6 +49,13 @@ function updateView() {
     magDrag
         .attr("cx", d => d.x)
         .attr("cy", d => d.y);
+}
+
+function updateView() {
+    updateStuff();
+    updateData();
+    updateDrags();
+    updateSVGs();
 
     let dbugTxt = ""
         // + "fShear: " + `${totalShear[weldCount*2-1].points[1].x.toFixed(2)}` + ", " + `${totalShear[weldCount*2-1].points[1].y.toFixed(2)}` + "\n<br>"
@@ -425,9 +432,9 @@ function addWeld() { // test function to remove one weld
 
     weldCount = weldCoords.length;
 
-    updateDirectShear();
-    updateTorsionShear();
-    updateTotalShear();
+    // updateDirectShear();
+    // updateTorsionShear();
+    // updateTotalShear();
           
     updateView();
 }
@@ -466,6 +473,36 @@ function removeWeld(id) { // test function to remove one weld
     
     weldCount = weldCoords.length;
     updateView();
+}
+
+function updateDrags(){
+    // Weld Drag Nodes
+    const weldDrag = wDragGroup.selectAll("circle")
+        .data(nodes, d => d.id);
+    enter = weldDrag.enter()
+        .append("circle")
+        .attr("r", 15)
+        .attr("fill", "black")
+        .attr("opacity", 0);
+    enter.merge(weldDrag)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+        .call(d3.drag()
+            .on("start", (event) => {
+                weldDrag.attr("opacity",0.1);
+            })
+            .on("drag", function(event, d) {
+                d.x = event.x;
+                d.y = event.y;
+                updateStuff();
+                updateSVGs();
+                updateData();
+            })
+            .on("end", (event) => {
+                weldDrag.attr("opacity", 0)
+            })
+        )
+    weldDrag.exit().remove();
 }
 
 function updateData() {
@@ -556,7 +593,6 @@ function updateData() {
         .style("display", showStress ? "block" : "none");
     fShear.exit().remove();
 
-    // Weld Drag Nodes
     const weldDrag = wDragGroup.selectAll("circle")
         .data(nodes, d => d.id);
     enter = weldDrag.enter()
@@ -567,19 +603,6 @@ function updateData() {
     enter.merge(weldDrag)
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
-        .call(d3.drag()
-            .on("start", (event) => {
-                weldDrag.attr("opacity",0.1);
-            })
-            .on("drag", function(event, d) {
-                d.x = event.x;
-                d.y = event.y;
-                updateView();
-            })
-            .on("end", (event) => {
-                weldDrag.attr("opacity", 0)
-            })
-        )
     weldDrag.exit().remove();
 
 }
