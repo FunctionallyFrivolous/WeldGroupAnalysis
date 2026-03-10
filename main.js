@@ -122,6 +122,7 @@ const cMark = centroidGroup.selectAll("circle")
     .attr("stroke", "black")
     .attr("stroke-width", 2)
     .attr("stroke-opacity", 0.68)
+    .style("pointer-events", "none")
     .attr("cx", d => d.x)
     .attr("cy", d => d.y);
 
@@ -139,6 +140,7 @@ const rxVector = rxVGroup.selectAll("polyline")
     .attr("marker-end", "url(#arrowhead")
     // .attr("marker-start", "url(#dots")
     .style("stroke-linecap", "round")
+    .style("pointer-events", "none")
     // .attr("display", "block")
 
 const rxMGroup = zoomGroup.append("g")
@@ -152,6 +154,7 @@ const rxMGroup = zoomGroup.append("g")
     .attr("opacity", 0.5)
     .attr("marker-end", "url(#B_arrowhead")
     .style("stroke-linecap", "round")
+    .style("pointer-events", "none")
     // .attr("display", "block")
 
 // Zoom & Pan stuff

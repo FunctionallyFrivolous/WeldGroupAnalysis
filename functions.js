@@ -18,10 +18,6 @@ function updateSVGs(){
     cMark
         .attr("cx", d => d.x)
         .attr("cy", d => d.y);
-
-    // lVectors
-    //     .attr("points", d => d.points.map(l => `${l.x},${l.y}`).join(" "))
-
     rxVector
         .attr("points", d => d.points.map(v => `${v.x},${v.y}`).join(" "))
         .style("display", showRx ? "block" : "none")
@@ -609,7 +605,8 @@ function updateDrags(){
                 loadProps.find(j => j.id === d.id).mag = drag_L / loadScale;
                 updateArrows();
                 updateAngles();
-                updateView();
+                updateStuff();
+                updateData();
             })
             .on("end", (event) => {
                 magDrag.attr("opacity", 0)
@@ -635,7 +632,8 @@ function updateDrags(){
                 d.x = event.x;
                 d.y = event.y;
                 updateAngles();
-                updateView();
+                updateStuff();
+                updateData();
             })
             .on("end", (event) => {
                 angleDrag.attr("opacity", 0)
