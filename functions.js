@@ -606,6 +606,7 @@ function updateDrags(){
                 updateArrows();
                 updateAngles();
                 updateStuff();
+                updateSVGs();
                 updateData();
             })
             .on("end", (event) => {
@@ -633,6 +634,7 @@ function updateDrags(){
                 d.y = event.y;
                 updateAngles();
                 updateStuff();
+                updateSVGs();
                 updateData();
             })
             .on("end", (event) => {
