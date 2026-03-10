@@ -401,7 +401,21 @@ function InitGeom() {
 function addWeld() { // test function to remove one weld
     if (weldCount >= 10) return;
 
-    const newWeld = {startNode: [170,130], endNode: [330,130]};
+    let newY0 = 0;
+    if (weldCount === 3) newY0 = 130;
+    else newY0 = Math.floor(Math.random()*(450-50)+50);
+    let newY1 = 0;
+    if (weldCount === 3) newY1 = 130;
+    else newY1 = Math.floor(Math.random()*(450-50)+50);
+
+    let newX0 = 0;
+    if (weldCount === 3) newX0 = 170;
+    else newX0 = Math.floor(Math.random()*(450-50)+50);
+    let newX1 = 0;
+    if (weldCount === 3) newX1 = 330;
+    else newX1 = Math.floor(Math.random()*(450-50)+50);
+
+    const newWeld = {startNode: [newX0,newY0], endNode: [newX1,newY1]};
     const addNodes = [
         {id: "weld"+`${weldCoords.length+1}`+"_start", x: newWeld.startNode[0], y: newWeld.startNode[1], t: 0, display: "block"},
         {id: "weld"+`${weldCoords.length+1}`+  "_end", x: newWeld.endNode[0],   y: newWeld.endNode[1], t: 0, display: "block"},

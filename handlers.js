@@ -39,3 +39,17 @@ document.getElementById("addWeld").addEventListener("click", () => {
     else document.getElementById("addWeld").disabled = false;
     updateView();
 })
+
+function setupScaleSliders() {
+    const LoadScaleSlider = document.getElementById("loadScaleSlider");
+    LoadScaleSlider.addEventListener("input", () => {
+        loadScale = parseFloat(LoadScaleSlider.value);
+        updateView();
+    })
+
+    const StressScaleSlider = document.getElementById("stressScaleSlider");
+    StressScaleSlider.addEventListener("input", () => {
+        stressScale = parseFloat(StressScaleSlider.value);
+        updateView();
+    })
+}

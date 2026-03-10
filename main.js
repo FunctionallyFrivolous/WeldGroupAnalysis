@@ -1,18 +1,11 @@
 // Do Next:
-    // Remove welds - DONE!!!
-        // Double click to remove specific weld
-        // Temp: Start with 4 welds. Easy to remove to get desired qty
-    // Add welds
-        // Initially: button & randomly place weld
-        // Eventually: button to initiate & click to place nodes
-    // Remove Loads
-        // Should be simpler than removing welds?
-    // Add Loads
-        // Logic for new load properties
-    // Drag to move weld
-        //
+    // Add/Remove Loads
+        // Same approach as add/remove Welds
+    // Drag to move weld?
+        // Drag body of weld to translate (no rotation) entire line
+        // on start: get initial event.x & event.y
+        // on drag: get diff of current - initial event.x&.y, add this to node x & y's
     // Add Stress Calcs - real units
-    // Show/hide things - Reactions, Stress components, Total Stress
     // Lock weld angle?
         // Hold shift when draging weld node to adjust length while keeping initial angle
     // Add user inputs?
@@ -37,7 +30,7 @@
             // Moment applied directly to centroid (unlikely) adds to torsional
             // Moment applied elsewhere resolves to simple force at centroid (?) so direct shear only?
     //Stress color gradient (fringe plot)?
-        // In theory should only need 3 points/values for this
+        // In theory should only need 3 points/values for this?
             // Max val will always be one of the ends of the weld
             // Min val will always be the point closest to the centroid
 
@@ -111,6 +104,7 @@ const tShearGroup = zoomGroup.append("g")
 const fShearGroup = zoomGroup.append("g")
 const wDragGroup = zoomGroup.append("g")
 updateData()
+updateDrags();
 // const weldLines = lineGroup.selectAll("polyline")
 //     .data(weldCoords)
 //     .enter()
@@ -375,4 +369,5 @@ svg.call(zoom)
 //         removeWeld(d.id);
 //     });
 
+setupScaleSliders();
 updateView();
