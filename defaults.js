@@ -32,7 +32,7 @@ let loadScale = 0.5;
 let stressScale = 10;
 const minLength = 25;
 
-let weldCount = 4;
+let weldCount = 3;
 const loadCount = 1;
 
 // A default set of nodes for two initial welds...

@@ -8,18 +8,12 @@ document.getElementById("toggleRx").addEventListener("click", () => {
 
 document.getElementById("toggleStress").addEventListener("click", () => {
     showStress = !showStress
-    fShear
-        .style("display", showStress ? "block" : "none")
-    tmax_circle
-        .style("display", showStress ? d => d.display : "none")
+    updateView();
 })
 
 document.getElementById("toggleTComps").addEventListener("click", () => {
     showTComps = !showTComps
-    dShear
-        .style("display", showTComps ? "block" : "none")
-    tShear
-        .style("display", showTComps ? "block" : "none")
+    updateView();
 })
 
 document.getElementById("toggleUnits").addEventListener("click", () => {
@@ -39,7 +33,9 @@ document.getElementById("toggleUnits").addEventListener("click", () => {
 })
 
 
-document.getElementById("removeWeld").addEventListener("click", () => {
-    test_delWeld();
+document.getElementById("addWeld").addEventListener("click", () => {
+    addWeld();
+    if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
+    else document.getElementById("addWeld").disabled = false;
     updateView();
 })

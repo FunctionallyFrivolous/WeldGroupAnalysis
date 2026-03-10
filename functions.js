@@ -4,7 +4,7 @@ function updateView() {
     updateWelds();
     // updateArea();
     // updateAngles();
-    // updateArrows();
+    updateArrows();
     updateLoads();
     updateMids();
     updateRx();
@@ -13,22 +13,11 @@ function updateView() {
     updateTorsionShear();
     updateTotalShear();
 
-    weldLines
-        .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
-        .attr("stroke-width", d => d.thk*weldThkScale)
-
-    weldDrag
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y);
+    updateData()
 
     cMark
         .attr("cx", d => d.x)
         .attr("cy", d => d.y);
-
-    tmax_circle
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-        .style("display", showStress ? d => d.display : "none");
 
     lVectors
         .attr("points", d => d.points.map(l => `${l.x},${l.y}`).join(" "))
@@ -61,29 +50,14 @@ function updateView() {
         .attr("cx", d => d.x)
         .attr("cy", d => d.y);
 
-    dShear
-        .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
-        .style("display", showTComps ? "block" : "none");
-    tShear
-        .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
-        .style("display", showTComps ? "block" : "none");
-    fShear
-        .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
-        .style("display", showStress ? "block" : "none")
-
-    // let dbugTxt = ""
-    //     // + "t_max: " + `${max_t.toFixed(1)}` + "\n<br>"
-    //     // + "t0: " + `${nodes[0].t.toFixed(1)}` + ", " + `${nodes[0].display}` + "\n<br>"
-    //     // + "t1: " + `${nodes[1].t.toFixed(1)}`+ ", " + `${nodes[1].display}` + "\n<br>"
-    //     // + "t2: " + `${nodes[2].t.toFixed(1)}`+ ", " + `${nodes[2].display}` + "\n<br>"
-    //     // + "t3: " + `${nodes[3].t.toFixed(1)}`+ ", " + `${nodes[3].display}` + "\n<br>"
-    //     + "Lx0: " + `${(loadPoints[0].points[0].x*distConvert*unitConvert).toFixed(2)}` + "\n<br>"
-    //     + "Wx0: " + `${weldCoords[0].points[0].x*distConvert*unitConvert}` + "\n<br>"
-    //     + "rxV: " + `${rxV.mag.toFixed(1)}` + "\n<br>"
-    //     + "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
-    //     + "welds: " + `${weldCount}` + "\n<br>"
-    //     + "units: " + `${units}` + "\n<br>"
-
+    let dbugTxt = ""
+        // + "fShear: " + `${totalShear[weldCount*2-1].points[1].x.toFixed(2)}` + ", " + `${totalShear[weldCount*2-1].points[1].y.toFixed(2)}` + "\n<br>"
+        // + "tShear: " + `${torsionShear[weldCount*2-1].points[1].x.toFixed(2)}` + ", " + `${torsionShear[weldCount*2-1].points[1].y.toFixed(2)}` + "\n<br>"
+    // //     + "Wx0: " + `${weldCoords[0].points[0].x*distConvert*unitConvert}` + "\n<br>"
+    // //     + "rxV: " + `${rxV.mag.toFixed(1)}` + "\n<br>"
+    // //     + "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
+    //     // + "welds: " + `${weldCount}` + "\n<br>"
+    // //     + "units: " + `${units}` + "\n<br>"
 
     // document.getElementById("debugOutputs").innerHTML = dbugTxt;
 }
@@ -201,7 +175,6 @@ function updateLoads() {
     for (let i = 0; i < loadQty; i++) {
         loadPoints[i].points = [{x: loadProps[i].x, y: loadProps[i].y}, {x: loadArrows[i].x, y: loadArrows[i].y}];
     }   
-
 }
 
 function updateRx() {
@@ -325,7 +298,6 @@ function updateTorsionShear() {
 
         let mag = rxM * mArm / J_tot; 
         // mag = mag / 100;
-
         // mag = rxM / mArm;
 
         torsionShear[i].mag = Math.abs(mag);
@@ -419,50 +391,44 @@ function InitGeom() {
     loadPoints.length = loadCount;
 }
 
-function test_delWeld() { // test function to remove one weld
-    if (weldCount === 1) return;
-    weldCoords.length = weldCoords.length-1;
-    nodes.length = nodes.length-2;
-    directShear.length = directShear.length-2;
-    torsionShear.length = torsionShear.length-2;
-    totalShear.length = totalShear.length-2;
+function addWeld() { // test function to remove one weld
+    if (weldCount >= 10) return;
 
-    weldCount = weldCount-1;
+    const newWeld = {startNode: [170,130], endNode: [330,130]};
+    const addNodes = [
+        {id: "weld"+`${weldCoords.length+1}`+"_start", x: newWeld.startNode[0], y: newWeld.startNode[1], t: 0, display: "block"},
+        {id: "weld"+`${weldCoords.length+1}`+  "_end", x: newWeld.endNode[0],   y: newWeld.endNode[1], t: 0, display: "block"},
+    ]
+    nodes.push(addNodes[0]);
+    nodes.push(addNodes[1]);
 
-    weldDrag// = lineGroup.selectAll("polyline")
-        .data(nodes, d => d.id)
-        .exit()
-            .attr("cx", d => d.x)
-            .attr("cy", d => d.y)
-            .remove();
-    weldLines// = lineGroup.selectAll("polyline")
-        .data(weldCoords, d => d.id)
-        .exit()
-            .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
-            .remove();
-    tmax_circle
-        .data(nodes, d => d.id)
-        .exit()
-            .attr("cx", d => d.x)
-            .attr("cy", d => d.y)
-            .remove();
-    dShear
-        .data(directShear, d => d.id)
-        .exit()
-            .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
-            .remove();
-    tShear
-        .data(torsionShear, d => d.id)
-        .exit()
-            .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
-            .remove();
-    fShear
-        .data(totalShear, d => d.id)
-        .exit()
-            .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
-            .remove();
-    
-    // updateWelds();
+    const addWeld = {id: "weld"+`${weldCoords.length+1}`, points: [nodes[weldCoords.length*2], nodes[(weldCoords.length*2)+1]], thk: defaultThk, len: 0, A: 0, C: [0,0], Ix: 0, Iy: 0, J: 0}
+    weldCoords.push(addWeld);
+
+    const addStress = [
+        {id: "weld"+`${weldCoords.length+1}`+"_start", points: [{x: 0, y: 0},{x: 0, y: 0}], mag: 0, th: 0},
+        {id: "weld"+`${weldCoords.length+1}`+"_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+    ]
+
+    directShear.push(
+        structuredClone(addStress[0]),
+        structuredClone(addStress[1])
+    );
+    torsionShear.push(
+        structuredClone(addStress[0]),
+        structuredClone(addStress[1])
+    );    
+    totalShear.push(
+        structuredClone(addStress[0]),
+        structuredClone(addStress[1])
+    );
+
+    weldCount = weldCoords.length;
+
+    updateDirectShear();
+    updateTorsionShear();
+    updateTotalShear();
+          
     updateView();
 }
 
@@ -499,41 +465,121 @@ function removeWeld(id) { // test function to remove one weld
     }
     
     weldCount = weldCoords.length;
-
-    weldDrag// = lineGroup.selectAll("polyline")
-        .data(nodes)
-        .join (
-            exit => exit
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y)
-                .remove());
-    weldLines// = lineGroup.selectAll("polyline")
-        .data(weldCoords)
-        .exit()
-                .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
-                .remove();
-    tmax_circle
-        .data(nodes)
-        .exit()
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y)
-                .remove();
-    dShear
-        .data(directShear)
-        .exit()
-                .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
-                .remove();
-    tShear
-        .data(torsionShear)
-        .exit()
-                .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
-                .remove();
-    fShear
-        .data(totalShear)
-        .exit()
-                .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
-                .remove();
-    
-    // updateWelds();
     updateView();
+}
+
+function updateData() {
+    weldCount = weldCoords.length;
+    // Welds //
+    svg.selectAll(".weld")
+    .on("dblclick", function(event, d) {
+        removeWeld(d.id);
+        if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
+        else document.getElementById("addWeld").disabled = false;
+    });
+    const weldLines = lineGroup.selectAll("polyline")
+        .data(weldCoords, d => d.id);
+    let enter = weldLines.enter()
+        .append("polyline")
+        .attr("class", "weld")
+        .attr("stroke", "black")
+        .style("stroke-linecap", "round")
+        .attr("opacity", 0.4)
+        .attr("fill", "none");
+    enter.merge(weldLines)
+        .attr("stroke-width", d => d.thk*weldThkScale)
+        .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "));
+    weldLines.exit().remove();
+
+    // Max Stress Indicators
+    const tmax_circle = tmaxGroup.selectAll("circle")
+        .data(nodes, d => d.id);
+    enter = tmax_circle.enter()
+        .append("circle")
+        .attr("r", 10)
+        .attr("fill", "orange")
+        .attr("fill-opacity", 0.25)
+        .attr("stroke", "orange")
+        .attr("stroke-width", 2)
+        .attr("stroke-opacity", 0.75)
+    enter.merge(tmax_circle)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+        .style("display", d => d.display)
+    tmax_circle.exit().remove();
+
+    // Direc Shear Arrows
+    const dShear = dShearGroup.selectAll("polyline")
+        .data(directShear, d => d.id);
+    enter = dShear.enter()
+        .append("polyline")
+        .attr("fill", "none")
+        .attr("stroke", "darkred")
+        .attr("stroke-width", 2)
+        .style("stroke-linecap", "round")
+        .attr("opacity", 0.5)
+        .attr("marker-end", "url(#arrowhead");
+    enter.merge(dShear)
+        .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
+        .style("display", showTComps ? "block" : "none");
+    dShear.exit().remove();
+
+    // Torsional Shear Arrows
+    const tShear = tShearGroup.selectAll("polyline")
+        .data(torsionShear, d => d.id)
+    enter = tShear.enter()
+        .append("polyline")
+        .attr("fill", "none")
+        .attr("stroke", "darkblue")
+        .attr("stroke-width", 2)
+        .style("stroke-linecap", "round")
+        .attr("opacity", 0.5)
+        .attr("marker-end", "url(#B_arrowhead");
+    enter.merge(tShear)
+        .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
+        .style("display", showTComps ? "block" : "none");
+    tShear.exit().remove();
+    
+    // Total Shear Arrows
+    const fShear = fShearGroup.selectAll("polyline")
+        .data(totalShear, d => d.id);
+    enter = fShear.enter()
+        .append("polyline")
+        .attr("fill", "none")
+        .attr("stroke", "indigo")
+        .attr("stroke-width", 2)
+        .style("stroke-linecap", "round")
+        .attr("opacity", 0.75)
+        .attr("marker-end", "url(#P_arrowhead");
+    enter.merge(fShear)
+        .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
+        .style("display", showStress ? "block" : "none");
+    fShear.exit().remove();
+
+    // Weld Drag Nodes
+    const weldDrag = wDragGroup.selectAll("circle")
+        .data(nodes, d => d.id);
+    enter = weldDrag.enter()
+        .append("circle")
+        .attr("r", 15)
+        .attr("fill", "black")
+        .attr("opacity", 0);
+    enter.merge(weldDrag)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+        .call(d3.drag()
+            .on("start", (event) => {
+                weldDrag.attr("opacity",0.1);
+            })
+            .on("drag", function(event, d) {
+                d.x = event.x;
+                d.y = event.y;
+                updateView();
+            })
+            .on("end", (event) => {
+                weldDrag.attr("opacity", 0)
+            })
+        )
+    weldDrag.exit().remove();
+
 }
