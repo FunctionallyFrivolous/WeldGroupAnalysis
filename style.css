@@ -1,3 +1,23 @@
+/* body {
+    font-family: sans-serif;
+    font-size: 9pt;
+} */
+
+h2 {
+    font-family: sans-serif;
+    font-size: 19pt;
+}
+
+p {
+    font-family: sans-serif;
+    font-size: 9pt;
+}
+
+label {
+    font-family: sans-serif;
+    font-size: 9pt;
+}
+
 button {
     font-family: sans-serif;
     font-size: 9pt;

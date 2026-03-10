@@ -33,7 +33,7 @@ let stressScale = 10;
 const minLength = 25;
 
 let weldCount = 3;
-const loadCount = 1;
+let loadCount = 2;
 
 // A default set of nodes for two initial welds...
 const defaultCoords = [
@@ -76,7 +76,7 @@ updateWelds(); // populate weld points, length, area from initial nodes data
 
 const loadPoints = [
     {id: "load1", points: [{x: 0, y: 0},{x: 0, y: 0}]},
-    {id: "load1", points: [{x: 0, y: 0},{x: 0, y: 0}]}
+    {id: "load2", points: [{x: 0, y: 0},{x: 0, y: 0}]}
 ]
 updateLoads();
 

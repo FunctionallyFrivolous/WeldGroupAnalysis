@@ -53,3 +53,17 @@ function setupScaleSliders() {
         updateView();
     })
 }
+
+document.getElementById("addLoad").addEventListener("click", () => {
+    addLoad();
+    if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
+    else document.getElementById("addLoad").disabled = false;
+    updateView();
+})
+
+document.getElementById("removeLoad").addEventListener("click", () => {
+    removeLoad();
+    // if (loadCount === 1) document.getElementById("removeLoad").disabled = true;
+    // else document.getElementById("removeLoad").disabled = false;
+    updateView();
+})

@@ -1,6 +1,4 @@
 // Do Next:
-    // Add/Remove Loads
-        // Same approach as add/remove Welds
     // Drag to move weld?
         // Drag body of weld to translate (no rotation) entire line
         // on start: get initial event.x & event.y
@@ -103,32 +101,14 @@ const dShearGroup = zoomGroup.append("g")
 const tShearGroup = zoomGroup.append("g")
 const fShearGroup = zoomGroup.append("g")
 const wDragGroup = zoomGroup.append("g")
+const loadsGroup = zoomGroup.append("g")
+const lDragGroup = zoomGroup.append("g")
+const mDragGroup = zoomGroup.append("g")
+const midGroup = zoomGroup.append("g")
+const aDragGroup = zoomGroup.append("g")
+
 updateData()
 updateDrags();
-// const weldLines = lineGroup.selectAll("polyline")
-//     .data(weldCoords)
-//     .enter()
-//     .append("polyline")
-//     .attr("class", "weld")
-//     .attr("stroke", "black")
-//     .attr("stroke-width", d => d.thk*weldThkScale)
-//     .style("stroke-linecap", "round")
-//     .attr("opacity", 0.4)
-//     .attr("fill", "none")
-
-// Applied force vectors
-const loadsGroup = zoomGroup.append("g")
-const lVectors = loadsGroup.selectAll("polyline")
-    .data(loadPoints)
-    .enter()
-    .append("polyline")
-    .attr("stroke", "darkred")
-    .attr("stroke-width", 3)
-    .attr("opacity", 0.7)
-    .attr("fill", "none")
-    .attr("points", "350,200 450,200")
-    .attr("marker-end", "url(#arrowhead")
-    .attr("marker-start", "url(#dots")
 
 // Centroid of weld group
 const centroidGroup = zoomGroup.append("g")
@@ -174,185 +154,6 @@ const rxMGroup = zoomGroup.append("g")
     .style("stroke-linecap", "round")
     // .attr("display", "block")
 
-// const tmaxGroup = zoomGroup.append("g")
-// const tmax_circle = tmaxGroup.selectAll("circle")
-//     .data(nodes)
-//     .enter()
-//     .append("circle")
-//     .attr("r", 10)
-//     .attr("fill", "orange")
-//     .attr("fill-opacity", 0.25)
-//     .attr("stroke", "orange")
-//     .attr("stroke-width", 2)
-//     .attr("stroke-opacity", 0.75)
-//     .attr("cx", d => d.x)
-//     .attr("cy", d => d.y)
-//     .style("display", d => d.display)
-
-// const dShear = dShearGroup.selectAll("polyline")
-//     .data(directShear)
-//     .enter()
-//     .append("polyline")
-//     .attr("fill", "none")
-//     .attr("stroke", "darkred")
-//     .attr("stroke-width", 2)
-//     .style("stroke-linecap", "round")
-//     .attr("opacity", 0.5)
-//     .attr("marker-end", "url(#arrowhead")
-//     // .attr("marker-start", "url(#dots")
-//     // .style("display", "block")
-
-// const tShearGroup = zoomGroup.append("g")
-// const tShear = tShearGroup.selectAll("polyline")
-//     .data(torsionShear)
-//     .enter()
-//     .append("polyline")
-//     .attr("fill", "none")
-//     .attr("stroke", "darkblue")
-//     .attr("stroke-width", 2)
-//     .style("stroke-linecap", "round")
-//     .attr("opacity", 0.5)
-//     .attr("marker-end", "url(#B_arrowhead")
-//     // .attr("marker-start", "url(#dots")
-//     // .style("display", "block")
-
-// const fShearGroup = zoomGroup.append("g")
-// const fShear = fShearGroup.selectAll("polyline")
-//     .data(totalShear)
-//     .enter()
-//     .append("polyline")
-//     .attr("fill", "none")
-//     .attr("stroke", "indigo")
-//     .attr("stroke-width", 2)
-//     .style("stroke-linecap", "round")
-//     .attr("opacity", 0.75)
-//     .attr("marker-end", "url(#P_arrowhead")
-//     // .attr("marker-start", "url(#dots")
-//     // .style("display", "none")
-    
-// Draggable weld nodes
-// const wDragGroup = zoomGroup.append("g")
-// const weldDrag = wDragGroup.selectAll("circle")
-//     .data(nodes)
-//     .enter()
-//     .append("circle")
-//     .attr("r", 15)
-//     .attr("fill", "black")
-//     .attr("opacity", 0)
-//     .attr("cx", d => d.x)
-//     .attr("cy", d => d.y)
-//     .call(d3.drag()
-//         .on("start", (event) => {
-//             weldDrag.attr("opacity",0.1);
-//         })
-//         .on("drag", function(event, d) {
-//             d.x = event.x;
-//             d.y = event.y;
-//             updateView();
-//         })
-//         .on("end", (event) => {
-//             weldDrag.attr("opacity", 0)
-//         })
-//     )
-
-// Draggable points to change force vector position
-const lDragGroup = zoomGroup.append("g")
-const loadDrag = lDragGroup.selectAll("circle")
-    .data(loadProps)
-    .enter()
-    .append("circle")
-    .attr("r", 10)
-    .attr("fill", "darkred")
-    .attr("opacity", 0)
-    .attr("cx", d => d.x)
-    .attr("cy", d => d.y)
-    .call(d3.drag()
-        .on("start", (event) => {
-            loadDrag.attr("opacity",0.1);
-        })
-        .on("drag", function(event, d) {
-            d.x = event.x;
-            d.y = event.y;
-            updateArrows();
-            updateView();
-            updateAngles();
-        })
-        .on("end", (event) => {
-            loadDrag.attr("opacity", 0)
-        })
-    );
-
-// Draggable mid-nodes to change force vector angle
-const mDragGroup = zoomGroup.append("g")
-const magDrag = mDragGroup.selectAll("circle")
-    .data(loadArrows)
-    .enter()
-    .append("circle")
-    .attr("r", 10)
-    .attr("fill", "darkred")
-    .attr("opacity", 0)
-    .attr("cx", d => d.x)
-    .attr("cy", d => d.y)
-    .call(d3.drag()
-        .on("start", (event) => {
-            magDrag.attr("opacity",0.1);
-        })
-        .on("drag", function(event, d) {
-            const drag_x = loadProps.find(j => j.id === d.id).x;
-            const drag_y = loadProps.find(j => j.id === d.id).y;
-            const drag_L = Math.sqrt((drag_x-event.x)*(drag_x-event.x)+(drag_y-event.y)*(drag_y-event.y));
-            if (drag_L < minLength) return
-            loadProps.find(j => j.id === d.id).mag = drag_L / loadScale;
-            updateArrows();
-            updateAngles();
-            updateView();
-        })
-        .on("end", (event) => {
-            magDrag.attr("opacity", 0)
-        })
-    );
-
-// Visual marker for draggable mid-nodes
-const midGroup = zoomGroup.append("g")
-const midMarks = midGroup.selectAll("circle")
-    .data(loadMids)
-    .enter()
-    .append("circle")
-    .attr("r", 3)
-    .attr("fill", "none")
-    .attr("stroke-width", 1)
-    .attr("stroke", "darkred")
-    .attr("stroke-opacity", 1)
-    .attr("opacity", 0.5)
-    .attr("cx", d => d.x)
-    .attr("cy", d => d.y)
-
-// Draggable arrowheads to change force vector magnitude
-const aDragGroup = zoomGroup.append("g")
-const angleDrag = aDragGroup.selectAll("circle")
-    .data(loadMids)
-    .enter()
-    .append("circle")
-    .attr("r", 10)
-    .attr("fill", "darkred")
-    .attr("opacity", 0)
-    .attr("cx", d => d.x)
-    .attr("cy", d => d.y)
-    .call(d3.drag()
-        .on("start", (event) => {
-            angleDrag.attr("opacity",0.1);
-        })
-        .on("drag", function(event, d) {
-            d.x = event.x;
-            d.y = event.y;
-            updateAngles();
-            updateView();
-        })
-        .on("end", (event) => {
-            angleDrag.attr("opacity", 0)
-        })
-    );
-
 // Zoom & Pan stuff
 const zoom = d3.zoom()
     .scaleExtent([0.25, 10])
@@ -363,11 +164,6 @@ const zoom = d3.zoom()
     });
 svg.call(zoom)
     .on("dblclick.zoom", null);
-
-// svg.selectAll(".weld")
-//     .on("dblclick", function(event, d) {
-//         removeWeld(d.id);
-//     });
 
 setupScaleSliders();
 updateView();

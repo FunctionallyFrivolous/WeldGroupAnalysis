@@ -19,8 +19,8 @@ function updateSVGs(){
         .attr("cx", d => d.x)
         .attr("cy", d => d.y);
 
-    lVectors
-        .attr("points", d => d.points.map(l => `${l.x},${l.y}`).join(" "))
+    // lVectors
+    //     .attr("points", d => d.points.map(l => `${l.x},${l.y}`).join(" "))
 
     rxVector
         .attr("points", d => d.points.map(v => `${v.x},${v.y}`).join(" "))
@@ -36,19 +36,6 @@ function updateSVGs(){
         rxMGroup
             .style("display", "none")
     }
-
-    loadDrag
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y);
-    angleDrag
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y);
-    midMarks
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y);
-    magDrag
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y);
 }
 
 function updateView() {
@@ -446,10 +433,36 @@ function addWeld() { // test function to remove one weld
 
     weldCount = weldCoords.length;
 
-    // updateDirectShear();
-    // updateTorsionShear();
-    // updateTotalShear();
-          
+    updateView();
+}
+
+function addLoad() { // test function to remove one weld
+    if (loadCount >= 10) return;
+
+    let newY = Math.floor(Math.random()*(450-50)+50);
+
+    let newX = Math.floor(Math.random()*(450-50)+50);
+
+    let newMag = Math.floor(Math.random()*(200-50)+50);
+    let newTh = Math.floor(Math.random()*(359-0)+0);
+
+    loadProps.push(
+        {id: "load"+`${loadCount+1}`, x: newX, y: newY, th: newTh, mag: newMag},
+    );
+
+    loadArrows.push(
+        {id: "load"+`${loadCount+1}`, x: 0, y: 0}
+    )
+
+    loadMids.push(
+        {id: "load"+`${loadCount+1}`, x: 0, y: 0}
+    )
+
+    loadPoints.push(
+        {id: "load"+`${loadCount+1}`,points: [{x: newX, y: newY},{x: 0, y: 0}]}
+    )
+    loadCount = loadProps.length;
+
     updateView();
 }
 
@@ -489,11 +502,38 @@ function removeWeld(id) { // test function to remove one weld
     updateView();
 }
 
+function removeLoad(id) { // test function to remove one weld
+    if (loadCount === 1) return;
+    
+    let index = loadProps.findIndex(obj => obj.id === id);
+    if (index > -1) {
+        loadProps.splice(index, 1);
+    }
+
+    index = loadArrows.findIndex(obj => obj.id.includes(id));
+    if (index > -1) {
+        loadArrows.splice(index, 1);
+    }    
+
+    index = loadMids.findIndex(obj => obj.id.includes(id));
+    if (index > -1) {
+        loadMids.splice(index, 1);
+    }    
+    
+    index = loadPoints.findIndex(obj => obj.id.includes(id));
+    if (index > -1) {
+        loadPoints.splice(index, 1);
+    }
+
+    loadCount = loadProps.length;
+    updateView();
+}
+
 function updateDrags(){
     // Weld Drag Nodes
     const weldDrag = wDragGroup.selectAll("circle")
         .data(nodes, d => d.id);
-    enter = weldDrag.enter()
+    let enter = weldDrag.enter()
         .append("circle")
         .attr("r", 15)
         .attr("fill", "black")
@@ -517,10 +557,94 @@ function updateDrags(){
             })
         )
     weldDrag.exit().remove();
+
+    const loadDrag = lDragGroup.selectAll("circle")
+        .data(loadProps)
+    enter = loadDrag.enter()
+        .append("circle")
+        .attr("r", 10)
+        .attr("fill", "darkred")
+        .attr("opacity", 0)
+    enter.merge(loadDrag)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+        .call(d3.drag()
+            .on("start", (event) => {
+                loadDrag.attr("opacity",0.1);
+            })
+            .on("drag", function(event, d) {
+                d.x = event.x;
+                d.y = event.y;
+                updateArrows();
+                updateView();
+                updateAngles();
+            })
+            .on("end", (event) => {
+                loadDrag.attr("opacity", 0)
+            })
+        );
+    loadDrag.exit().remove();
+
+        const magDrag = mDragGroup.selectAll("circle")
+        .data(loadArrows)
+    enter = magDrag.enter()
+        .append("circle")
+        .attr("r", 10)
+        .attr("fill", "darkred")
+        .attr("opacity", 0)
+    enter.merge(magDrag)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+        .call(d3.drag()
+            .on("start", (event) => {
+                magDrag.attr("opacity",0.1);
+            })
+            .on("drag", function(event, d) {
+                const drag_x = loadProps.find(j => j.id === d.id).x;
+                const drag_y = loadProps.find(j => j.id === d.id).y;
+                const drag_L = Math.sqrt((drag_x-event.x)*(drag_x-event.x)+(drag_y-event.y)*(drag_y-event.y));
+                if (drag_L < minLength) return
+                loadProps.find(j => j.id === d.id).mag = drag_L / loadScale;
+                updateArrows();
+                updateAngles();
+                updateView();
+            })
+            .on("end", (event) => {
+                magDrag.attr("opacity", 0)
+            })
+        );
+    magDrag.exit().remove();
+
+    const angleDrag = aDragGroup.selectAll("circle")
+        .data(loadMids)
+    enter = angleDrag.enter()
+        .append("circle")
+        .attr("r", 10)
+        .attr("fill", "darkred")
+        .attr("opacity", 0)
+    enter.merge(angleDrag)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+        .call(d3.drag()
+            .on("start", (event) => {
+                angleDrag.attr("opacity",0.1);
+            })
+            .on("drag", function(event, d) {
+                d.x = event.x;
+                d.y = event.y;
+                updateAngles();
+                updateView();
+            })
+            .on("end", (event) => {
+                angleDrag.attr("opacity", 0)
+            })
+        );
+    angleDrag.exit().remove();
 }
 
 function updateData() {
     weldCount = weldCoords.length;
+    loadCount = loadProps.length;
     // Welds //
     svg.selectAll(".weld")
     .on("dblclick", function(event, d) {
@@ -528,6 +652,14 @@ function updateData() {
         if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
         else document.getElementById("addWeld").disabled = false;
     });
+
+    svg.selectAll(".load")
+    .on("dblclick", function(event, d) {
+        removeLoad(d.id);
+        if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
+        else document.getElementById("addLoad").disabled = false;
+    });
+
     const weldLines = lineGroup.selectAll("polyline")
         .data(weldCoords, d => d.id);
     let enter = weldLines.enter()
@@ -607,6 +739,22 @@ function updateData() {
         .style("display", showStress ? "block" : "none");
     fShear.exit().remove();
 
+    const lVectors = loadsGroup.selectAll("polyline")
+        .data(loadPoints)
+    enter = lVectors.enter()
+        .append("polyline")
+        .attr("stroke", "darkred")
+        .attr("stroke-width", 3)
+        .attr("opacity", 0.7)
+        .attr("fill", "none")
+        .attr("points", "350,200 450,200")
+        .attr("marker-end", "url(#arrowhead")
+        .attr("marker-start", "url(#dots")
+    enter.merge(lVectors)
+        .attr("points", d => d.points.map(l => `${l.x},${l.y}`).join(" "))
+    lVectors.exit().remove();
+
+
     const weldDrag = wDragGroup.selectAll("circle")
         .data(nodes, d => d.id);
     enter = weldDrag.enter()
@@ -618,5 +766,57 @@ function updateData() {
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
     weldDrag.exit().remove();
+
+    const loadDrag = lDragGroup.selectAll("circle")
+        .data(loadProps)
+    enter = loadDrag.enter()
+        .append("circle")
+        .attr("class", "load")
+        .attr("r", 10)
+        .attr("fill", "darkred")
+        .attr("opacity", 0)
+    enter.merge(loadDrag)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+    loadDrag.exit().remove();
+
+    const magDrag = mDragGroup.selectAll("circle")
+        .data(loadArrows)
+    enter = magDrag.enter()
+        .append("circle")
+        .attr("r", 10)
+        .attr("fill", "darkred")
+        .attr("opacity", 0)
+    enter.merge(magDrag)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+    magDrag.exit().remove();
+
+    const midMarks = midGroup.selectAll("circle")
+        .data(loadMids);
+    enter = midMarks.enter()
+        .append("circle")
+        .attr("r", 3)
+        .attr("fill", "none")
+        .attr("stroke-width", 1)
+        .attr("stroke", "darkred")
+        .attr("stroke-opacity", 1)
+        .attr("opacity", 0.5);
+    enter.merge(midMarks)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+    midMarks.exit().remove();
+
+    const angleDrag = aDragGroup.selectAll("circle")
+        .data(loadMids);
+    enter = angleDrag.enter()
+        .append("circle")
+        .attr("r", 10)
+        .attr("fill", "darkred")
+        .attr("opacity", 0);
+    enter.merge(angleDrag)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y);
+    angleDrag.exit().remove();
 
 }
