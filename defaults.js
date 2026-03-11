@@ -2,10 +2,20 @@ let currentZoomTransform = d3.zoomIdentity;
 let showRx = true;
 let showStress = true;
 let showTComps = false;
+// let showWeldCoords = false;
+// let showCoords = false;
+let showLoadProps = false;
+let showWeldProps = false;
+let dragWeldProps = false;
+let showCentCoords = false;
 
 let units = "inches";
+let unitSymbol = `"`;
+let forceSymbol = "lbf"
 let distConvert = 0.1; // svg window units to inches (10:1)
 let unitConvert = 1; // conversion from current units to inches (1 if current units are inches; 25.4 if current metric)
+
+const origin = [250,250];
 
 let xMin = 0;
 let xMax = 0;
@@ -33,18 +43,18 @@ let stressScale = 10;
 const minLength = 25;
 
 let weldCount = 3;
-let loadCount = 2;
+let loadCount = 1;
 
 // A default set of nodes for two initial welds...
 const defaultCoords = [
-    {id: "weld1_start", x: 150, y: 400, t: 0, display: "none"},
-    {id: "weld1_end", x: 150, y: 150, t: 0, display: "none"},
-    {id: "weld2_start", x: 350, y: 400, t: 0, display: "none"},
-    {id: "weld2_end", x: 350, y: 150, t: 0, display: "none"},
-    {id: "weld3_start", x: 170, y: 420, t: 0, display: "none"},
-    {id: "weld3_end", x: 330, y: 420, t: 0, display: "none"},
-    {id: "weld4_start", x: 170, y: 130, t: 0, display: "none"},
-    {id: "weld4_end", x: 330, y: 130, t: 0, display: "none"},
+    {id: "weld1_start", x: 150, y: 380, t: 0, show: false},
+    {id: "weld1_end", x: 150, y: 120, t: 0, show: false},
+    {id: "weld2_start", x: 350, y: 380, t: 0, show: false},
+    {id: "weld2_end", x: 350, y: 120, t: 0, show: false},
+    {id: "weld3_start", x: 170, y: 400, t: 0, show: false},
+    {id: "weld3_end", x: 330, y: 400, t: 0, show: false},
+    {id: "weld4_start", x: 170, y: 100, t: 0, show: false},
+    {id: "weld4_end", x: 330, y: 100, t: 0, show: false},
 ]
 
 // map the default node data onto new array that will be used/changed throughout
@@ -52,24 +62,24 @@ const nodes = defaultCoords.map(j => ({ ...j }));
 // nodes = nodes.slice(0,3);
 
 const loadProps = [
-    {id: "load1", x: 225, y: 75, th: 180, mag: 150},
-    {id: "load2", x: 100, y: 350, th: -125, mag: 50,},
+    {id: "load1", x: 225, y: 55, th: 180, mag: 150, show: false},
+    {id: "load2", x: 100, y: 350, th: -125, mag: 50, show: false},
 ]
 const loadArrows = [
-    {id: "load1", x: 0, y: 0},
-    {id: "load2", x: 0, y: 0},
+    {id: "load1", x: 0, y: 0, mag: 0, show: false},
+    {id: "load2", x: 0, y: 0, mag: 0, show: false},
 ]
 const loadMids = [
-    {id: "load1", x: 100, y: 100},
-    {id: "load2", x: 100, y: 100},
+    {id: "load1", x: 100, y: 100, th: 0, show: false},
+    {id: "load2", x: 100, y: 100, th: 0, show: false},
 ]
 
 // Initialize the array for storing weld properties
 const weldCoords = [
-    {id: "weld1", points: [[0,0], [0,0]], thk: defaultThk, len: 0, A: 0, C: [0,0], Ix: 0, Iy: 0, J: 0},
-    {id: "weld2", points: [[0,0], [0,0]], thk: defaultThk, len: 0, A: 0, C: [0,0], Ix: 0, Iy: 0, J: 0},
-    {id: "weld3", points: [[0,0], [0,0]], thk: defaultThk, len: 0, A: 0, C: [0,0], Ix: 0, Iy: 0, J: 0},
-    {id: "weld4", points: [[0,0], [0,0]], thk: defaultThk, len: 0, A: 0, C: [0,0], Ix: 0, Iy: 0, J: 0},
+    {id: "weld1", points: [[0,0], [0,0]], thk: defaultThk, len: 0, A: 0, C: [0,0], Ix: 0, Iy: 0, J: 0, show: false},
+    {id: "weld2", points: [[0,0], [0,0]], thk: defaultThk, len: 0, A: 0, C: [0,0], Ix: 0, Iy: 0, J: 0, show: false},
+    {id: "weld3", points: [[0,0], [0,0]], thk: defaultThk, len: 0, A: 0, C: [0,0], Ix: 0, Iy: 0, J: 0, show: false},
+    {id: "weld4", points: [[0,0], [0,0]], thk: defaultThk, len: 0, A: 0, C: [0,0], Ix: 0, Iy: 0, J: 0, show: false},
 ]
 // weldCoords = weldCoords.slice(0,1);
 updateWelds(); // populate weld points, length, area from initial nodes data

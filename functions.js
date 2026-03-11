@@ -28,10 +28,23 @@ function updateSVGs(){
     rxMGroup
         .attr("d", dM)
         .style("display", showRx ? "block" : "none")
-    if (Math.abs(rxM) <= 0.1) {
+        
+    if (Math.abs(rxM) <= 0.2) {
         rxMGroup
             .style("display", "none")
     }
+    centroidCoords
+        .attr("x", d => d.x)
+        .attr("y", d => d.y+16)
+        .text(d => {
+            const dx = (d.x - origin[0]) * distConvert * unitConvert;
+            const dy = (origin[0] - d.y) * distConvert * unitConvert;
+            return `(${dx.toFixed(1)}${unitSymbol}, ${dy.toFixed(1)}${unitSymbol})`;
+        })
+        .style("display", showWeldProps || showCentCoords ? "block" : "none");
+
+        document.getElementById("debugOutputs").innerHTML = "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
+
 }
 
 function updateView() {
@@ -45,9 +58,8 @@ function updateView() {
         // + "tShear: " + `${torsionShear[weldCount*2-1].points[1].x.toFixed(2)}` + ", " + `${torsionShear[weldCount*2-1].points[1].y.toFixed(2)}` + "\n<br>"
     // //     + "Wx0: " + `${weldCoords[0].points[0].x*distConvert*unitConvert}` + "\n<br>"
     // //     + "rxV: " + `${rxV.mag.toFixed(1)}` + "\n<br>"
-    // //     + "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
+        + "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
     //     // + "welds: " + `${weldCount}` + "\n<br>"
-    // //     + "units: " + `${units}` + "\n<br>"
 
     // document.getElementById("debugOutputs").innerHTML = dbugTxt;
 }
@@ -144,7 +156,9 @@ function updateArrows() {
         const xt = xa + loadScale*(loadProps[i].mag) * Math.cos(th_rad);
         const yt = ya - loadScale*(loadProps[i].mag) * Math.sin(th_rad);
         loadArrows[i].x = xt;
-        loadArrows[i].y = yt
+        loadArrows[i].y = yt;
+        loadArrows[i].mag = loadProps[i].mag;
+        loadArrows[i].id = `load${i+1}`
     }   
 }
 
@@ -156,6 +170,8 @@ function updateMids() {
         const mid_y = (loadProps[i].y+loadArrows[i].y)/2;
         loadMids[i].x = mid_x;
         loadMids[i].y = mid_y;
+        loadMids[i].th = loadProps[i].th;
+        loadMids[i].id = `load${i+1}`
     }
 }
 
@@ -163,7 +179,10 @@ function updateLoads() {
     updateArrows();
     const loadQty = loadProps.length;
     for (let i = 0; i < loadQty; i++) {
+        loadProps[i].id = loadPoints[i].id;
         loadPoints[i].points = [{x: loadProps[i].x, y: loadProps[i].y}, {x: loadArrows[i].x, y: loadArrows[i].y}];
+        loadPoints[i].id = `load${i+1}`;
+        loadProps[i].id = loadPoints[i].id;
     }   
 }
 
@@ -385,10 +404,10 @@ function addWeld() { // test function to remove one weld
     if (weldCount >= 10) return;
 
     let newY0 = 0;
-    if (weldCount === 3) newY0 = 130;
+    if (weldCount === 3) newY0 = 90;
     else newY0 = Math.floor(Math.random()*(450-50)+50);
     let newY1 = 0;
-    if (weldCount === 3) newY1 = 130;
+    if (weldCount === 3) newY1 = 90;
     else newY1 = Math.floor(Math.random()*(450-50)+50);
 
     let newX0 = 0;
@@ -406,7 +425,7 @@ function addWeld() { // test function to remove one weld
     nodes.push(addNodes[0]);
     nodes.push(addNodes[1]);
 
-    const addWeld = {id: "weld"+`${weldCoords.length+1}`, points: [nodes[weldCoords.length*2], nodes[(weldCoords.length*2)+1]], thk: defaultThk, len: 0, A: 0, C: [0,0], Ix: 0, Iy: 0, J: 0}
+    const addWeld = {id: "weld"+`${weldCoords.length+1}`, points: [nodes[weldCoords.length*2], nodes[(weldCoords.length*2)+1]], thk: defaultThk, len: 0, A: 0, C: [0,0], Ix: 0, Iy: 0, J: 0, show: false}
     weldCoords.push(addWeld);
 
     const addStress = [
@@ -443,15 +462,15 @@ function addLoad() { // test function to remove one weld
     let newTh = Math.floor(Math.random()*(359-0)+0);
 
     loadProps.push(
-        {id: "load"+`${loadCount+1}`, x: newX, y: newY, th: newTh, mag: newMag},
+        {id: "load"+`${loadCount+1}`, x: newX, y: newY, th: newTh, mag: newMag, show: false},
     );
 
     loadArrows.push(
-        {id: "load"+`${loadCount+1}`, x: 0, y: 0}
+        {id: "load"+`${loadCount+1}`, x: 0, y: 0, mag: 0, show: false}
     )
 
     loadMids.push(
-        {id: "load"+`${loadCount+1}`, x: 0, y: 0}
+        {id: "load"+`${loadCount+1}`, x: 0, y: 0, th: 0, show: false}
     )
 
     loadPoints.push(
@@ -538,8 +557,16 @@ function updateDrags(){
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
         .call(d3.drag()
-            .on("start", (event) => {
+            .on("start", (event, d) => {
                 weldDrag.attr("opacity",0.1);
+                // dragWeldProps = true;
+                const strIndex = d.id.indexOf("_");
+                const wID = d.id.substring(0,strIndex);
+                weldCoords.find(j => j.id === wID).show = true;
+                d.show = true;
+                showCentCoords = true;
+                updateData();
+                updateSVGs();
             })
             .on("drag", function(event, d) {
                 d.x = event.x;
@@ -548,8 +575,16 @@ function updateDrags(){
                 updateSVGs();
                 updateData();
             })
-            .on("end", (event) => {
-                weldDrag.attr("opacity", 0)
+            .on("end", (event, d) => {
+                weldDrag.attr("opacity", 0);
+                // dragWeldProps = false;
+                const strIndex = d.id.indexOf("_");
+                const wID = d.id.substring(0,strIndex);
+                weldCoords.find(j => j.id === wID).show = false;
+                d.show = false;
+                showCentCoords = false;
+                updateData();
+                updateSVGs();
             })
         )
     weldDrag.exit().remove();
@@ -558,6 +593,7 @@ function updateDrags(){
         .data(loadProps)
     enter = loadDrag.enter()
         .append("circle")
+        .attr("class", "load")
         .attr("r", 10)
         .attr("fill", "darkred")
         .attr("opacity", 0)
@@ -565,8 +601,10 @@ function updateDrags(){
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
         .call(d3.drag()
-            .on("start", (event) => {
+            .on("start", (event, d) => {
                 loadDrag.attr("opacity",0.1);
+                loadProps.find(j => j.id === d.id).show = true;
+                updateData();
             })
             .on("drag", function(event, d) {
                 d.x = event.x;
@@ -577,8 +615,10 @@ function updateDrags(){
                 updateData();
                 updateAngles();
             })
-            .on("end", (event) => {
-                loadDrag.attr("opacity", 0)
+            .on("end", (event, d) => {
+                loadDrag.attr("opacity", 0);
+                loadProps.find(j => j.id === d.id).show = false;
+                updateData();
             })
         );
     loadDrag.exit().remove();
@@ -594,8 +634,10 @@ function updateDrags(){
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
         .call(d3.drag()
-            .on("start", (event) => {
+            .on("start", (event, d) => {
                 magDrag.attr("opacity",0.1);
+                loadProps.find(j => j.id === d.id).show = true;
+                updateData();
             })
             .on("drag", function(event, d) {
                 const drag_x = loadProps.find(j => j.id === d.id).x;
@@ -603,14 +645,16 @@ function updateDrags(){
                 const drag_L = Math.sqrt((drag_x-event.x)*(drag_x-event.x)+(drag_y-event.y)*(drag_y-event.y));
                 if (drag_L < minLength) return
                 loadProps.find(j => j.id === d.id).mag = drag_L / loadScale;
-                updateArrows();
+                // updateArrows();
                 updateAngles();
                 updateStuff();
                 updateSVGs();
                 updateData();
             })
-            .on("end", (event) => {
-                magDrag.attr("opacity", 0)
+            .on("end", (event, d) => {
+                magDrag.attr("opacity", 0);
+                loadProps.find(j => j.id === d.id).show = false;
+                updateData();
             })
         );
     magDrag.exit().remove();
@@ -626,8 +670,10 @@ function updateDrags(){
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
         .call(d3.drag()
-            .on("start", (event) => {
+            .on("start", (event, d) => {
                 angleDrag.attr("opacity",0.1);
+                loadProps.find(j => j.id === d.id).show = true;
+                updateData();
             })
             .on("drag", function(event, d) {
                 d.x = event.x;
@@ -637,8 +683,10 @@ function updateDrags(){
                 updateSVGs();
                 updateData();
             })
-            .on("end", (event) => {
-                angleDrag.attr("opacity", 0)
+            .on("end", (event, d) => {
+                angleDrag.attr("opacity", 0);
+                loadProps.find(j => j.id === d.id).show = false;
+                updateData();
             })
         );
     angleDrag.exit().remove();
@@ -678,7 +726,7 @@ function updateData() {
 
     // Max Stress Indicators
     const tmax_circle = tmaxGroup.selectAll("circle")
-        .data(nodes, d => d.id);
+        .data(nodes);
     enter = tmax_circle.enter()
         .append("circle")
         .attr("r", 10)
@@ -695,7 +743,7 @@ function updateData() {
 
     // Direc Shear Arrows
     const dShear = dShearGroup.selectAll("polyline")
-        .data(directShear, d => d.id);
+        .data(directShear);
     enter = dShear.enter()
         .append("polyline")
         .attr("fill", "none")
@@ -711,7 +759,7 @@ function updateData() {
 
     // Torsional Shear Arrows
     const tShear = tShearGroup.selectAll("polyline")
-        .data(torsionShear, d => d.id)
+        .data(torsionShear)
     enter = tShear.enter()
         .append("polyline")
         .attr("fill", "none")
@@ -727,7 +775,7 @@ function updateData() {
     
     // Total Shear Arrows
     const fShear = fShearGroup.selectAll("polyline")
-        .data(totalShear, d => d.id);
+        .data(totalShear);
     enter = fShear.enter()
         .append("polyline")
         .attr("fill", "none")
@@ -759,7 +807,7 @@ function updateData() {
 
 
     const weldDrag = wDragGroup.selectAll("circle")
-        .data(nodes, d => d.id);
+        .data(nodes);
     enter = weldDrag.enter()
         .append("circle")
         .attr("r", 15)
@@ -822,4 +870,103 @@ function updateData() {
         .attr("cy", d => d.y);
     angleDrag.exit().remove();
 
+    updateLabels();
+}
+
+function updateLabels() {
+    const weldCoordLabs = weldCoordLabsGoup.selectAll("text")
+        .data(nodes);
+    enter = weldCoordLabs.enter()
+        .append("text")
+        .attr("font-size", "8px")
+        .attr("text-anchor", "middle")
+        .style("pointer-events", "none")
+        .style("display", "none");
+    enter.merge(weldCoordLabs)
+        .attr("x", (d, i) => d.x+25)
+        .attr("y", (d, i) => d.y-10)
+        .text( d => {
+            const dx = (d.x - origin[0]) * distConvert;
+            const dy = (origin[0] - d.y) * distConvert;
+            return `(${dx.toFixed(1)}${unitSymbol}, ${dy.toFixed(1)}${unitSymbol})`;
+        })
+        .style("display", d => showWeldProps || d.show ? "block" : "none");
+    weldCoordLabs.exit().remove();
+
+    const loadCoordLabs = loadCoordLabsGoup.selectAll("text")
+        .data(loadProps)
+    enter = loadCoordLabs.enter()
+        .append("text")
+        .attr("font-size", "8px")
+        .attr("text-anchor", "left")
+        .style("pointer-events", "none")
+    enter.merge(loadCoordLabs)
+        .attr("x", d => d.x+5)
+        .attr("y", d => d.y-5)
+        .text( d => {
+            const dx = (d.x - origin[0]) * distConvert * unitConvert;
+            const dy = (origin[0] - d.y) * distConvert * unitConvert;
+            return `(${dx.toFixed(1)}${unitSymbol}, ${dy.toFixed(1)}${unitSymbol})`;
+        })
+        .style("display", d => showLoadProps || loadProps.find(j => j.id === d.id).show ? "block" : "none");
+    loadCoordLabs.exit().remove();
+
+    const loadAngleLabs = loadAngleLabsGroup.selectAll("text")
+        .data(loadMids)
+    enter = loadAngleLabs.enter()
+        .append("text")
+        .attr("font-size", "8px")
+        .attr("text-anchor", "left")
+        .style("pointer-events", "none")
+        // .style("display", "none");
+    enter.merge(loadAngleLabs)
+        .attr("x", d => d.x+5)
+        .attr("y", d => d.y+10)
+        .text( d => `${d.th.toFixed(0)}°`)
+        .style("display", d => showLoadProps || loadProps.find(j => j.id === d.id).show ? "block" : "none");
+    loadAngleLabs.exit().remove();
+
+    const loadMagLabs = loadMagLabsGroup.selectAll("text")
+        .data(loadArrows)
+    enter = loadMagLabs.enter()
+        .append("text")
+        .attr("font-size", "8px")
+        .attr("text-anchor", "left")
+        .style("pointer-events", "none")
+        // .style("display", "none");
+    enter.merge(loadMagLabs)
+        .attr("x", d => d.x-25)
+        .attr("y", d => d.y-10)
+        .text( d => `${d.mag.toFixed(0)} ${forceSymbol}`)
+        .style("display", d => showLoadProps || loadProps.find(j => j.id === d.id).show ? "block" : "none");
+    loadMagLabs.exit().remove();
+
+    const weldPropLabs = WeldPropLabsGroup.selectAll("text")
+        .data(weldCoords)
+    enter = weldPropLabs.enter()
+        .append("text")
+        .attr("font-size", "8px")
+        .attr("text-anchor", "left")
+        .style("pointer-events", "none")
+        // .style("display", "none");
+    enter.merge(weldPropLabs)
+        .attr("x", d => {
+            const dx = (d.points[1].x + d.points[0].x)/2
+            return dx+10;
+        })
+        .attr("y", d => {
+            const dy = (d.points[1].y + d.points[0].y)/2
+            return dy-10;
+        })
+        .text( d => {
+            const wLen = d.len * distConvert * unitConvert;
+            const wThk = d.thk * unitConvert;
+            let figs = 0;
+            if (units === "inches") figs = 3;
+            else figs = 1;
+            return `L: ${wLen.toFixed(1)}${unitSymbol}, thk: ${wThk.toFixed(figs)}${unitSymbol}`;
+        })
+        .style("display", d => showWeldProps || d.show ? "block" : "none");
+    weldPropLabs.exit().remove();
+        
 }

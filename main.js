@@ -107,6 +107,12 @@ const mDragGroup = zoomGroup.append("g")
 const midGroup = zoomGroup.append("g")
 const aDragGroup = zoomGroup.append("g")
 
+const weldCoordLabsGoup = zoomGroup.append("g")
+const loadCoordLabsGoup = zoomGroup.append("g")
+const loadAngleLabsGroup = zoomGroup.append("g")
+const loadMagLabsGroup = zoomGroup.append("g")
+const WeldPropLabsGroup = zoomGroup.append("g")
+
 updateData()
 updateDrags();
 
@@ -156,6 +162,20 @@ const rxMGroup = zoomGroup.append("g")
     .style("stroke-linecap", "round")
     .style("pointer-events", "none")
     // .attr("display", "block")
+
+const centroidCoordsGroup = zoomGroup.append("g")
+const centroidCoords = centroidCoordsGroup.selectAll("text")
+    .data(centroidTot)
+    .enter()
+    .append("text")
+    .attr("font-size", "8px")
+    .attr("text-anchor", "middle")
+    .style("pointer-events", "none")
+    .attr("x", d => d.x)
+    .attr("y", d => d.y)
+    .text("hi tho")
+    .style("display", "block");
+
 
 // Zoom & Pan stuff
 const zoom = d3.zoom()

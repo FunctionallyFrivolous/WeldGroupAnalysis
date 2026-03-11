@@ -16,13 +16,32 @@ document.getElementById("toggleTComps").addEventListener("click", () => {
     updateView();
 })
 
+// document.getElementById("toggleCoords").addEventListener("click", () => {
+//     showCoords = !showCoords
+//     updateView();
+// })
+
+document.getElementById("toggleLoadProps").addEventListener("click", () => {
+    showLoadProps = !showLoadProps
+    updateView();
+})
+
+document.getElementById("toggleWeldProps").addEventListener("click", () => {
+    showWeldProps = !showWeldProps
+    updateView();
+})
+
 document.getElementById("toggleUnits").addEventListener("click", () => {
     if (units === "metric") {
         units = "inches";
+        unitSymbol = `"`;
+        forceSymbol = "lbf";
         unitConvert = 1;
     }
     else {
         units = "metric";
+        unitSymbol = "mm";
+        forceSymbol = "N";
         unitConvert = 25.4;
     }
 
