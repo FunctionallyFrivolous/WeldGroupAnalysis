@@ -1,4 +1,8 @@
 // Do Next:
+    // Text Overlay Updates
+        // Include stress values on dragged node?
+        // Keep node highlight active after drag end (only on dragged node)
+            // A way to display which weld/node/load info is being shown
     // Drag to move weld?
         // Drag body of weld to translate (no rotation) entire line
         // on start: get initial event.x & event.y
