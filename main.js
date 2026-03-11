@@ -1,5 +1,4 @@
 // Do Next:
-    // Drag data summary overlay
     // Drag to move weld?
         // Drag body of weld to translate (no rotation) entire line
         // on start: get initial event.x & event.y

@@ -11,12 +11,14 @@
         <h2>Weld Group Analysis</h2>
         <b style="margin-top: 4px; font-size: 9pt; font-family: sans-serif;">
         <label>Show/Hide:</label>
-        <button id="toggleRx">Rx</button>
-        <button id="toggleStress">Total Stress</button>
-        <button id="toggleTComps">Stress Comps</button>
+        <button id="toggleRx">Rx<sub></sub></button>
+        <button id="toggleStress" style="font-family: serif">τ<sub>tot</sub></button>
+        <button id="toggleTMax" style="font-family: serif">τ<sub>max</sub></button>
+         <button id="toggleTDir" style="opacity: 0.6; font-family: serif">τ'<sub></sub></button>
+        <button id="toggleTTor" style="opacity: 0.6; font-family: serif">τ''<sub></sub></button>
         <!-- <button id="toggleCoords">Coords</button> -->
-        <button id="toggleLoadProps">Load Props</button>
-        <button id="toggleWeldProps">Weld Props</button>
+        <button id="toggleLoadProps" style="opacity: 0.6">Load Props<sub></sub></button>
+        <button id="toggleWeldProps" style="opacity: 0.6">Weld Props<sub></sub></button>
         <br>
         <label>Load Scale:</label>
         <input type="range" id="loadScaleSlider" orient="horizontal" value="0.5" min="0.1" max="3" step="0.05">

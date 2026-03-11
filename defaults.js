@@ -2,6 +2,9 @@ let currentZoomTransform = d3.zoomIdentity;
 let showRx = true;
 let showStress = true;
 let showTComps = false;
+let showTDir = false;
+let showTTor = false;
+let showTMax = true;
 // let showWeldCoords = false;
 // let showCoords = false;
 let showLoadProps = false;
@@ -47,14 +50,14 @@ let loadCount = 1;
 
 // A default set of nodes for two initial welds...
 const defaultCoords = [
-    {id: "weld1_start", x: 150, y: 380, t: 0, show: false},
-    {id: "weld1_end", x: 150, y: 120, t: 0, show: false},
-    {id: "weld2_start", x: 350, y: 380, t: 0, show: false},
-    {id: "weld2_end", x: 350, y: 120, t: 0, show: false},
-    {id: "weld3_start", x: 170, y: 400, t: 0, show: false},
-    {id: "weld3_end", x: 330, y: 400, t: 0, show: false},
-    {id: "weld4_start", x: 170, y: 100, t: 0, show: false},
-    {id: "weld4_end", x: 330, y: 100, t: 0, show: false},
+    {id: "weld1_start", x: 150, y: 380, t: 0, display: false},
+    {id: "weld1_end", x: 150, y: 120, t: 0, display: false},
+    {id: "weld2_start", x: 350, y: 380, t: 0, display: false},
+    {id: "weld2_end", x: 350, y: 120, t: 0, display: false},
+    {id: "weld3_start", x: 170, y: 400, t: 0, display: false},
+    {id: "weld3_end", x: 330, y: 400, t: 0, display: false},
+    {id: "weld4_start", x: 170, y: 100, t: 0, display: false},
+    {id: "weld4_end", x: 330, y: 100, t: 0, display: false},
 ]
 
 // map the default node data onto new array that will be used/changed throughout

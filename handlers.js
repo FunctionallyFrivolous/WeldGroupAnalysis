@@ -4,15 +4,40 @@ document.getElementById("toggleRx").addEventListener("click", () => {
         .style("display", showRx ? "block" : "none")
     rxMGroup
         .style("display", showRx ? "block" : "none")
+    const button = document.getElementById("toggleRx");
+    button.style.opacity = showRx ? 1 : 0.60 
 })
 
 document.getElementById("toggleStress").addEventListener("click", () => {
     showStress = !showStress
+    const button = document.getElementById("toggleStress");
+    button.style.opacity = showStress ? 1 : 0.60
     updateView();
 })
 
-document.getElementById("toggleTComps").addEventListener("click", () => {
-    showTComps = !showTComps
+document.getElementById("toggleTDir").addEventListener("click", () => {
+    showTDir = !showTDir
+    const button = document.getElementById("toggleTDir");
+    button.style.opacity = showTDir ? 1 : 0.60
+    updateView();
+})
+
+document.getElementById("toggleTTor").addEventListener("click", () => {
+    showTTor = !showTTor
+    const button = document.getElementById("toggleTTor");
+    button.style.opacity = showTTor ? 1 : 0.60
+    updateView();
+})
+
+document.getElementById("toggleTMax").addEventListener("click", () => {
+    showTMax = !showTMax
+    if (!showTMax) {
+        for (i = 0; i < nodes.length; i++) {
+            nodes[i].display = "none"
+        }
+    }
+    const button = document.getElementById("toggleTMax");
+    button.style.opacity = showTMax ? 1 : 0.60
     updateView();
 })
 
@@ -23,11 +48,15 @@ document.getElementById("toggleTComps").addEventListener("click", () => {
 
 document.getElementById("toggleLoadProps").addEventListener("click", () => {
     showLoadProps = !showLoadProps
+    const button = document.getElementById("toggleLoadProps");
+    button.style.opacity = showLoadProps ? 1 : 0.60
     updateView();
 })
 
 document.getElementById("toggleWeldProps").addEventListener("click", () => {
     showWeldProps = !showWeldProps
+    const button = document.getElementById("toggleWeldProps");
+    button.style.opacity = showWeldProps ? 1 : 0.60
     updateView();
 })
 

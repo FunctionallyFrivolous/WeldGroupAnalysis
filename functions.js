@@ -373,7 +373,7 @@ function updateTotalShear() {
         
     }
     for (i = 0; i < nodes.length; i++) {
-        if (nodes[i].t >= max_t*0.99) nodes[i].display = "block"
+        if (nodes[i].t >= max_t*0.99 && showTMax) nodes[i].display = "block"
         else nodes[i].display = "none";
     }
     
@@ -823,7 +823,7 @@ function updateData() {
         .attr("marker-end", "url(#arrowhead");
     enter.merge(dShear)
         .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
-        .style("display", showTComps ? "block" : "none");
+        .style("display", showTDir ? "block" : "none");
     dShear.exit().remove();
 
     // Torsional Shear Arrows
@@ -839,7 +839,7 @@ function updateData() {
         .attr("marker-end", "url(#B_arrowhead");
     enter.merge(tShear)
         .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
-        .style("display", showTComps ? "block" : "none");
+        .style("display", showTTor ? "block" : "none");
     tShear.exit().remove();
     
     // Total Shear Arrows
