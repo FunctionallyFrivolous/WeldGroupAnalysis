@@ -1,4 +1,5 @@
 // Do Next:
+    // Drag data summary overlay
     // Drag to move weld?
         // Drag body of weld to translate (no rotation) entire line
         // on start: get initial event.x & event.y
@@ -35,7 +36,7 @@
 // Initialize svg stuff
 const svg = d3.select("#topView");
 const zoomGroup = svg.append("g")
-// const overlayGroup = svg.append("g")
+const overlayGroup = svg.append("g")
 
 // Define arrow marker for use at ends of force vectors
 const arrowPath = "M 0, -5 L 10, 0 L 0, 5";
@@ -168,7 +169,7 @@ const centroidCoords = centroidCoordsGroup.selectAll("text")
     .data(centroidTot)
     .enter()
     .append("text")
-    .attr("font-size", "8px")
+    .attr("font-size", "10px")
     .attr("text-anchor", "middle")
     .style("pointer-events", "none")
     .attr("x", d => d.x)
@@ -187,6 +188,78 @@ const zoom = d3.zoom()
     });
 svg.call(zoom)
     .on("dblclick.zoom", null);
+
+//Overlay Stuff
+
+// const dragWCoordsGroup = overlayGroup.append("g")
+const dragWCoords = overlayGroup.append("g")
+// const dragWCoords = dragWCoordsGroup.selectAll("text")
+    // .data(nodes)
+    // .enter()
+    .append("text")
+    .attr("font-size", "12px")
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 5)
+    .attr("y", 20)
+    .style("display", "none");
+
+// const dragWPropsGroup = overlayGroup.append("g")
+const dragWProps = overlayGroup.append("g")
+// const dragWProps = dragWPropsGroup.selectAll("text")
+//     .data(nodes)
+//     .enter()
+    .append("text")
+    .attr("font-size", "12px")
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 5)
+    .attr("y", 5)
+    .style("display", "none")
+
+
+// const dragLCoordsGroup = overlayGroup.append("g")
+const dragLCoords = overlayGroup.append("g")
+// const dragLCoords = dragLCoordsGroup.selectAll("text")
+//     .data(loadProps)
+//     .enter()
+    .append("text")
+    .attr("font-size", "12px")
+    .attr("text-anchor", "end")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 500-5)
+    .attr("y", 20)
+    .style("display", "none");
+// const dragLPropsGroup = overlayGroup.append("g")
+const dragLProps = overlayGroup.append("g")
+// const dragLProps = dragLPropsGroup.selectAll("text")
+//     .data(loadProps)
+    // .enter()
+    .append("text")
+    .attr("font-size", "12px")
+    .attr("text-anchor", "end")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 500-5)
+    .attr("y", 5)
+    .style("display", "none")
+
+const TestGroup = overlayGroup.append("g")
+// const Test = TestGroup.selectAll("text")
+    // .data(nodes)
+    // .enter()
+    .append("text")
+    .attr("font-size", "12px")
+    .attr("text-anchor", "end")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 500-5)
+    .attr("y", 5)
+    // .style("display", "none")
+    // .text("Hi tho")
 
 setupScaleSliders();
 updateView();

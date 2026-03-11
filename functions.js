@@ -29,7 +29,7 @@ function updateSVGs(){
         .attr("d", dM)
         .style("display", showRx ? "block" : "none")
         
-    if (Math.abs(rxM) <= 0.2) {
+    if (Math.abs(rxM) <= 0.1) {
         rxMGroup
             .style("display", "none")
     }
@@ -43,7 +43,7 @@ function updateSVGs(){
         })
         .style("display", showWeldProps || showCentCoords ? "block" : "none");
 
-        document.getElementById("debugOutputs").innerHTML = "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
+        // document.getElementById("debugOutputs").innerHTML = "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
 
 }
 
@@ -58,7 +58,7 @@ function updateView() {
         // + "tShear: " + `${torsionShear[weldCount*2-1].points[1].x.toFixed(2)}` + ", " + `${torsionShear[weldCount*2-1].points[1].y.toFixed(2)}` + "\n<br>"
     // //     + "Wx0: " + `${weldCoords[0].points[0].x*distConvert*unitConvert}` + "\n<br>"
     // //     + "rxV: " + `${rxV.mag.toFixed(1)}` + "\n<br>"
-        + "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
+        // + "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
     //     // + "welds: " + `${weldCount}` + "\n<br>"
 
     // document.getElementById("debugOutputs").innerHTML = dbugTxt;
@@ -404,10 +404,10 @@ function addWeld() { // test function to remove one weld
     if (weldCount >= 10) return;
 
     let newY0 = 0;
-    if (weldCount === 3) newY0 = 90;
+    if (weldCount === 3) newY0 = 100;
     else newY0 = Math.floor(Math.random()*(450-50)+50);
     let newY1 = 0;
-    if (weldCount === 3) newY1 = 90;
+    if (weldCount === 3) newY1 = 100;
     else newY1 = Math.floor(Math.random()*(450-50)+50);
 
     let newX0 = 0;
@@ -515,6 +515,10 @@ function removeWeld(id) { // test function to remove one weld
     
     weldCount = weldCoords.length;
     updateView();
+    dragWCoords
+        .style("display", "none");
+    dragWProps
+        .style("display", "none");
 }
 
 function removeLoad(id) { // test function to remove one weld
@@ -542,6 +546,11 @@ function removeLoad(id) { // test function to remove one weld
 
     loadCount = loadProps.length;
     updateView();
+
+    dragLCoords
+        .style("display", "none");
+    dragLProps
+        .style("display", "none");
 }
 
 function updateDrags(){
@@ -559,28 +568,36 @@ function updateDrags(){
         .call(d3.drag()
             .on("start", (event, d) => {
                 weldDrag.attr("opacity",0.1);
-                // dragWeldProps = true;
                 const strIndex = d.id.indexOf("_");
                 const wID = d.id.substring(0,strIndex);
-                weldCoords.find(j => j.id === wID).show = true;
+                const dragWeld = weldCoords.find(j => j.id === wID);
                 d.show = true;
                 showCentCoords = true;
+                dragWCoords
+                    .text(`(${coordToDist(event.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(event.y,"y").toFixed(1)}${unitSymbol})`)
+                    .style("display", "block")
+                dragWProps
+                    .text(`${dragWeld.id}: L=${coordToDist(dragWeld.len,"L").toFixed(1)}${unitSymbol}, thk=${dragWeld.thk.toFixed(3)}${unitSymbol}`)
+                    .style("display", "block")
                 updateData();
                 updateSVGs();
             })
             .on("drag", function(event, d) {
                 d.x = event.x;
                 d.y = event.y;
+                const strIndex = d.id.indexOf("_");
+                const wID = d.id.substring(0,strIndex);
+                const dragWeld = weldCoords.find(j => j.id === wID);
+                dragWCoords
+                    .text(`(${coordToDist(event.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(event.y,"y").toFixed(1)}${unitSymbol})`)
+                dragWProps
+                    .text(`${dragWeld.id}: L=${coordToDist(dragWeld.len,"L").toFixed(1)}${unitSymbol}, thk=${dragWeld.thk.toFixed(3)}${unitSymbol}`)
                 updateStuff();
                 updateSVGs();
                 updateData();
             })
             .on("end", (event, d) => {
                 weldDrag.attr("opacity", 0);
-                // dragWeldProps = false;
-                const strIndex = d.id.indexOf("_");
-                const wID = d.id.substring(0,strIndex);
-                weldCoords.find(j => j.id === wID).show = false;
                 d.show = false;
                 showCentCoords = false;
                 updateData();
@@ -604,11 +621,22 @@ function updateDrags(){
             .on("start", (event, d) => {
                 loadDrag.attr("opacity",0.1);
                 loadProps.find(j => j.id === d.id).show = true;
+                dragLCoords
+                    .text(`(${coordToDist(event.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(event.y,"y").toFixed(1)}${unitSymbol})`)
+                    .style("display", "block")
+                dragLProps
+                    .text(`${d.id}: F=${d.mag.toFixed(1)}${forceSymbol}, th=${d.th.toFixed(1)}°`)
+                    .style("display", "block")
                 updateData();
+                updateSVGs();
             })
             .on("drag", function(event, d) {
                 d.x = event.x;
                 d.y = event.y;
+                dragLCoords
+                    .text(`(${coordToDist(event.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(event.y,"y").toFixed(1)}${unitSymbol})`)
+                dragLProps
+                    .text(`${d.id}: F=${d.mag.toFixed(1)}${forceSymbol}, th=${d.th.toFixed(1)}°`)
                 updateArrows();
                 updateStuff();
                 updateSVGs();
@@ -618,7 +646,12 @@ function updateDrags(){
             .on("end", (event, d) => {
                 loadDrag.attr("opacity", 0);
                 loadProps.find(j => j.id === d.id).show = false;
+                dragLCoords
+                    .text(`(${coordToDist(event.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(event.y,"y").toFixed(1)}${unitSymbol})`)
+                dragLProps
+                    .text(`${d.id}: F=${d.mag.toFixed(1)}${forceSymbol}, th=${d.th.toFixed(1)}°`)
                 updateData();
+                updateSVGs();
             })
         );
     loadDrag.exit().remove();
@@ -637,6 +670,13 @@ function updateDrags(){
             .on("start", (event, d) => {
                 magDrag.attr("opacity",0.1);
                 loadProps.find(j => j.id === d.id).show = true;
+                const dragLoad = loadProps.find(j => j.id === d.id);
+                dragLCoords
+                    .text(`(${coordToDist(dragLoad.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(dragLoad.y,"y").toFixed(1)}${unitSymbol})`)
+                    .style("display", "block")
+                dragLProps
+                    .text(`${d.id}: F=${dragLoad.mag.toFixed(1)}${forceSymbol}, th=${dragLoad.th.toFixed(1)}°`)
+                    .style("display", "block")
                 updateData();
             })
             .on("drag", function(event, d) {
@@ -645,6 +685,11 @@ function updateDrags(){
                 const drag_L = Math.sqrt((drag_x-event.x)*(drag_x-event.x)+(drag_y-event.y)*(drag_y-event.y));
                 if (drag_L < minLength) return
                 loadProps.find(j => j.id === d.id).mag = drag_L / loadScale;
+                const dragLoad = loadProps.find(j => j.id === d.id);
+                dragLCoords
+                    .text(`(${coordToDist(dragLoad.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(dragLoad.y,"y").toFixed(1)}${unitSymbol})`)
+                dragLProps
+                    .text(`${d.id}: F=${d.mag.toFixed(1)}${forceSymbol}, th=${dragLoad.th.toFixed(1)}°`)
                 // updateArrows();
                 updateAngles();
                 updateStuff();
@@ -654,6 +699,13 @@ function updateDrags(){
             .on("end", (event, d) => {
                 magDrag.attr("opacity", 0);
                 loadProps.find(j => j.id === d.id).show = false;
+                const dragLoad = loadProps.find(j => j.id === d.id);
+                dragLCoords
+                    .text(`(${coordToDist(dragLoad.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(dragLoad.y,"y").toFixed(1)}${unitSymbol})`)
+                    .style("display", "block")
+                dragLProps
+                    .text(`${d.id}: F=${dragLoad.mag.toFixed(1)}${forceSymbol}, th=${dragLoad.th.toFixed(1)}°`)
+                    .style("display", "block")
                 updateData();
             })
         );
@@ -673,11 +725,23 @@ function updateDrags(){
             .on("start", (event, d) => {
                 angleDrag.attr("opacity",0.1);
                 loadProps.find(j => j.id === d.id).show = true;
+                const dragLoad = loadProps.find(j => j.id === d.id);
+                dragLCoords
+                    .text(`(${coordToDist(dragLoad.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(dragLoad.y,"y").toFixed(1)}${unitSymbol})`)
+                    .style("display", "block")
+                dragLProps
+                    .text(`${d.id}: F=${dragLoad.mag.toFixed(1)}${forceSymbol}, th=${dragLoad.th.toFixed(1)}°`)
+                    .style("display", "block")
                 updateData();
             })
             .on("drag", function(event, d) {
                 d.x = event.x;
                 d.y = event.y;
+                const dragLoad = loadProps.find(j => j.id === d.id);
+                dragLCoords
+                    .text(`(${coordToDist(dragLoad.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(dragLoad.y,"y").toFixed(1)}${unitSymbol})`)
+                dragLProps
+                    .text(`${d.id}: F=${dragLoad.mag.toFixed(1)}${forceSymbol}, th=${d.th.toFixed(1)}°`)
                 updateAngles();
                 updateStuff();
                 updateSVGs();
@@ -686,6 +750,11 @@ function updateDrags(){
             .on("end", (event, d) => {
                 angleDrag.attr("opacity", 0);
                 loadProps.find(j => j.id === d.id).show = false;
+                const dragLoad = loadProps.find(j => j.id === d.id);
+                dragLCoords
+                    .text(`(${coordToDist(dragLoad.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(dragLoad.y,"y").toFixed(1)}${unitSymbol})`)
+                dragLProps
+                    .text(`${d.id}: F=${dragLoad.mag.toFixed(1)}${forceSymbol}, th=${d.th.toFixed(1)}°`)
                 updateData();
             })
         );
@@ -886,8 +955,8 @@ function updateLabels() {
         .attr("x", (d, i) => d.x+25)
         .attr("y", (d, i) => d.y-10)
         .text( d => {
-            const dx = (d.x - origin[0]) * distConvert;
-            const dy = (origin[0] - d.y) * distConvert;
+            const dx = coordToDist(d.x,"x");
+            const dy = coordToDist(d.y, "y");
             return `(${dx.toFixed(1)}${unitSymbol}, ${dy.toFixed(1)}${unitSymbol})`;
         })
         .style("display", d => showWeldProps || d.show ? "block" : "none");

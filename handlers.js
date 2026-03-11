@@ -49,6 +49,15 @@ document.getElementById("toggleUnits").addEventListener("click", () => {
     button.textContent = units === "metric" ? "Metric" : "Inches";
 
     updateView();
+    dragWCoords
+        .style("display", "none");
+    dragWProps
+        .style("display", "none");
+    
+    dragLCoords
+        .style("display", "none");
+    dragLProps
+        .style("display", "none");
 })
 
 
@@ -77,12 +86,5 @@ document.getElementById("addLoad").addEventListener("click", () => {
     addLoad();
     if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
     else document.getElementById("addLoad").disabled = false;
-    updateView();
-})
-
-document.getElementById("removeLoad").addEventListener("click", () => {
-    removeLoad();
-    // if (loadCount === 1) document.getElementById("removeLoad").disabled = true;
-    // else document.getElementById("removeLoad").disabled = false;
     updateView();
 })
