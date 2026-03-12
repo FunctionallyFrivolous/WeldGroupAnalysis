@@ -605,7 +605,12 @@ function updateDrags(){
                     if (d.id.slice(0,5) !== nodes[i].id.slice(0,5) && Math.abs(event.x - nodes[i].x) < 5 && Math.abs(event.y - nodes[i].y) < 5) {
                         d.x = nodes[i].x;
                         d.y = nodes[i].y;
-                        // return;
+                    }
+                }
+                for (i = 0; i < loadProps.length; i++) {
+                    if (Math.abs(event.x - loadProps[i].x) < 5 && Math.abs(event.y - loadProps[i].y) < 5) {
+                        d.x = loadProps[i].x;
+                        d.y = loadProps[i].y;
                     }
                 }
                 updateStuff();
@@ -722,8 +727,17 @@ function updateDrags(){
                     if (Math.abs(event.x - nodes[i].x) < 5 && Math.abs(event.y - nodes[i].y) < 5) {
                         d.x = nodes[i].x;
                         d.y = nodes[i].y;
-                        // return;
                     }
+                }
+                for (i = 0; i < loadProps.length; i++) {
+                    if (d.id.slice(0,5) !== loadProps[i].id && Math.abs(event.x - loadProps[i].x) < 5 && Math.abs(event.y - loadProps[i].y) < 5) {
+                        d.x = loadProps[i].x;
+                        d.y = loadProps[i].y;
+                    }
+                }
+                if (Math.abs(event.x - centroidTot[0].x) < 5 && Math.abs(event.y - centroidTot[0].y) < 5) {
+                    d.x = centroidTot[0].x;
+                    d.y = centroidTot[0].y;
                 }
                 updateArrows();
                 updateStuff();
@@ -861,6 +875,7 @@ function updateData() {
     // Welds //
     svg.selectAll(".weld")
     .on("dblclick", function(event, d) {
+        if (event.defaultPrevented) return;
         removeWeld(d.id);
         if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
         else document.getElementById("addWeld").disabled = false;

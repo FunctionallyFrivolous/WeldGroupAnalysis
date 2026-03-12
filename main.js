@@ -1,12 +1,6 @@
 // Do Next:
     // Text Overlay Updates
         // Include stress values on dragged node?
-        // Keep node highlight active after drag end (only on dragged node)
-            // A way to display which weld/node/load info is being shown
-    // Drag to move weld?
-        // Drag body of weld to translate (no rotation) entire line
-        // on start: get initial event.x & event.y
-        // on drag: get diff of current - initial event.x&.y, add this to node x & y's
     // Add Stress Calcs - real units
     // Lock weld angle?
         // Hold shift when draging weld node to adjust length while keeping initial angle
