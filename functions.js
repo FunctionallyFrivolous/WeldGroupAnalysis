@@ -554,6 +554,20 @@ function removeLoad(id) { // test function to remove one weld
 }
 
 function updateDrags(){
+    svg.selectAll(".weld")
+        .on("dblclick", function(event, d) {
+            if (event.defaultPrevented) return;
+            removeWeld(d.id);
+            if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
+            else document.getElementById("addWeld").disabled = false;
+        });
+
+    svg.selectAll(".load")
+        .on("dblclick", function(event, d) {
+            removeLoad(d.id);
+            if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
+            else document.getElementById("addLoad").disabled = false;
+        });
     // Weld Drag Nodes
     const NodeDrag = nodeDragGroup.selectAll("circle")
         .data(nodes, d => d.id);
@@ -874,19 +888,19 @@ function updateData() {
     loadCount = loadProps.length;
     // Welds //
     svg.selectAll(".weld")
-    .on("dblclick", function(event, d) {
-        if (event.defaultPrevented) return;
-        removeWeld(d.id);
-        if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
-        else document.getElementById("addWeld").disabled = false;
-    });
+        .on("dblclick", function(event, d) {
+            if (event.defaultPrevented) return;
+            removeWeld(d.id);
+            if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
+            else document.getElementById("addWeld").disabled = false;
+        });
 
     svg.selectAll(".load")
-    .on("dblclick", function(event, d) {
-        removeLoad(d.id);
-        if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
-        else document.getElementById("addLoad").disabled = false;
-    });
+        .on("dblclick", function(event, d) {
+            removeLoad(d.id);
+            if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
+            else document.getElementById("addLoad").disabled = false;
+        });
 
     const weldLines = lineGroup.selectAll("polyline")
         .data(weldCoords, d => d.id);
