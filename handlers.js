@@ -50,6 +50,8 @@ document.getElementById("toggleLoadProps").addEventListener("click", () => {
     showLoadProps = !showLoadProps
     const button = document.getElementById("toggleLoadProps");
     button.style.opacity = showLoadProps ? 1 : 0.50
+    dragLCoords.style("display", showLoadProps ? "block" : "none")
+    dragLProps.style("display", showLoadProps ? "block" : "none")
     updateView();
 })
 
@@ -57,6 +59,8 @@ document.getElementById("toggleWeldProps").addEventListener("click", () => {
     showWeldProps = !showWeldProps
     const button = document.getElementById("toggleWeldProps");
     button.style.opacity = showWeldProps ? 1 : 0.50
+    dragWCoords.style("display", showWeldProps ? "block" : "none")
+    dragWProps.style("display", showWeldProps ? "block" : "none")
     updateView();
 })
 
@@ -87,6 +91,16 @@ document.getElementById("toggleUnits").addEventListener("click", () => {
         .style("display", "none");
     dragLProps
         .style("display", "none");
+})
+
+document.getElementById("lockGeom").addEventListener("click", () => {
+    geomLock = !geomLock;
+    const button = document.getElementById("lockGeom");
+    button.textContent = geomLock ? "Unlock Geometry" : "Lock Geometry";
+    document.getElementById("addWeld").disabled = geomLock ? true : false;
+    document.getElementById("addLoad").disabled = geomLock ? true : false;
+    document.getElementById("loadScaleSlider").disabled = geomLock ? true : false;
+    document.getElementById("stressScaleSlider").disabled = geomLock ? true : false;
 })
 
 

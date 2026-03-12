@@ -17,6 +17,7 @@ let unitSymbol = `"`;
 let forceSymbol = "lbf"
 let distConvert = 0.1; // svg window units to inches (10:1)
 let unitConvert = 1; // conversion from current units to inches (1 if current units are inches; 25.4 if current metric)
+let geomLock = false;
 
 const origin = [250,250];
 let xtemp = 0;

@@ -1,13 +1,23 @@
 // Do Next:
+    // Fix issue with nodes inheriting opacity from deleted weld
+        // When deleting a currently selected weld, the node opacity is inhereted to downstream element
     // Text Overlay Updates
         // Include stress values? (max on weld, val on current node, etc?)
     // Drag-able weld inspection node
         // Gives stress value(s) at current location
         // Colored relative to min/max stress scale
+    // Lock geometry?
+        // Makes inspection node possible (without risk of accidentally modifying welds)
+    // Snap welds and loads to angles
+        // Vert & horiz are easy
+        // 45deg should be easy too
+    // Snap weld mid-nodes?
     // Add buttons for weld/load remove?
     // Add Stress Calcs - real units
     // Lock weld angle?
-        // Hold shift when draging weld node to adjust length while keeping initial angle
+        // Hold shift when draging weld node to adjust length while keeping initial angle?
+        // Auto lock when less than some amount of angle deviation?
+        // Use dist from event x,y to stationary node, calc new d x,y
     // Add user inputs?
         // First relevant one will be weld thk, since all others can be dragged
         // Units
@@ -92,6 +102,7 @@ const dotGroup = zoomGroup.append("g")
     // I.e. elements associated with welds and loads, as these can be added/removed by user
     // Specific element definitions can be found in the "updateDrags()" & "updateData()" functions
 const lineGroup = zoomGroup.append("g") // Weld lines
+const wDragGroup = zoomGroup.append("g")
 const tmaxGroup = zoomGroup.append("g") // Circles highlighting location(s) of max stress
 const dShearGroup = zoomGroup.append("g") // Direct shear arrows
 const tShearGroup = zoomGroup.append("g") // Torsional shear arrows
@@ -102,7 +113,7 @@ const lDragGroup = zoomGroup.append("g") // Drag-able circles for modification o
 const mDragGroup = zoomGroup.append("g") // Drag-able circles for modification of applied load magnitudes
 const aDragGroup = zoomGroup.append("g") // Drag-able circles for modification of applied load orientations
 const midGroup = zoomGroup.append("g") // Circle markers for visual indication of there the drag-able nodes are for modifying load orientation
-const wDragGroup = zoomGroup.append("g")
+
 
 
 // SVG Groups for on-diagram labels
