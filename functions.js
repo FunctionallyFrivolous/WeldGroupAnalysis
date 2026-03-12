@@ -633,6 +633,7 @@ function updateDrags(){
             })
             .on("end", (event, d) => {
                 NodeDrag.attr("opacity", n => n.id === d.id ? 0.1 : 0);
+                weldDrag.attr("opacity", 0)
                 d.show = false;
                 showCentCoords = false;
                 updateStuff();
@@ -641,70 +642,6 @@ function updateDrags(){
             })
         )
     NodeDrag.exit().remove();
-
-    const weldLines = lineGroup.selectAll("polyline")
-        .data(weldCoords, d => d.id);
-    enter = weldLines.enter()
-        .append("polyline")
-        .attr("class", "weld")
-        .attr("stroke", "black")
-        .style("stroke-linecap", "round")
-        .attr("opacity", 0.4)
-        .attr("fill", "none");
-    enter.merge(weldLines)
-        .attr("stroke-width", d => d.thk*weldThkScale)
-        .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
-        .call(d3.drag()
-            .on("start", (event, d) => {
-                xtemp = event.x;
-                ytemp = event.y;
-                NodeDrag.attr("opacity", 0.1);
-                const weldNodes = nodes
-                showCentCoords = true;
-                dragWCoords
-                    .text(
-                        `(${coordToDist(d.points[0].x,"x").toFixed(1)}${unitSymbol}, 
-                        ${coordToDist(d.points[0].y,"y").toFixed(1)}${unitSymbol})  
-                        (${coordToDist(d.points[1].x,"x").toFixed(1)}${unitSymbol},
-                        ${coordToDist(d.points[1].y,"y").toFixed(1)}${unitSymbol})`
-                    )
-                    .style("display", "block")
-                dragWProps
-                    .text(`${d.id}: L=${coordToDist(d.len,"L").toFixed(1)}${unitSymbol}, thk=${d.thk.toFixed(3)}${unitSymbol}`)
-                    .style("display", "block")
-                updateData();
-                updateSVGs();
-            })
-            .on("drag", function(event, d) {
-                const x_delta = event.x - xtemp;
-                const y_delta = event.y - ytemp;
-                for (i = 0; i < 2; i++) {
-                    d.points[i].x = d.points[i].x + x_delta;
-                    d.points[i].y = d.points[i].y + y_delta;
-                }
-                dragWCoords
-                    .text(
-                        `(${coordToDist(d.points[0].x,"x").toFixed(1)}${unitSymbol}, 
-                        ${coordToDist(d.points[0].y,"y").toFixed(1)}${unitSymbol})  
-                        (${coordToDist(d.points[1].x,"x").toFixed(1)}${unitSymbol},
-                        ${coordToDist(d.points[1].y,"y").toFixed(1)}${unitSymbol})`
-                    )
-                dragWProps
-                    .text(`${d.id}: L=${coordToDist(d.len,"L").toFixed(1)}${unitSymbol}, thk=${d.thk.toFixed(3)}${unitSymbol}`)
-                updateStuff();
-                updateSVGs();
-                updateData();
-                xtemp = event.x;
-                ytemp = event.y;
-            })
-            .on("end", (event, d) => {
-                NodeDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
-                showCentCoords = false;
-                updateData();
-                updateSVGs();
-            })
-        )
-    weldLines.exit().remove();
 
     const loadDrag = lDragGroup.selectAll("circle")
         .data(loadProps)
@@ -881,6 +818,75 @@ function updateDrags(){
             })
         );
     angleDrag.exit().remove();
+
+    const weldDrag = wDragGroup.selectAll("circle")
+        .data(weldCoords);
+    enter = weldDrag.enter()
+        .append("circle")
+        .attr("r", 10)
+        .attr("fill", "black")
+        .attr("opacity", 0.25);
+    enter.merge(weldDrag)
+        .attr("cx", d => (d.points[1].x + d.points[0].x)/2)
+        .attr("cy", d => (d.points[1].y + d.points[0].y)/2)
+        .call(d3.drag()
+            .on("start", (event, d) => {
+                xtemp = event.x;
+                ytemp = event.y;
+                weldDrag.attr("opacity", 0.1);
+                const weldNodes = nodes
+                showCentCoords = true;
+                dragWCoords
+                    .text(
+                        `(${coordToDist(d.points[0].x,"x").toFixed(1)}${unitSymbol}, 
+                        ${coordToDist(d.points[0].y,"y").toFixed(1)}${unitSymbol})  
+                        (${coordToDist(d.points[1].x,"x").toFixed(1)}${unitSymbol},
+                        ${coordToDist(d.points[1].y,"y").toFixed(1)}${unitSymbol})`
+                    )
+                    .style("display", "block")
+                dragWProps
+                    .text(`${d.id}: L=${coordToDist(d.len,"L").toFixed(1)}${unitSymbol}, thk=${d.thk.toFixed(3)}${unitSymbol}`)
+                    .style("display", "block")
+                updateData();
+                updateSVGs();
+            })
+            .on("drag", function(event, d) {
+                const x_delta = event.x - xtemp;
+                const y_delta = event.y - ytemp;
+                for (i = 0; i < 2; i++) {
+                    d.points[i].x = d.points[i].x + x_delta;
+                    d.points[i].y = d.points[i].y + y_delta;
+                }
+                dragWCoords
+                    .text(
+                        `(${coordToDist(d.points[0].x,"x").toFixed(1)}${unitSymbol}, 
+                        ${coordToDist(d.points[0].y,"y").toFixed(1)}${unitSymbol})  
+                        (${coordToDist(d.points[1].x,"x").toFixed(1)}${unitSymbol},
+                        ${coordToDist(d.points[1].y,"y").toFixed(1)}${unitSymbol})`
+                    )
+                dragWProps
+                    .text(`${d.id}: L=${coordToDist(d.len,"L").toFixed(1)}${unitSymbol}, thk=${d.thk.toFixed(3)}${unitSymbol}`)
+                updateStuff();
+                updateSVGs();
+                updateData();
+                xtemp = event.x;
+                ytemp = event.y;
+            })
+            .on("end", (event, d) => {
+                weldDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
+                NodeDrag.attr("opacity", 0);
+                showCentCoords = false;
+                updateData();
+                updateSVGs();
+            })
+        )
+        // .on("mouseover", function(event, d) {
+        //     weldDrag.attr("opacity", n => n.id = d.id ? 0.1 : 0)
+        // })
+        // .on("mouseout", function(event, d) {
+        //     weldDrag.attr("opacity", 0)
+        // })
+    weldDrag.exit().remove();
 }
 
 function updateData() {
@@ -1061,6 +1067,18 @@ function updateData() {
         .attr("cx", d => d.x)
         .attr("cy", d => d.y);
     angleDrag.exit().remove();
+
+    const weldDrag = wDragGroup.selectAll("circle")
+        .data(weldCoords);
+    enter = weldDrag.enter()
+        .append("circle")
+        .attr("r", 15)
+        .attr("fill", "black")
+        .attr("opacity", 0);
+    enter.merge(weldDrag)
+        .attr("cx", d => (d.points[1].x + d.points[0].x)/2)
+        .attr("cy", d => (d.points[1].y + d.points[0].y)/2);
+    weldDrag.exit().remove();
 
     updateLabels();
 }
