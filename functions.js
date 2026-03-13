@@ -37,9 +37,9 @@ function updateSVGs(){
         .attr("x", d => d.x)
         .attr("y", d => d.y+16)
         .text(d => {
-            const dx = (d.x - origin[0]) * distConvert * unitConvert;
-            const dy = (origin[0] - d.y) * distConvert * unitConvert;
-            return `(${dx.toFixed(1)}${unitSymbol}, ${dy.toFixed(1)}${unitSymbol})`;
+            const dx = coordToDist(d.x, "x");
+            const dy = coordToDist(d.y, "y");
+            return `(${dx.toFixed(unitPrecision)}, ${dy.toFixed(unitPrecision)})`;
         })
         .style("display", showWeldProps || showCentCoords ? "block" : "none");
 
@@ -86,21 +86,23 @@ function updateWelds() {
         weldCoords[w].id = "weld"+(w+1);
         weldCoords[w].points[0] = nodes[i];
         weldCoords[w].points[1] = nodes[i+1];
-        // weldCoords[w].thk = thk;
-        weldCoords[w].len = length;
-        weldCoords[w].A = weldCoords[w].len * weldCoords[w].thk * 0.707;
+        weldCoords[w].thk = weldCoords[w].thk;
+        const thk = weldCoords[w].thk * unitConvert;
+        weldCoords[w].len = length * distConvert * unitConvert;
+        weldCoords[w].A = weldCoords[w].len * thk * 0.707;
         weldCoords[w].C = [cx,cy];
 
         // Calc 2nd Moments of Area
-        const Ix = weldCoords[w].thk*0.707 * weldCoords[w].len*weldCoords[w].len*weldCoords[w].len/12; // J = t*d^3/12
-        const Iy = weldCoords[w].thk*0.707*weldCoords[w].thk*0.707*weldCoords[w].thk* 0.707 * weldCoords[w].len/12; // J = t^3*d/12
+        const Ix = thk*0.707 * weldCoords[w].len*weldCoords[w].len*weldCoords[w].len/12; // J = t*d^3/12
+        const Iy = thk*0.707*thk*0.707*thk* 0.707 * weldCoords[w].len/12; // J = t^3*d/12
         const Ji = Ix + Iy;
 
         weldCoords[w].Ix = Ix;
         weldCoords[w].Iy = Iy;
         weldCoords[w].J = Ji;
 
-        const ri = Math.sqrt((cx-centroidTot[0].x)*(cx-centroidTot[0].x)+(cy-centroidTot[0].y)*(cy-centroidTot[0].y))
+        let ri = Math.sqrt((cx-centroidTot[0].x)*(cx-centroidTot[0].x)+(cy-centroidTot[0].y)*(cy-centroidTot[0].y))
+        ri = coordToDist(ri, "L")
 
         J_tot = J_tot + (Ji+ weldCoords[w].A * ri*ri);
     }
@@ -124,6 +126,8 @@ function updateCentroid() {
     for (let i = 0; i < weldQty; i++) {
         const weldA = weldCoords[i].A;
         const weldC = weldCoords[i].C;
+        const cx = centroidTot[0].x;
+        const cy = centroidTot[0].y;
         centroidTot[0].x = centroidTot[0].x + weldC[0]*weldA/areaTot;
         centroidTot[0].y = centroidTot[0].y + weldC[1]*weldA/areaTot;
     }
@@ -183,7 +187,7 @@ function updateLoads() {
         loadPoints[i].points = [{x: loadProps[i].x, y: loadProps[i].y}, {x: loadArrows[i].x, y: loadArrows[i].y}];
         loadPoints[i].id = `load${i+1}`;
         loadProps[i].id = loadPoints[i].id;
-    }   
+    }
 }
 
 function updateRx() {
@@ -199,7 +203,7 @@ function updateRx() {
         }
         load_th = degToRad(load_th)
         // rxV_x = rxV_x + Math.cos(degToRad(loadProps[i].th)) * loadProps[i].mag;
-        rxV_x = rxV_x + Math.cos(load_th) * loadProps[i].mag;
+        rxV_x = rxV_x + Math.cos(load_th) * loadProps[i].mag * forceConvert;
     }
     rxV_y = 0;
     for (let i = 0; i < loadProps.length; i++) {
@@ -209,24 +213,25 @@ function updateRx() {
         }
         load_th = degToRad(load_th)
         // rxV_x = rxV_x + Math.cos(degToRad(loadProps[i].th)) * loadProps[i].mag;
-        rxV_y = rxV_y + Math.sin(load_th) * loadProps[i].mag;
+        rxV_y = rxV_y + Math.sin(load_th) * loadProps[i].mag * forceConvert;
     }
     rxV.mag = Math.sqrt((rxV_x)*(rxV_x)+(rxV_y)*(rxV_y));
     rxV.th = radToDeg(Math.atan((rxV_y)/(rxV_x)));
     if(rxV_x < 0) {
         rxV.th = rxV.th + 180
     }
+    rxV.th = 180+rxV.th
     // rxV[0].points[0].x = rxV.x;
     // rxV[0].points[0].y = rxV.y;
 
-    const xt = rxV.x - loadScale*(rxV.mag) * Math.cos(degToRad(rxV.th));
-    const yt = rxV.y + loadScale*(rxV.mag) * Math.sin(degToRad(rxV.th));
+    const xt = rxV.x - loadScale*(rxV.mag/forceConvert) * Math.cos(degToRad(rxV.th));
+    const yt = rxV.y + loadScale*(rxV.mag/forceConvert) * Math.sin(degToRad(rxV.th));
     rxV[0].points = [{x: rxV.x, y: rxV.y}, {x: xt, y: yt}];
 
     // Reaction Moment
     rxM = 0;
     for (let i = 0; i < loadProps.length; i++) {
-        const lmag = loadProps[i].mag;
+        const lmag = loadProps[i].mag * forceConvert;
         const th_L = loadProps[i].th;
 
         const x0 = centroidTot[0].x;
@@ -250,9 +255,12 @@ function updateRx() {
         if (th_mArm > th_L) th_mod = 360
         const th_rxM = th_L - th_mArm + th_mod;
 
-        const mArm = Math.abs((y2-y1)*x0 - (x2-x1)*y0 + x2*y1 - y2*x1)/Math.sqrt((y2-y1)*(y2-y1)+(x2-x1)*(x2-x1));
+        let mArm = Math.abs((y2-y1)*x0 - (x2-x1)*y0 + x2*y1 - y2*x1)/Math.sqrt((y2-y1)*(y2-y1)+(x2-x1)*(x2-x1));
+        mArm = coordToDist(mArm, "L");
         let rxMi = mArm * lmag;
-        if (th_rxM > 180) rxMi = rxMi * -1
+        // if (units === "metric") rxMi = rxMi / 1000;
+        // else rxMi = rxMi / 12;
+        if (th_rxM < 180) rxMi = rxMi * -1
 
         rxM = rxM + rxMi;
     }
@@ -266,7 +274,7 @@ function updateMomentArc() {
     const endPoint_x = startPoint_x + arcRad*2;
     const endPoint_y = startPoint_y;
     let dir = 0;
-    if (rxM > 0) dir = 1
+    if (rxM < 0) dir = 1
 
     const M = `${startPoint_x}`+","+`${startPoint_y}`; // start point coords
     const E = `${endPoint_x}`+","+`${endPoint_y}`; // end point coords
@@ -303,7 +311,8 @@ function updateTorsionShear() {
         const ya = nodes[i].y;
         const xC = centroidTot[0].x;
         const yC = centroidTot[0].y;
-        const mArm = Math.sqrt((xa-xC)*(xa-xC)+(ya-yC)*(ya-yC))
+        let mArm = Math.sqrt((xa-xC)*(xa-xC)+(ya-yC)*(ya-yC))
+        mArm = coordToDist(mArm, "L")
 
         let mag = rxM * mArm / J_tot; 
         // mag = mag / 100;
@@ -458,7 +467,7 @@ function addLoad() { // test function to remove one weld
 
     let newX = Math.floor(Math.random()*(450-50)+50);
 
-    let newMag = Math.floor(Math.random()*(200-50)+50);
+    let newMag = Math.floor(Math.random()*(25-5)+5);
     let newTh = Math.floor(Math.random()*(359-0)+0);
 
     loadProps.push(
@@ -517,11 +526,12 @@ function removeWeld(id) { // test function to remove one weld
     // weldDrag.attr("opacity", 0)
     updateView();
 
-    updateWeldProps();
-    // dragWCoords
-    //     .style("display", "none");
-    // dragWProps
-    //     .style("display", "none");
+    // updateWeldProps();
+    updateLoadProps();
+    dragWCoords
+        .style("display", "none");
+    dragWProps
+        .style("display", "none");
 }
 
 function removeLoad(id) { // test function to remove one weld
@@ -1064,7 +1074,7 @@ function updateLabels() {
         .text( d => {
             const dx = coordToDist(d.x,"x");
             const dy = coordToDist(d.y, "y");
-            return `(${dx.toFixed(1)}${unitSymbol}, ${dy.toFixed(1)}${unitSymbol})`;
+            return `(${dx.toFixed(unitPrecision)}, ${dy.toFixed(unitPrecision)})`;
         })
         .style("display", d => showWeldProps || d.show ? "block" : "none");
     weldCoordLabs.exit().remove();
@@ -1080,9 +1090,9 @@ function updateLabels() {
         .attr("x", d => d.x+5)
         .attr("y", d => d.y-5)
         .text( d => {
-            const dx = (d.x - origin[0]) * distConvert * unitConvert;
-            const dy = (origin[0] - d.y) * distConvert * unitConvert;
-            return `(${dx.toFixed(1)}${unitSymbol}, ${dy.toFixed(1)}${unitSymbol})`;
+            const dx = coordToDist(d.x, "x");
+            const dy = coordToDist(d.y, "y");
+            return `(${dx.toFixed(unitPrecision)}, ${dy.toFixed(unitPrecision)})`;
         })
         .style("display", d => showLoadProps || loadProps.find(j => j.id === d.id).show ? "block" : "none");
     loadCoordLabs.exit().remove();
@@ -1113,7 +1123,7 @@ function updateLabels() {
     enter.merge(loadMagLabs)
         .attr("x", d => d.x-25)
         .attr("y", d => d.y-10)
-        .text( d => `${d.mag.toFixed(0)} ${forceSymbol}`)
+        .text( d => `${(d.mag*forceConvert).toFixed(0)} ${forceSymbol}`)
         .style("display", d => showLoadProps || loadProps.find(j => j.id === d.id).show ? "block" : "none");
     loadMagLabs.exit().remove();
 
@@ -1135,12 +1145,12 @@ function updateLabels() {
             return dy-10;
         })
         .text( d => {
-            const wLen = d.len * distConvert * unitConvert;
-            const wThk = d.thk * unitConvert;
+            const wLen = d.len;
+            const wThk = d.thk;
             let figs = 0;
             if (units === "inches") figs = 3;
             else figs = 1;
-            return `L: ${wLen.toFixed(1)}${unitSymbol}, thk: ${wThk.toFixed(figs)}${unitSymbol}`;
+            return `L: ${wLen.toFixed(unitPrecision)}${unitSymbol}, thk: ${wThk.toFixed(figs)}${unitSymbol}`;
         })
         .style("display", d => showWeldProps || d.show ? "block" : "none");
     weldPropLabs.exit().remove();
@@ -1152,25 +1162,43 @@ function updateWeldProps() {
 
     dragWCoords
         .text(
-            `(${coordToDist(wSelect.points[0].x,"x").toFixed(1)}${unitSymbol}, 
-            ${coordToDist(wSelect.points[0].y,"y").toFixed(1)}${unitSymbol})  
-            (${coordToDist(wSelect.points[1].x,"x").toFixed(1)}${unitSymbol},
-            ${coordToDist(wSelect.points[1].y,"y").toFixed(1)}${unitSymbol})`
+            `(${coordToDist(wSelect.points[0].x,"x").toFixed(unitPrecision)}, 
+            ${coordToDist(wSelect.points[0].y,"y").toFixed(unitPrecision)})  
+            (${coordToDist(wSelect.points[1].x,"x").toFixed(unitPrecision)},
+            ${coordToDist(wSelect.points[1].y,"y").toFixed(unitPrecision)})`
         )
     dragWProps
-        .text(`${wSelect.id}: L=${coordToDist(wSelect.len,"L").toFixed(1)}${unitSymbol}, 
-            thk=${wSelect.thk.toFixed(3)}${unitSymbol}`)
+        .text(`${wSelect.id}: ${wSelect.len.toFixed(unitPrecision)}${unitSymbol} L x 
+            ${(wSelect.thk*unitConvert).toFixed(3)}${unitSymbol} thk`)
+
+    centroidProps
+        .text(`Centroid: (${coordToDist(centroidTot[0].x, "x").toFixed(1)}, ${coordToDist(centroidTot[0].y, "y").toFixed(1)})`)
+    RxVProps
+        .text(`Vᵣₓ: ${(rxV.mag*forceConvert).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
+    RxMProps
+        .text(`Mᵣₓ: ${rxM.toFixed(1)} ${momentSymbol}`)
 }
 
 function updateLoadProps() {
     const lSelect = loadProps.find(j => j.id === selectedLoad)
 
     dragLCoords
-        .text(`(${coordToDist(lSelect.x,"x").toFixed(1)}${unitSymbol}, 
-            ${coordToDist(lSelect.y,"y").toFixed(1)}${unitSymbol})`)
+        .text(`(${coordToDist(lSelect.x,"x").toFixed(unitPrecision)}, 
+            ${coordToDist(lSelect.y,"y").toFixed(unitPrecision)})`)
     dragLProps
-        .text(`${lSelect.id}: F=${(lSelect.mag*forceConvert).toFixed(1)}${forceSymbol}, 
-            th=${lSelect.th.toFixed(1)}°`)
+        .text(`${lSelect.id}: ${(lSelect.mag*forceConvert).toFixed(1)}${forceSymbol}, 
+            @${lSelect.th.toFixed(1)}°`)
+
+    centroidProps
+        .text(`Centroid: (${coordToDist(centroidTot[0].x, "x").toFixed(1)}, 
+        ${coordToDist(centroidTot[0].y, "y").toFixed(1)})`)
+        .style("display", showRx ? "block" : "none")
+    RxVProps
+        .text(`Vᵣₓ: ${(rxV.mag*forceConvert).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
+        .style("display", showRx ? "block" : "none")
+    RxMProps
+        .text(`Mᵣₓ: ${rxM.toFixed(1)} ${momentSymbol}`)
+        .style("display", showRx ? "block" : "none")
 }
 
 // function snapNodes(x, y) {

@@ -4,6 +4,12 @@ document.getElementById("toggleRx").addEventListener("click", () => {
         .style("display", showRx ? "block" : "none")
     rxMGroup
         .style("display", showRx ? "block" : "none")
+    centroidProps
+        .style("display", showRx ? "block" : "none")
+    RxVProps
+        .style("display", showRx ? "block" : "none")
+    RxMProps
+        .style("display", showRx ? "block" : "none")
     const button = document.getElementById("toggleRx");
     button.style.opacity = showRx ? 1 : 0.50 
 })
@@ -69,15 +75,23 @@ function unitSwap() {
         units = "inches";
         unitSymbol = `"`;
         forceSymbol = "lbf";
+        momentSymbol = "in-lb"
         unitConvert = 1;
         forceConvert = 1;
+        unitPrecision = 1;
+        weldThkScale = 40;
+        stressScale = 25;
     }
     else {
         units = "metric";
         unitSymbol = "mm";
         forceSymbol = "N";
+        momentSymbol = "N-mm"
         unitConvert = 25.4;
         forceConvert = 4.448;
+        unitPrecision = 0;
+        weldThkScale = 40;
+        stressScale = 25*forceConvert*unitConvert;
     }
 
     // const button = document.getElementById("toggleUnits");
@@ -115,15 +129,15 @@ function lockUnlock() {
 //     lockUnlock();
 // })
 
-function inspect() {
-    inspection = !inspection;
-    inspectIcon
-        .text(inspection ? "🔍" : "🔎")
-        .attr("opacity", inspection ? 1 : 0.75)
-    inspectButton
-        .attr("opacity", inspection ? 0.125 : 0)
-    // showTMax = !showTMax;
-}
+// function inspect() {
+//     inspection = !inspection;
+//     inspectIcon
+//         .text(inspection ? "🔍" : "🔎")
+//         .attr("opacity", inspection ? 1 : 0.75)
+//     inspectButton
+//         .attr("opacity", inspection ? 0.125 : 0)
+//     // showTMax = !showTMax;
+// }
 
 document.getElementById("addWeld").addEventListener("click", () => {
     addWeld();

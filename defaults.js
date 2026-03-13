@@ -15,13 +15,18 @@ let showCentCoords = false;
 let units = "inches";
 let unitSymbol = `"`;
 let forceSymbol = "lbf"
+let momentSymbol = "in-lb"
+let unitPrecision = 1;
+
 let distConvert = 0.1; // svg window units to inches (10:1)
 let unitConvert = 1; // conversion from current units to inches (1 if current units are inches; 25.4 if current metric)
 let forceConvert = 1;
 let geomLock = false;
 let inspection = false;
 
-const origin = [250,250];
+let windowWidth = 500;
+let windowHeight = 500
+let origin = [windowWidth/2,windowHeight/2];
 let xtemp = 0;
 let ytemp = 0;
 
@@ -31,7 +36,7 @@ let yMin = 0;
 let yMax = 0;
 
 const defaultThk = 0.25; // Default weld thickness value
-const weldThkScale = 40;
+let weldThkScale = 40;
 
 let testVar = "hi"
 let areaTot = 0;
@@ -46,7 +51,7 @@ let max_t = 0;
 
 let dM = "M 0,50 A 50,50 0 0,0 100,50"
 
-let loadScale = 0.5;
+let loadScale = 5;
 let stressScale = 10;
 const minLength = 25;
 
@@ -73,7 +78,7 @@ const nodes = defaultCoords.map(j => ({ ...j }));
 // nodes = nodes.slice(0,3);
 
 const loadProps = [
-    {id: "load1", x: 225, y: 55, th: 180, mag: 150, show: false},
+    {id: "load1", x: 275, y: 125, th: 200, mag: 15, show: false},
     {id: "load2", x: 100, y: 350, th: -125, mag: 50, show: false},
 ]
 const loadArrows = [
