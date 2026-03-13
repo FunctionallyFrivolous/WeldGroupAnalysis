@@ -70,32 +70,31 @@ function unitSwap() {
         unitSymbol = `"`;
         forceSymbol = "lbf";
         unitConvert = 1;
+        forceConvert = 1;
     }
     else {
         units = "metric";
         unitSymbol = "mm";
         forceSymbol = "N";
         unitConvert = 25.4;
+        forceConvert = 4.448;
     }
 
     // const button = document.getElementById("toggleUnits");
     // button.textContent = units === "metric" ? "Metric" : "Inches";
 
     updateView();
-    dragWCoords.style("display", "none");
-    dragWProps.style("display", "none");
-    
-    dragLCoords.style("display", "none");
-    dragLProps.style("display", "none");
+    updateWeldProps();
+    updateLoadProps();
 
     unitsIcon
         .text(units === "metric" ? "MM" : "IN")
     // unitsButton
     //     .attr("opacity", units === "metric" ? 0.25 : 0)
 }
-document.getElementById("toggleUnits").addEventListener("click", () => {
-    unitSwap();
-})
+// document.getElementById("toggleUnits").addEventListener("click", () => {
+//     unitSwap();
+// })
 
 function lockUnlock() {
     geomLock = !geomLock;
@@ -109,13 +108,22 @@ function lockUnlock() {
         .text(geomLock ? "🔒" : "🔓")
         .attr("opacity", geomLock ? 1 : 0.75)
     lockButton
-        .attr("opacity", geomLock ? 0.25 : 0)
+        .attr("opacity", geomLock ? 0.125 : 0)
 }
 
-document.getElementById("lockGeom").addEventListener("click", () => {
-    lockUnlock();
-})
+// document.getElementById("lockGeom").addEventListener("click", () => {
+//     lockUnlock();
+// })
 
+function inspect() {
+    inspection = !inspection;
+    inspectIcon
+        .text(inspection ? "🔍" : "🔎")
+        .attr("opacity", inspection ? 1 : 0.75)
+    inspectButton
+        .attr("opacity", inspection ? 0.125 : 0)
+    // showTMax = !showTMax;
+}
 
 document.getElementById("addWeld").addEventListener("click", () => {
     addWeld();

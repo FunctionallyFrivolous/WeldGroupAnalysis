@@ -1,19 +1,14 @@
 // Do Next:
-    // Fix issue with nodes inheriting opacity from deleted weld
-        // When deleting a currently selected weld, the node opacity is inhereted to downstream element
     // Text Overlay Updates
         // Include stress values? (max on weld, val on current node, etc?)
     // Drag-able weld inspection node
         // Gives stress value(s) at current location
         // Colored relative to min/max stress scale
+        // Only when geometry is locked
     // Snap welds and loads to angles
         // Vert & horiz are easy
         // 45deg should be easy too
-    // Snap weld mid-nodes?
     // Add buttons for weld/load remove?
-    // Move (some) buttons to SVG?
-        // Clean up UI/UX etc.
-        // 
     // Add Stress Calcs - real units
     // Lock weld angle?
         // Hold shift when draging weld node to adjust length while keeping initial angle?
@@ -281,10 +276,10 @@ const dragLProps = overlayGroup.append("g")
 const lockIcon = overlayGroup.append("g")
     .append("text")
     .attr("font-size", "20px")
-    .attr("text-anchor", "start")
+    .attr("text-anchor", "middle")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
-    .attr("x", 6)
+    .attr("x", 19)
     .attr("y", 500-31)
     .attr("opacity", 0.75)
     .text("🔓")
@@ -319,9 +314,30 @@ const unitsButton = overlayGroup.append("g")
     .attr("rx", 5)
     .attr("ry", 5)
     .attr("fill", "black")
-    .attr("opacity", 0.25)
+    .attr("opacity", 0.125)
     .on("click", function() {unitSwap()});
 
+// const inspectIcon = overlayGroup.append("g")
+//     .append("text")
+//     .attr("font-size", "20px")
+//     .attr("text-anchor", "middle")
+//     .attr("alignment-baseline", "text-before-edge")
+//     .style("pointer-events", "none")
+//     .attr("x", 55)
+//     .attr("y", 500-31)
+//     .attr("opacity", 0.75)
+//     .text("🔎")
+// const inspectButton = overlayGroup.append("g")
+//     .append("rect")
+//     .attr("x", 40)
+//     .attr("y", 500-34)
+//     .attr("width", 29)
+//     .attr("height", 30)
+//     .attr("rx", 5)
+//     .attr("ry", 5)
+//     .attr("fill", "black")
+//     .attr("opacity", 0)
+//     .on("click", function() {inspect()});
 
 setupScaleSliders();
 updateView();

@@ -17,7 +17,9 @@ let unitSymbol = `"`;
 let forceSymbol = "lbf"
 let distConvert = 0.1; // svg window units to inches (10:1)
 let unitConvert = 1; // conversion from current units to inches (1 if current units are inches; 25.4 if current metric)
+let forceConvert = 1;
 let geomLock = false;
+let inspection = false;
 
 const origin = [250,250];
 let xtemp = 0;
@@ -51,8 +53,8 @@ const minLength = 25;
 let weldCount = 3;
 let loadCount = 1;
 
-let selectedLoad = 0;
-let selectedWeld = 0;
+let selectedLoad = "load1";
+let selectedWeld = "weld1";
 
 // A default set of nodes for two initial welds...
 const defaultCoords = [

@@ -514,12 +514,14 @@ function removeWeld(id) { // test function to remove one weld
     }
     
     weldCount = weldCoords.length;
+    // weldDrag.attr("opacity", 0)
     updateView();
 
-    dragWCoords
-        .style("display", "none");
-    dragWProps
-        .style("display", "none");
+    updateWeldProps();
+    // dragWCoords
+    //     .style("display", "none");
+    // dragWProps
+    //     .style("display", "none");
 }
 
 function removeLoad(id) { // test function to remove one weld
@@ -547,10 +549,13 @@ function removeLoad(id) { // test function to remove one weld
 
     loadCount = loadProps.length;
 
-    dragLCoords
-        .style("display", "none");
-    dragLProps
-        .style("display", "none");
+    updateView();
+    
+    updateLoadProps();
+    // dragLCoords
+    //     .style("display", "none");
+    // dragLProps
+    //     .style("display", "none");
 }
 
 function updateDrags(){
@@ -568,6 +573,7 @@ function updateDrags(){
             if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
             else document.getElementById("addLoad").disabled = false;
         });
+
     // Weld Drag Nodes
     const NodeDrag = nodeDragGroup.selectAll("circle")
         .data(nodes, d => d.id);
@@ -581,21 +587,16 @@ function updateDrags(){
         .attr("cy", d => d.y)
         .call(d3.drag()
             .on("start", (event, d) => {
+                selectedWeld = d.id.slice(0,5)
                 NodeDrag.attr("opacity",0.1);
                 const strIndex = d.id.indexOf("_");
                 const wID = d.id.substring(0,strIndex);
                 const dragWeld = weldCoords.find(j => j.id === wID);
                 d.show = true;
                 showCentCoords = true;
-                dragWCoords
-                    .text(
-                        `(${coordToDist(d.x,"x").toFixed(1)}${unitSymbol}, 
-                        ${coordToDist(d.y,"y").toFixed(1)}${unitSymbol})`
-                    )
-                    .style("display", "block")
-                dragWProps
-                    .text(`${dragWeld.id}: L=${coordToDist(dragWeld.len,"L").toFixed(1)}${unitSymbol}, thk=${dragWeld.thk.toFixed(3)}${unitSymbol}`)
-                    .style("display", "block")
+                updateWeldProps();
+                dragWCoords.style("display", "block")
+                dragWProps.style("display", "block")
                 updateData();
                 updateSVGs();
             })
@@ -606,24 +607,18 @@ function updateDrags(){
                 const strIndex = d.id.indexOf("_");
                 const wID = d.id.substring(0,strIndex);
                 const dragWeld = weldCoords.find(j => j.id === wID);
-                dragWCoords
-                    .text(
-                        `(${coordToDist(d.x,"x").toFixed(1)}${unitSymbol}, 
-                        ${coordToDist(d.y,"y").toFixed(1)}${unitSymbol})`
-                    )
-                dragWProps
-                    .text(`${dragWeld.id}: L=${coordToDist(dragWeld.len,"L").toFixed(1)}${unitSymbol}, thk=${dragWeld.thk.toFixed(3)}${unitSymbol}`)
+                updateWeldProps();
                 updateStuff();
                 updateSVGs();
                 updateData();
                 for (i = 0; i < nodes.length; i++) {
-                    if (d.id.slice(0,5) !== nodes[i].id.slice(0,5) && Math.abs(event.x - nodes[i].x) < 5 && Math.abs(event.y - nodes[i].y) < 5) {
+                    if (d.id.slice(0,5) !== nodes[i].id.slice(0,5) && Math.abs(d.x - nodes[i].x) < 5 && Math.abs(d.y - nodes[i].y) < 5) {
                         d.x = nodes[i].x;
                         d.y = nodes[i].y;
                     }
                 }
                 for (i = 0; i < loadProps.length; i++) {
-                    if (Math.abs(event.x - loadProps[i].x) < 5 && Math.abs(event.y - loadProps[i].y) < 5) {
+                    if (Math.abs(d.x - loadProps[i].x) < 5 && Math.abs(d.y - loadProps[i].y) < 5) {
                         d.x = loadProps[i].x;
                         d.y = loadProps[i].y;
                     }
@@ -637,6 +632,7 @@ function updateDrags(){
                 weldDrag.attr("opacity", 0)
                 d.show = false;
                 showCentCoords = false;
+                updateWeldProps();
                 updateStuff();
                 updateData();
                 updateSVGs();
@@ -650,28 +646,21 @@ function updateDrags(){
         .append("circle")
         .attr("r", 10)
         .attr("fill", "black")
-        .attr("opacity", 0.25);
+        .attr("opacity", 0);
     enter.merge(weldDrag)
         .attr("cx", d => (d.points[1].x + d.points[0].x)/2)
         .attr("cy", d => (d.points[1].y + d.points[0].y)/2)
         .call(d3.drag()
             .on("start", (event, d) => {
+                selectedWeld = d.id;
                 xtemp = event.x;
                 ytemp = event.y;
                 weldDrag.attr("opacity", 0.1);
                 const weldNodes = nodes
                 showCentCoords = true;
-                dragWCoords
-                    .text(
-                        `(${coordToDist(d.points[0].x,"x").toFixed(1)}${unitSymbol}, 
-                        ${coordToDist(d.points[0].y,"y").toFixed(1)}${unitSymbol})  
-                        (${coordToDist(d.points[1].x,"x").toFixed(1)}${unitSymbol},
-                        ${coordToDist(d.points[1].y,"y").toFixed(1)}${unitSymbol})`
-                    )
-                    .style("display", "block")
-                dragWProps
-                    .text(`${d.id}: L=${coordToDist(d.len,"L").toFixed(1)}${unitSymbol}, thk=${d.thk.toFixed(3)}${unitSymbol}`)
-                    .style("display", "block")
+                updateWeldProps();
+                dragWCoords.style("display", "block")
+                dragWProps.style("display", "block")
                 updateData();
                 updateSVGs();
             })
@@ -683,15 +672,7 @@ function updateDrags(){
                     d.points[i].x = d.points[i].x + x_delta;
                     d.points[i].y = d.points[i].y + y_delta;
                 }
-                dragWCoords
-                    .text(
-                        `(${coordToDist(d.points[0].x,"x").toFixed(1)}${unitSymbol}, 
-                        ${coordToDist(d.points[0].y,"y").toFixed(1)}${unitSymbol})  
-                        (${coordToDist(d.points[1].x,"x").toFixed(1)}${unitSymbol},
-                        ${coordToDist(d.points[1].y,"y").toFixed(1)}${unitSymbol})`
-                    )
-                dragWProps
-                    .text(`${d.id}: L=${coordToDist(d.len,"L").toFixed(1)}${unitSymbol}, thk=${d.thk.toFixed(3)}${unitSymbol}`)
+                updateWeldProps();
                 updateStuff();
                 updateSVGs();
                 updateData();
@@ -702,6 +683,7 @@ function updateDrags(){
                 weldDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
                 NodeDrag.attr("opacity", 0);
                 showCentCoords = false;
+                updateWeldProps();
                 updateData();
                 updateSVGs();
             })
@@ -729,14 +711,12 @@ function updateDrags(){
         .attr("cy", d => d.y)
         .call(d3.drag()
             .on("start", (event, d) => {
+                selectedLoad = d.id;
                 loadDrag.attr("opacity",0.1);
                 loadProps.find(j => j.id === d.id).show = true;
-                dragLCoords
-                    .text(`(${coordToDist(d.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(d.y,"y").toFixed(1)}${unitSymbol})`)
-                    .style("display", "block")
-                dragLProps
-                    .text(`${d.id}: F=${d.mag.toFixed(1)}${forceSymbol}, th=${d.th.toFixed(1)}°`)
-                    .style("display", "block")
+                updateLoadProps();
+                dragLCoords.style("display", "block")
+                dragLProps.style("display", "block")
                 updateData();
                 updateSVGs();
             })
@@ -744,12 +724,10 @@ function updateDrags(){
                 if (geomLock) return
                 d.x = event.x;
                 d.y = event.y;
-                dragLCoords
-                    .text(`(${coordToDist(d.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(d.y,"y").toFixed(1)}${unitSymbol})`)
-                dragLProps
-                    .text(`${d.id}: F=${d.mag.toFixed(1)}${forceSymbol}, th=${d.th.toFixed(1)}°`)
+                updateLoadProps();
+                // [d.x, d.y] = snapNodes(d.x, d.y);
                 for (i = 0; i < nodes.length; i++) {
-                    if (Math.abs(event.x - nodes[i].x) < 5 && Math.abs(event.y - nodes[i].y) < 5) {
+                    if (Math.abs(d.x - nodes[i].x) < 5 && Math.abs(d.y - nodes[i].y) < 5) {
                         d.x = nodes[i].x;
                         d.y = nodes[i].y;
                     }
@@ -760,7 +738,7 @@ function updateDrags(){
                         d.y = loadProps[i].y;
                     }
                 }
-                if (Math.abs(event.x - centroidTot[0].x) < 5 && Math.abs(event.y - centroidTot[0].y) < 5) {
+                if (Math.abs(d.x - centroidTot[0].x) < 5 && Math.abs(d.y - centroidTot[0].y) < 5) {
                     d.x = centroidTot[0].x;
                     d.y = centroidTot[0].y;
                 }
@@ -774,10 +752,7 @@ function updateDrags(){
                 // loadDrag.attr("opacity", 0);
                 loadDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
                 loadProps.find(j => j.id === d.id).show = false;
-                dragLCoords
-                    .text(`(${coordToDist(d.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(d.y,"y").toFixed(1)}${unitSymbol})`)
-                dragLProps
-                    .text(`${d.id}: F=${d.mag.toFixed(1)}${forceSymbol}, th=${d.th.toFixed(1)}°`)
+                updateLoadProps();
                 updateStuff();
                 updateData();
                 updateSVGs();
@@ -797,16 +772,14 @@ function updateDrags(){
         .attr("cy", d => d.y)
         .call(d3.drag()
             .on("start", (event, d) => {
+                selectedLoad = d.id;
                 loadDrag.attr("opacity", 0);
                 magDrag.attr("opacity",0.1);
                 loadProps.find(j => j.id === d.id).show = true;
                 const dragLoad = loadProps.find(j => j.id === d.id);
-                dragLCoords
-                    .text(`(${coordToDist(dragLoad.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(dragLoad.y,"y").toFixed(1)}${unitSymbol})`)
-                    .style("display", "block")
-                dragLProps
-                    .text(`${d.id}: F=${dragLoad.mag.toFixed(1)}${forceSymbol}, th=${dragLoad.th.toFixed(1)}°`)
-                    .style("display", "block")
+                updateLoadProps();
+                dragLCoords.style("display", "block")
+                dragLProps.style("display", "block")
                 updateData();
             })
             .on("drag", function(event, d) {
@@ -817,11 +790,7 @@ function updateDrags(){
                 if (drag_L < minLength) return
                 loadProps.find(j => j.id === d.id).mag = drag_L / loadScale;
                 const dragLoad = loadProps.find(j => j.id === d.id);
-                dragLCoords
-                    .text(`(${coordToDist(dragLoad.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(dragLoad.y,"y").toFixed(1)}${unitSymbol})`)
-                dragLProps
-                    .text(`${d.id}: F=${d.mag.toFixed(1)}${forceSymbol}, th=${dragLoad.th.toFixed(1)}°`)
-                // updateArrows();
+                updateLoadProps();
                 updateAngles();
                 updateStuff();
                 updateSVGs();
@@ -832,12 +801,7 @@ function updateDrags(){
                 loadDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
                 loadProps.find(j => j.id === d.id).show = false;
                 const dragLoad = loadProps.find(j => j.id === d.id);
-                dragLCoords
-                    .text(`(${coordToDist(dragLoad.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(dragLoad.y,"y").toFixed(1)}${unitSymbol})`)
-                    .style("display", "block")
-                dragLProps
-                    .text(`${d.id}: F=${dragLoad.mag.toFixed(1)}${forceSymbol}, th=${dragLoad.th.toFixed(1)}°`)
-                    .style("display", "block")
+                updateLoadProps();
                 updateData();
             })
         );
@@ -855,16 +819,14 @@ function updateDrags(){
         .attr("cy", d => d.y)
         .call(d3.drag()
             .on("start", (event, d) => {
+                selectedLoad = d.id;
                 loadDrag.attr("opacity", 0);
                 angleDrag.attr("opacity",0.1);
                 loadProps.find(j => j.id === d.id).show = true;
                 const dragLoad = loadProps.find(j => j.id === d.id);
-                dragLCoords
-                    .text(`(${coordToDist(dragLoad.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(dragLoad.y,"y").toFixed(1)}${unitSymbol})`)
-                    .style("display", "block")
-                dragLProps
-                    .text(`${d.id}: F=${dragLoad.mag.toFixed(1)}${forceSymbol}, th=${dragLoad.th.toFixed(1)}°`)
-                    .style("display", "block")
+                updateLoadProps();
+                dragLCoords.style("display", "block")
+                dragLProps.style("display", "block")
                 updateData();
             })
             .on("drag", function(event, d) {
@@ -872,10 +834,7 @@ function updateDrags(){
                 d.x = event.x;
                 d.y = event.y;
                 const dragLoad = loadProps.find(j => j.id === d.id);
-                dragLCoords
-                    .text(`(${coordToDist(dragLoad.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(dragLoad.y,"y").toFixed(1)}${unitSymbol})`)
-                dragLProps
-                    .text(`${d.id}: F=${dragLoad.mag.toFixed(1)}${forceSymbol}, th=${d.th.toFixed(1)}°`)
+                updateLoadProps();
                 updateAngles();
                 updateStuff();
                 updateSVGs();
@@ -886,10 +845,7 @@ function updateDrags(){
                 loadDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
                 loadProps.find(j => j.id === d.id).show = false;
                 const dragLoad = loadProps.find(j => j.id === d.id);
-                dragLCoords
-                    .text(`(${coordToDist(dragLoad.x,"x").toFixed(1)}${unitSymbol}, ${coordToDist(dragLoad.y,"y").toFixed(1)}${unitSymbol})`)
-                dragLProps
-                    .text(`${d.id}: F=${dragLoad.mag.toFixed(1)}${forceSymbol}, th=${d.th.toFixed(1)}°`)
+                updateLoadProps();
                 updateData();
             })
         );
@@ -1190,3 +1146,58 @@ function updateLabels() {
     weldPropLabs.exit().remove();
         
 }
+
+function updateWeldProps() {
+    const wSelect = weldCoords.find(j => j.id === selectedWeld)
+
+    dragWCoords
+        .text(
+            `(${coordToDist(wSelect.points[0].x,"x").toFixed(1)}${unitSymbol}, 
+            ${coordToDist(wSelect.points[0].y,"y").toFixed(1)}${unitSymbol})  
+            (${coordToDist(wSelect.points[1].x,"x").toFixed(1)}${unitSymbol},
+            ${coordToDist(wSelect.points[1].y,"y").toFixed(1)}${unitSymbol})`
+        )
+    dragWProps
+        .text(`${wSelect.id}: L=${coordToDist(wSelect.len,"L").toFixed(1)}${unitSymbol}, 
+            thk=${wSelect.thk.toFixed(3)}${unitSymbol}`)
+}
+
+function updateLoadProps() {
+    const lSelect = loadProps.find(j => j.id === selectedLoad)
+
+    dragLCoords
+        .text(`(${coordToDist(lSelect.x,"x").toFixed(1)}${unitSymbol}, 
+            ${coordToDist(lSelect.y,"y").toFixed(1)}${unitSymbol})`)
+    dragLProps
+        .text(`${lSelect.id}: F=${(lSelect.mag*forceConvert).toFixed(1)}${forceSymbol}, 
+            th=${lSelect.th.toFixed(1)}°`)
+}
+
+// function snapNodes(x, y) {
+//     let dx = 10;
+//     let dy = 10;
+//     for (i = 0; i < nodes.length; i++) {
+//         if (Math.abs(x - nodes[i].x) < 5 && Math.abs(y - nodes[i].y) < 5) {
+//             dx = nodes[i].x;
+//             dy = nodes[i].y;
+//         }
+//     }
+//     // for (i = 0; i < loadProps.length; i++) {
+//     //     if (id.slice(0,5) !== loadProps[i].id && Math.abs(x - loadProps[i].x) < 5 && Math.abs(y - loadProps[i].y) < 5) {
+//     //         dx = loadProps[i].x;
+//     //         dy = loadProps[i].y;
+//     //     }
+//     // }
+//     // if (Math.abs(x - centroidTot[0].x) < 5 && Math.abs(y - centroidTot[0].y) < 5) {
+//     //     dx = centroidTot[0].x;
+//     //     dy = centroidTot[0].y;
+//     // }
+
+//     updateArrows();
+//     updateStuff();
+//     updateSVGs();
+//     updateData();
+//     updateAngles();
+
+//     return dx, dy;
+// }
