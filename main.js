@@ -6,13 +6,14 @@
     // Drag-able weld inspection node
         // Gives stress value(s) at current location
         // Colored relative to min/max stress scale
-    // Lock geometry?
-        // Makes inspection node possible (without risk of accidentally modifying welds)
     // Snap welds and loads to angles
         // Vert & horiz are easy
         // 45deg should be easy too
     // Snap weld mid-nodes?
     // Add buttons for weld/load remove?
+    // Move (some) buttons to SVG?
+        // Clean up UI/UX etc.
+        // 
     // Add Stress Calcs - real units
     // Lock weld angle?
         // Hold shift when draging weld node to adjust length while keeping initial angle?
@@ -97,6 +98,23 @@ const dotGroup = zoomGroup.append("g")
     .append("path")
     .attr("d", d3.symbol().size(200)) //dont need to define "type" here as default is circle
     .attr("fill", "darkred")
+
+// Max Stress Marker Gradient
+const defs = svg.append("defs")
+const radialGradient = defs.append("radialGradient")
+    .attr("id", "circleGradient")
+    .attr("cx", "50%")
+    .attr("cy", "50%")
+    .attr("r", "50%")
+    .attr("spreadMethod", "pad")
+radialGradient.append("stop")
+    .attr("offset", "0%")
+    .attr("stop-color", "darkred")
+    .attr("stop-opacity", 0.75);
+radialGradient.append("stop")
+    .attr("offset", "100%")
+    .attr("stop-color", "darkred")
+    .attr("stop-opacity", 0);
 
 // SVG Groups for the elements that require add/removal of data
     // I.e. elements associated with welds and loads, as these can be added/removed by user
@@ -209,7 +227,7 @@ const dragWCoords = overlayGroup.append("g")
     // .data(nodes)
     // .enter()
     .append("text")
-    .attr("font-size", "12px")
+    .attr("font-size", "8pt")
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
@@ -223,7 +241,7 @@ const dragWProps = overlayGroup.append("g")
 //     .data(nodes)
 //     .enter()
     .append("text")
-    .attr("font-size", "12px")
+    .attr("font-size", "8pt")
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
@@ -238,7 +256,7 @@ const dragLCoords = overlayGroup.append("g")
 //     .data(loadProps)
 //     .enter()
     .append("text")
-    .attr("font-size", "12px")
+    .attr("font-size", "8pt")
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
@@ -251,7 +269,7 @@ const dragLProps = overlayGroup.append("g")
 //     .data(loadProps)
     // .enter()
     .append("text")
-    .attr("font-size", "12px")
+    .attr("font-size", "8pt")
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
@@ -259,19 +277,51 @@ const dragLProps = overlayGroup.append("g")
     .attr("y", 5)
     .style("display", "none")
 
-const TestGroup = overlayGroup.append("g")
-// const Test = TestGroup.selectAll("text")
-    // .data(nodes)
-    // .enter()
+// On-Display Buttons
+const lockIcon = overlayGroup.append("g")
     .append("text")
-    .attr("font-size", "12px")
-    .attr("text-anchor", "end")
+    .attr("font-size", "20px")
+    .attr("text-anchor", "start")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
-    .attr("x", 500-5)
-    .attr("y", 5)
-    // .style("display", "none")
-    // .text("Hi tho")
+    .attr("x", 6)
+    .attr("y", 500-31)
+    .attr("opacity", 0.75)
+    .text("🔓")
+const lockButton = overlayGroup.append("g")
+    .append("rect")
+    .attr("x", 5)
+    .attr("y", 500-34)
+    .attr("width", 29)
+    .attr("height", 30)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", "black")
+    .attr("opacity", 0)
+    .on("click", function() {lockUnlock()});
+
+const unitsIcon = overlayGroup.append("g")
+    .append("text")
+    .attr("font-size", "9pt")
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 500-20)
+    .attr("y", 500-26)
+    .attr("opacity", 0.75)
+    .text("IN")
+const unitsButton = overlayGroup.append("g")
+    .append("rect")
+    .attr("x", 500-36)
+    .attr("y", 500-34)
+    .attr("width", 32)
+    .attr("height", 30)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", "black")
+    .attr("opacity", 0.25)
+    .on("click", function() {unitSwap()});
+
 
 setupScaleSliders();
 updateView();

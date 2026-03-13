@@ -64,7 +64,7 @@ document.getElementById("toggleWeldProps").addEventListener("click", () => {
     updateView();
 })
 
-document.getElementById("toggleUnits").addEventListener("click", () => {
+function unitSwap() {
     if (units === "metric") {
         units = "inches";
         unitSymbol = `"`;
@@ -78,29 +78,42 @@ document.getElementById("toggleUnits").addEventListener("click", () => {
         unitConvert = 25.4;
     }
 
-    const button = document.getElementById("toggleUnits");
-    button.textContent = units === "metric" ? "Metric" : "Inches";
+    // const button = document.getElementById("toggleUnits");
+    // button.textContent = units === "metric" ? "Metric" : "Inches";
 
     updateView();
-    dragWCoords
-        .style("display", "none");
-    dragWProps
-        .style("display", "none");
+    dragWCoords.style("display", "none");
+    dragWProps.style("display", "none");
     
-    dragLCoords
-        .style("display", "none");
-    dragLProps
-        .style("display", "none");
+    dragLCoords.style("display", "none");
+    dragLProps.style("display", "none");
+
+    unitsIcon
+        .text(units === "metric" ? "MM" : "IN")
+    // unitsButton
+    //     .attr("opacity", units === "metric" ? 0.25 : 0)
+}
+document.getElementById("toggleUnits").addEventListener("click", () => {
+    unitSwap();
 })
 
-document.getElementById("lockGeom").addEventListener("click", () => {
+function lockUnlock() {
     geomLock = !geomLock;
-    const button = document.getElementById("lockGeom");
-    button.textContent = geomLock ? "Unlock Geometry" : "Lock Geometry";
+    // const button = document.getElementById("lockGeom");
+    // button.textContent = geomLock ? "Unlock Geometry" : "Lock Geometry";
     document.getElementById("addWeld").disabled = geomLock ? true : false;
     document.getElementById("addLoad").disabled = geomLock ? true : false;
     document.getElementById("loadScaleSlider").disabled = geomLock ? true : false;
     document.getElementById("stressScaleSlider").disabled = geomLock ? true : false;
+    lockIcon
+        .text(geomLock ? "🔒" : "🔓")
+        .attr("opacity", geomLock ? 1 : 0.75)
+    lockButton
+        .attr("opacity", geomLock ? 0.25 : 0)
+}
+
+document.getElementById("lockGeom").addEventListener("click", () => {
+    lockUnlock();
 })
 
 

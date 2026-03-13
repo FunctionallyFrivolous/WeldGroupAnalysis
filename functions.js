@@ -935,12 +935,13 @@ function updateData() {
         .data(nodes);
     enter = tmax_circle.enter()
         .append("circle")
-        .attr("r", 10)
+        .attr("r", 15)
         .attr("fill", "orange")
-        .attr("fill-opacity", 0.25)
-        .attr("stroke", "orange")
+        // .attr("fill-opacity", 0.5)
+        // .attr("stroke", "orange")
         .attr("stroke-width", 2)
         .attr("stroke-opacity", 0.75)
+        .style("fill", "url(#circleGradient)")
     enter.merge(tmax_circle)
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
@@ -1070,7 +1071,8 @@ function updateData() {
         .attr("stroke-width", 1)
         .attr("stroke", "darkred")
         .attr("stroke-opacity", 1)
-        .attr("opacity", 0.5);
+        .attr("opacity", 0.5)
+        .attr("pointer-events", "none");
     enter.merge(midMarks)
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)

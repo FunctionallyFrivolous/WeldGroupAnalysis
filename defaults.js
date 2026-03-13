@@ -4,7 +4,7 @@ let showStress = true;
 let showTComps = false;
 let showTDir = false;
 let showTTor = false;
-let showTMax = true;
+let showTMax = false;
 // let showWeldCoords = false;
 // let showCoords = false;
 let showLoadProps = false;
@@ -50,6 +50,9 @@ const minLength = 25;
 
 let weldCount = 3;
 let loadCount = 1;
+
+let selectedLoad = 0;
+let selectedWeld = 0;
 
 // A default set of nodes for two initial welds...
 const defaultCoords = [
