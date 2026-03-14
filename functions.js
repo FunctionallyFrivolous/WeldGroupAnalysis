@@ -419,7 +419,7 @@ function addWeld() { // test function to remove one weld
         document.getElementById("addWeld").disabled = true;
         addWIcon.attr("fill", "white")
     }
-    if (weldCount <= 9) {
+    if (weldCount < 9) {
         document.getElementById("addWeld").disabled = false;
         removeWIcon.attr("fill", "red")
     }
