@@ -58,6 +58,8 @@ let snapDist = 10;
 
 let weldCount = 3;
 let loadCount = 2;
+const maxWelds = 10;
+const maxLoads = 10; 
 
 let selectedLoad = "load1";
 let selectedWeld = "weld1";

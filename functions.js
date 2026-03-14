@@ -416,13 +416,13 @@ function InitGeom() {
 }
 
 function addWeld() { // test function to remove one weld
-    if (weldCount >= 10) return;
+    if (weldCount >= maxWelds) return;
 
-    if (weldCount >= 9 || geomLock) {
+    if (weldCount >= maxWelds-1 || geomLock) {
         // document.getElementById("addWeld").disabled = true;
         addWIcon.attr("fill", "white")
     }
-    if (weldCount < 9 && !geomLock) {
+    if (weldCount < maxWelds-1 && !geomLock) {
         // document.getElementById("addWeld").disabled = false;
         // document.getElementById("removeWeld").disabled = false;
         removeWIcon.attr("fill", "red")
@@ -478,15 +478,12 @@ function addWeld() { // test function to remove one weld
 }
 
 function addLoad() { // test function to remove one weld
-    if (loadCount >= 10) return;
+    if (loadCount >= maxLoads) return;
 
-    if (loadCount >= 9 || geomLock) {
-        // document.getElementById("addLoad").disabled = true;
+    if (loadCount >= maxLoads-1 || geomLock) {
         addLIcon.attr("fill", "white")
     }
-    if (loadCount < 9 && !geomLock) {
-        // document.getElementById("addLoad").disabled = false;
-        // document.getElementById("removeLoad").disabled = false;
+    if (loadCount < maxLoads-1 && !geomLock) {
         removeLIcon.attr("fill", "red")
     }
 
@@ -522,7 +519,7 @@ function addLoad() { // test function to remove one weld
 function removeWeld(id) { // test function to remove one weld
     if (weldCount === 1) return;
 
-    if (weldCount <= 10 && !geomLock) {
+    if (weldCount <= maxWelds && !geomLock) {
         // document.getElementById("addWeld").disabled = false;
         addWIcon.attr("fill", "green");
     }
@@ -564,11 +561,11 @@ function removeWeld(id) { // test function to remove one weld
     weldCount = weldCoords.length;
     // weldDrag.attr("opacity", 0)
 
-    selectedWeld = `load${weldCount}`
+    selectedWeld = `weld${weldCount}`
 
-    updateView();
     // updateWeldProps();
     updateLoadProps();
+    updateView();
     dragWCoords
         .style("display", "none");
     dragWProps
@@ -578,12 +575,10 @@ function removeWeld(id) { // test function to remove one weld
 function removeLoad(id) { // test function to remove one weld
     if (loadCount === 1) return;
 
-    if (loadCount <= 10 && !geomLock) {
-        // document.getElementById("addLoad").disabled = false;
+    if (loadCount <= maxLoads && !geomLock) {
         addLIcon.attr("fill", "green");
     }
     if (loadCount <= 2 || geomLock) {
-        // document.getElementById("removeLoad").disabled = true;
         removeLIcon.attr("fill", "white");
     }
     
@@ -623,17 +618,12 @@ function removeLoad(id) { // test function to remove one weld
 function updateDrags(){
     svg.selectAll(".weld")
         .on("dblclick", function(event, d) {
-            // if (event.defaultPrevented) return;
             removeWeld(d.id);
-            // if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
-            // else document.getElementById("addWeld").disabled = false;
         });
 
     svg.selectAll(".load")
         .on("dblclick", function(event, d) {
             removeLoad(d.id);
-            // if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
-            // else document.getElementById("addLoad").disabled = false;
         });
 
     // Weld Drag Nodes
@@ -954,17 +944,12 @@ function updateData() {
     // Welds //
     svg.selectAll(".weld")
         .on("dblclick", function(event, d) {
-            // if (event.defaultPrevented) return;
             removeWeld(d.id);
-            // if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
-            // else document.getElementById("addWeld").disabled = false;
         });
 
     svg.selectAll(".load")
         .on("dblclick", function(event, d) {
             removeLoad(d.id);
-            // if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
-            // else document.getElementById("addLoad").disabled = false;
         });
 
     const weldLines = lineGroup.selectAll("polyline")

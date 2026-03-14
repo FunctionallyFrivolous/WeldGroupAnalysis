@@ -165,26 +165,26 @@ function setupScaleSliders() {
     })
 }
 
-document.getElementById("addWeld").addEventListener("click", () => {
-    addWeld();
-    // if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
-    // else document.getElementById("addWeld").disabled = false;
-    updateView();
-})
+// document.getElementById("addWeld").addEventListener("click", () => {
+//     addWeld();
+//     // if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
+//     // else document.getElementById("addWeld").disabled = false;
+//     updateView();
+// })
 
-document.getElementById("addLoad").addEventListener("click", () => {
-    addLoad();
-    // if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
-    // else document.getElementById("addLoad").disabled = false;
-    updateView();
-})
+// document.getElementById("addLoad").addEventListener("click", () => {
+//     addLoad();
+//     // if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
+//     // else document.getElementById("addLoad").disabled = false;
+//     updateView();
+// })
 
-document.getElementById("removeWeld").addEventListener("click", () => {
-    removeWeld(selectedWeld);
-    updateView();
-})
+// document.getElementById("removeWeld").addEventListener("click", () => {
+//     removeWeld(selectedWeld);
+//     updateView();
+// })
 
-document.getElementById("removeLoad").addEventListener("click", () => {
-    removeLoad(selectedLoad);
-    updateView();
-})
+// document.getElementById("removeLoad").addEventListener("click", () => {
+//     removeLoad(selectedLoad);
+//     updateView();
+// })
