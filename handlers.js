@@ -141,8 +141,8 @@ function lockUnlock() {
 
 document.getElementById("addWeld").addEventListener("click", () => {
     addWeld();
-    if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
-    else document.getElementById("addWeld").disabled = false;
+    // if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
+    // else document.getElementById("addWeld").disabled = false;
     updateView();
 })
 
@@ -162,7 +162,7 @@ function setupScaleSliders() {
 
 document.getElementById("addLoad").addEventListener("click", () => {
     addLoad();
-    if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
-    else document.getElementById("addLoad").disabled = false;
+    // if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
+    // else document.getElementById("addLoad").disabled = false;
     updateView();
 })

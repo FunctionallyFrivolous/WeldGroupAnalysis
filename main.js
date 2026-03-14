@@ -1,4 +1,5 @@
 // Do Next:
+    // Show/Hide coordinate axes/origin?
     // Text Overlay Updates
         // Include stress values? (max on weld, val on current node, etc?)
     // Drag-able weld inspection node
@@ -103,11 +104,11 @@ const radialGradient = defs.append("radialGradient")
     .attr("spreadMethod", "pad")
 radialGradient.append("stop")
     .attr("offset", "0%")
-    .attr("stop-color", "darkred")
+    .attr("stop-color", "darkorange")
     .attr("stop-opacity", 0.75);
 radialGradient.append("stop")
     .attr("offset", "100%")
-    .attr("stop-color", "darkred")
+    .attr("stop-color", "darkorange")
     .attr("stop-opacity", 0);
 
 // SVG Groups for the elements that require add/removal of data
@@ -215,6 +216,17 @@ svg.call(zoom)
 
 //Overlay Stuff
 
+const weldZone = overlayGroup.append("g")
+    .append("text")
+    .attr("font-size", "9pt")
+    .attr("font-weight", "bold")
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 27)
+    .attr("y", 5)
+    .text("Welds")
+    // .style("display", "none");
 // const dragWCoordsGroup = overlayGroup.append("g")
 const dragWCoords = overlayGroup.append("g")
 // const dragWCoords = dragWCoordsGroup.selectAll("text")
@@ -226,7 +238,7 @@ const dragWCoords = overlayGroup.append("g")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
     .attr("x", 5)
-    .attr("y", 20)
+    .attr("y", 40)
     .style("display", "none");
 
 // const dragWPropsGroup = overlayGroup.append("g")
@@ -240,7 +252,7 @@ const dragWProps = overlayGroup.append("g")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
     .attr("x", 5)
-    .attr("y", 5)
+    .attr("y", 25)
     .style("display", "none")
 
 
@@ -255,7 +267,7 @@ const dragLCoords = overlayGroup.append("g")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
     .attr("x", windowWidth-5)
-    .attr("y", 20)
+    .attr("y", 35)
     .style("display", "none");
 // const dragLPropsGroup = overlayGroup.append("g")
 const dragLProps = overlayGroup.append("g")
@@ -268,7 +280,7 @@ const dragLProps = overlayGroup.append("g")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
     .attr("x", windowWidth-5)
-    .attr("y", 5)
+    .attr("y", 20)
     .style("display", "none")
 
 const centroidProps = overlayGroup.append("g")
@@ -289,6 +301,7 @@ const RxVProps = overlayGroup.append("g")
     .style("pointer-events", "none")
     .attr("x", windowWidth/2)
     .attr("y", 20)
+    .attr("fill", "darkred")
     // .style("display", "none")
     // .text("RxV: F= , th= ")
 const RxMProps = overlayGroup.append("g")
@@ -299,6 +312,7 @@ const RxMProps = overlayGroup.append("g")
     .style("pointer-events", "none")
     .attr("x", windowWidth/2)
     .attr("y", 35)
+    .attr("fill", "darkblue")
     // .style("display", "none")
     // .text(`RxM: ${rxM.toFixed(1)}`)
 
@@ -368,6 +382,52 @@ const unitsButton = overlayGroup.append("g")
 //     .attr("fill", "black")
 //     .attr("opacity", 0)
 //     .on("click", function() {inspect()});
+
+const addWButton = overlayGroup.append("g")
+    .append("rect")
+    .attr("x", 4)
+    .attr("y", 2.5)
+    .attr("width", 18)
+    .attr("height", 18)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", "black")
+    .attr("opacity", 0.2)
+    .on("click", function() {addWeld()});
+const addWIcon = overlayGroup.append("g")
+    .append("text")
+    .attr("font-size", "20px")
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 13)
+    .attr("y", 0)
+    .attr("opacity", 1)
+    .attr("fill", "green")
+    .text("+")
+
+const removeButton = overlayGroup.append("g")
+    .append("rect")
+    .attr("x", 66)
+    .attr("y", 2.5)
+    .attr("width", 18)
+    .attr("height", 18)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", "black")
+    .attr("opacity", 0.2)
+    .on("click", function() {removeWeld(selectedWeld)});
+const removeWIcon = overlayGroup.append("g")
+    .append("text")
+    .attr("font-size", "12px")
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 75)
+    .attr("y", 4.5)
+    .attr("opacity", 1)
+    .attr("fill", "red")
+    .text("✖")
 
 setupScaleSliders();
 updateView();

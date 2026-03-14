@@ -217,15 +217,15 @@ function updateRx() {
     }
     rxV.mag = Math.sqrt((rxV_x)*(rxV_x)+(rxV_y)*(rxV_y));
     rxV.th = radToDeg(Math.atan((rxV_y)/(rxV_x)));
+    rxV.th = rxV.th -180;
     if(rxV_x < 0) {
         rxV.th = rxV.th + 180
     }
-    // rxV.th = 180+rxV.th
-    // rxV[0].points[0].x = rxV.x;
-    // rxV[0].points[0].y = rxV.y;
+    if (rxV.th < 0) rxV.th = rxV.th + 360;
+    // if (rxV.th === 360) rxV.th = 0;
 
-    const xt = rxV.x - loadScale*(rxV.mag/forceConvert) * Math.cos(degToRad(rxV.th));
-    const yt = rxV.y + loadScale*(rxV.mag/forceConvert) * Math.sin(degToRad(rxV.th));
+    const xt = rxV.x + loadScale*(rxV.mag/forceConvert) * Math.cos(degToRad(rxV.th));
+    const yt = rxV.y - loadScale*(rxV.mag/forceConvert) * Math.sin(degToRad(rxV.th));
     rxV[0].points = [{x: rxV.x, y: rxV.y}, {x: xt, y: yt}];
 
     // Reaction Moment
@@ -264,6 +264,7 @@ function updateRx() {
 
         rxM = rxM + rxMi;
         rxM = -rxM;
+        if (Math.abs(rxM) < 0.0001) rxM = 0;
     }
     updateMomentArc();
 }
@@ -295,7 +296,7 @@ function updateDirectShear() {
         directShear[i].mag = Math.abs(rxV.mag) / areaTot;
         let th = rxV.th;
         if (th < 0) th = th + 360;
-        directShear[i].th = th + 180;
+        directShear[i].th = th;
 
         const xt = xa + stressScale*(directShear[i].mag) * Math.cos(degToRad(directShear[i].th));
         const yt = ya - stressScale*(directShear[i].mag) * Math.sin(degToRad(directShear[i].th));
@@ -411,7 +412,17 @@ function InitGeom() {
 }
 
 function addWeld() { // test function to remove one weld
-    if (weldCount >= 10) return;
+    if (weldCount >= 10) {
+        return;
+    }
+    if (weldCount >= 9) {
+        document.getElementById("addWeld").disabled = true;
+        addWIcon.attr("fill", "white")
+    }
+    if (weldCount <= 9) {
+        document.getElementById("addWeld").disabled = false;
+        removeWIcon.attr("fill", "red")
+    }
 
     let newY0 = 0;
     if (weldCount === 3) newY0 = 100;
@@ -459,10 +470,17 @@ function addWeld() { // test function to remove one weld
     weldCount = weldCoords.length;
 
     updateView();
+    updateWeldProps();
 }
 
 function addLoad() { // test function to remove one weld
     if (loadCount >= 10) return;
+
+    if (loadCount >= 9) {
+        document.getElementById("addLoad").disabled = true;
+        // addLIcon.attr("fill", "white")
+    }
+
 
     let newY = Math.floor(Math.random()*(450-50)+50);
 
@@ -489,10 +507,21 @@ function addLoad() { // test function to remove one weld
     loadCount = loadProps.length;
 
     updateView();
+    updateLoadProps();
 }
 
 function removeWeld(id) { // test function to remove one weld
     if (weldCount === 1) return;
+
+    if (weldCount <= 10) {
+        document.getElementById("addWeld").disabled = false;
+        addWIcon.attr("fill", "green");
+    }
+
+    if (weldCount <= 2) {
+        // document.getElementById("addWeld").disabled = false;
+        removeWIcon.attr("fill", "white");
+    }
     
     let index = weldCoords.findIndex(obj => obj.id === id);
     if (index > -1) {
@@ -574,15 +603,15 @@ function updateDrags(){
         .on("dblclick", function(event, d) {
             if (event.defaultPrevented) return;
             removeWeld(d.id);
-            if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
-            else document.getElementById("addWeld").disabled = false;
+            // if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
+            // else document.getElementById("addWeld").disabled = false;
         });
 
     svg.selectAll(".load")
         .on("dblclick", function(event, d) {
             removeLoad(d.id);
-            if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
-            else document.getElementById("addLoad").disabled = false;
+            // if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
+            // else document.getElementById("addLoad").disabled = false;
         });
 
     // Weld Drag Nodes
@@ -872,15 +901,15 @@ function updateData() {
         .on("dblclick", function(event, d) {
             if (event.defaultPrevented) return;
             removeWeld(d.id);
-            if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
-            else document.getElementById("addWeld").disabled = false;
+            // if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
+            // else document.getElementById("addWeld").disabled = false;
         });
 
     svg.selectAll(".load")
         .on("dblclick", function(event, d) {
             removeLoad(d.id);
-            if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
-            else document.getElementById("addLoad").disabled = false;
+            // if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
+            // else document.getElementById("addLoad").disabled = false;
         });
 
     const weldLines = lineGroup.selectAll("polyline")
@@ -1176,9 +1205,9 @@ function updateWeldProps() {
         .text(`Centroid: (${coordToDist(centroidTot[0].x, "x").toFixed(unitPrecision)}, 
         ${coordToDist(centroidTot[0].y, "y").toFixed(unitPrecision)})`)
     RxVProps
-        .text(`Vᵣₓ: ${(rxV.mag).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
+        .text(`Vᵣ: ${(rxV.mag).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
     RxMProps
-        .text(`Mᵣₓ: ${(units === "metric" ? rxM/1000 : rxM).toFixed(1)} ${momentSymbol}`)
+        .text(`Mᵣ: ${(units === "metric" ? rxM/1000 : rxM).toFixed(1)} ${momentSymbol}`)
 }
 
 function updateLoadProps() {
@@ -1196,10 +1225,10 @@ function updateLoadProps() {
         ${coordToDist(centroidTot[0].y, "y").toFixed(unitPrecision)})`)
         .style("display", showRx ? "block" : "none")
     RxVProps
-        .text(`Vᵣₓ: ${(rxV.mag).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
+        .text(`Vᵣ: ${(rxV.mag).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
         .style("display", showRx ? "block" : "none")
     RxMProps
-        .text(`Mᵣₓ: ${(units === "metric" ? rxM/1000 : rxM).toFixed(1)} ${momentSymbol}`)
+        .text(`Mᵣ: ${(units === "metric" ? rxM/1000 : rxM).toFixed(1)} ${momentSymbol}`)
         .style("display", showRx ? "block" : "none")
 }
 

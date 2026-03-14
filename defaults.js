@@ -1,6 +1,6 @@
 let currentZoomTransform = d3.zoomIdentity;
 let showRx = true;
-let showStress = true;
+let showStress = false;
 let showTComps = false;
 let showTDir = false;
 let showTTor = false;
@@ -61,7 +61,7 @@ let loadCount = 1;
 let selectedLoad = "load1";
 let selectedWeld = "weld1";
 
-// A default set of nodes for two initial welds...
+// A default set of nodes for 4 initial welds...
 const defaultCoords = [
     {id: "weld1_start", x: 150, y: 380, t: 0, show: false},
     {id: "weld1_end", x: 150, y: 120, t: 0, show: false},
@@ -75,10 +75,9 @@ const defaultCoords = [
 
 // map the default node data onto new array that will be used/changed throughout
 const nodes = defaultCoords.map(j => ({ ...j })); 
-// nodes = nodes.slice(0,3);
 
 const loadProps = [
-    {id: "load1", x: 275, y: 125, th: 200, mag: 15, show: false},
+    {id: "load1", x: 225, y: 125, th: 340, mag: 15, show: false},
     {id: "load2", x: 100, y: 350, th: -125, mag: 50, show: false},
 ]
 const loadArrows = [
