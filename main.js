@@ -238,7 +238,7 @@ const dragWCoords = overlayGroup.append("g")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
     .attr("x", 5)
-    .attr("y", 20) //40
+    .attr("y", 40) //40 , 20
     .style("display", "none");
 
 // const dragWPropsGroup = overlayGroup.append("g")
@@ -252,7 +252,7 @@ const dragWProps = overlayGroup.append("g")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
     .attr("x", 5)
-    .attr("y", 5) //20
+    .attr("y", 25) //25 , 5
     .style("display", "none")
 
 
@@ -423,7 +423,7 @@ const addWIcon = overlayGroup.append("g")
     // .style("text-anchor", "middle")
     .style("pointer-events", "none")
     .attr("x", 13)
-    .attr("y", 13)
+    .attr("y", 12.5)
     .attr("opacity", 1)
     .attr("fill", "green")
     .text("+")
