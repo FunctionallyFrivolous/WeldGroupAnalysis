@@ -263,6 +263,7 @@ function updateRx() {
         if (th_rxM > 180) rxMi = rxMi * -1
 
         rxM = rxM + rxMi;
+        rxM = -rxM;
     }
     updateMomentArc();
 }
@@ -274,7 +275,7 @@ function updateMomentArc() {
     const endPoint_x = startPoint_x + arcRad*2;
     const endPoint_y = startPoint_y;
     let dir = 0;
-    if (rxM > 0) dir = 1
+    if (rxM < 0) dir = 1
 
     const M = `${startPoint_x}`+","+`${startPoint_y}`; // start point coords
     const E = `${endPoint_x}`+","+`${endPoint_y}`; // end point coords
@@ -294,7 +295,7 @@ function updateDirectShear() {
         directShear[i].mag = Math.abs(rxV.mag) / areaTot;
         let th = rxV.th;
         if (th < 0) th = th + 360;
-        directShear[i].th = th;
+        directShear[i].th = th + 180;
 
         const xt = xa + stressScale*(directShear[i].mag) * Math.cos(degToRad(directShear[i].th));
         const yt = ya - stressScale*(directShear[i].mag) * Math.sin(degToRad(directShear[i].th));

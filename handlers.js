@@ -91,7 +91,7 @@ function unitSwap() {
         forceConvert = 4.448;
         unitPrecision = 0;
         weldThkScale = 40;
-        stressScale = 25*forceConvert*unitConvert;
+        stressScale = 2500;
     }
 
     // const button = document.getElementById("toggleUnits");

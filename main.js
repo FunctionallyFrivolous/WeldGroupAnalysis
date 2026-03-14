@@ -9,7 +9,6 @@
         // Vert & horiz are easy
         // 45deg should be easy too
     // Add buttons for weld/load remove?
-    // Add Stress Calcs - real units
     // Lock weld angle?
         // Hold shift when draging weld node to adjust length while keeping initial angle?
         // Auto lock when less than some amount of angle deviation?

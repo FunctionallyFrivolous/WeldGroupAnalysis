@@ -52,7 +52,7 @@ let max_t = 0;
 let dM = "M 0,50 A 50,50 0 0,0 100,50"
 
 let loadScale = 5;
-let stressScale = 10;
+let stressScale = 25;
 const minLength = 25;
 
 let weldCount = 3;
