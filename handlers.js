@@ -116,6 +116,8 @@ function lockUnlock() {
     // button.textContent = geomLock ? "Unlock Geometry" : "Lock Geometry";
     document.getElementById("addWeld").disabled = geomLock ? true : false;
     document.getElementById("addLoad").disabled = geomLock ? true : false;
+    document.getElementById("removeWeld").disabled = geomLock ? true : false;
+    document.getElementById("removeLoad").disabled = geomLock ? true : false;
     document.getElementById("loadScaleSlider").disabled = geomLock ? true : false;
     document.getElementById("stressScaleSlider").disabled = geomLock ? true : false;
     lockIcon
@@ -139,13 +141,6 @@ function lockUnlock() {
 //     // showTMax = !showTMax;
 // }
 
-document.getElementById("addWeld").addEventListener("click", () => {
-    addWeld();
-    // if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
-    // else document.getElementById("addWeld").disabled = false;
-    updateView();
-})
-
 function setupScaleSliders() {
     const LoadScaleSlider = document.getElementById("loadScaleSlider");
     LoadScaleSlider.addEventListener("input", () => {
@@ -160,9 +155,26 @@ function setupScaleSliders() {
     })
 }
 
+document.getElementById("addWeld").addEventListener("click", () => {
+    addWeld();
+    // if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
+    // else document.getElementById("addWeld").disabled = false;
+    updateView();
+})
+
 document.getElementById("addLoad").addEventListener("click", () => {
     addLoad();
     // if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
     // else document.getElementById("addLoad").disabled = false;
+    updateView();
+})
+
+document.getElementById("removeWeld").addEventListener("click", () => {
+    removeWeld(selectedWeld);
+    updateView();
+})
+
+document.getElementById("removeLoad").addEventListener("click", () => {
+    removeLoad(selectedLoad);
     updateView();
 })

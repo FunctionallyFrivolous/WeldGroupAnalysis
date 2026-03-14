@@ -24,7 +24,18 @@
             // Static table with all that can be edited anytime?
             // Click on a weld/load to select, display current stats and allow edit?
     // Add legend?
-        // What each line type/color represents
+        // Click Button to show/hide
+        // Design Elements
+            // Welds
+            // Centroid
+            // Applied Loads
+            // Reaction V & M
+            // Stresses (direct, torsion, total)
+            // Max Stress locations
+        // Buttons
+            // Geom Lock
+            // Units
+            // Add/Remove Weld/Load
     // Fit View?
         // Need to get min and max X and Y vals
         // Center on centroid OR by min/max?
@@ -216,17 +227,6 @@ svg.call(zoom)
 
 //Overlay Stuff
 
-const weldZone = overlayGroup.append("g")
-    .append("text")
-    .attr("font-size", "9pt")
-    .attr("font-weight", "bold")
-    .attr("text-anchor", "start")
-    .attr("alignment-baseline", "text-before-edge")
-    .style("pointer-events", "none")
-    .attr("x", 27)
-    .attr("y", 5)
-    .text("Welds")
-    .style("display", "none");
 // const dragWCoordsGroup = overlayGroup.append("g")
 const dragWCoords = overlayGroup.append("g")
 // const dragWCoords = dragWCoordsGroup.selectAll("text")
@@ -286,6 +286,7 @@ const dragLProps = overlayGroup.append("g")
 const centroidProps = overlayGroup.append("g")
     .append("text")
     .attr("font-size", "8pt")
+    // .attr("font-weight", "bold")
     .attr("text-anchor", "middle")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
@@ -296,6 +297,7 @@ const centroidProps = overlayGroup.append("g")
 const RxVProps = overlayGroup.append("g")
     .append("text")
     .attr("font-size", "8pt")
+    // .attr("font-weight", "bold")
     .attr("text-anchor", "middle")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
@@ -307,6 +309,7 @@ const RxVProps = overlayGroup.append("g")
 const RxMProps = overlayGroup.append("g")
     .append("text")
     .attr("font-size", "8pt")
+    // .attr("font-weight", "bold")
     .attr("text-anchor", "middle")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
@@ -337,7 +340,9 @@ const lockButton = overlayGroup.append("g")
     .attr("ry", 5)
     .attr("fill", "black")
     .attr("opacity", 0)
-    .on("click", function() {lockUnlock()});
+    .on("click", function() {lockUnlock()})
+    .append("title")
+    .text("Lock/Unlock Geometry");
 
 const unitsIcon = overlayGroup.append("g")
     .append("text")
@@ -359,7 +364,9 @@ const unitsButton = overlayGroup.append("g")
     .attr("ry", 5)
     .attr("fill", "black")
     .attr("opacity", 0.125)
-    .on("click", function() {unitSwap()});
+    .on("click", function() {unitSwap()})
+    // .append("title")
+    // .text(`units (${units})`)
 
 // const inspectIcon = overlayGroup.append("g")
 //     .append("text")
@@ -383,6 +390,18 @@ const unitsButton = overlayGroup.append("g")
 //     .attr("opacity", 0)
 //     .on("click", function() {inspect()});
 
+const weldZone = overlayGroup.append("g")
+    .append("text")
+    .attr("font-size", "9pt")
+    .attr("font-weight", "bold")
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 27)
+    .attr("y", 5)
+    .text("Welds")
+    // .style("display", "none");
+
 const addWButton = overlayGroup.append("g")
     .append("rect")
     .attr("x", 4)
@@ -394,10 +413,11 @@ const addWButton = overlayGroup.append("g")
     .attr("fill", "black")
     .attr("opacity", 0.1)
     .on("click", function() {addWeld()})
-    .style("display", "none")
+    // .style("display", "none")
 const addWIcon = overlayGroup.append("g")
     .append("text")
     .attr("font-size", "20px")
+    // .attr("font-weight", "bold")
     .attr("text-anchor", "middle")
     .attr("alignment-baseline", "middle")
     // .style("text-anchor", "middle")
@@ -407,7 +427,7 @@ const addWIcon = overlayGroup.append("g")
     .attr("opacity", 1)
     .attr("fill", "green")
     .text("+")
-    .style("display", "none")
+    // .style("display", "none")
 
 const removeButton = overlayGroup.append("g")
     .append("rect")
@@ -420,20 +440,21 @@ const removeButton = overlayGroup.append("g")
     .attr("fill", "black")
     .attr("opacity", 0.1)
     .on("click", function() {removeWeld(selectedWeld)})
-    .style("display", "none")
+    // .style("display", "none")
 const removeWIcon = overlayGroup.append("g")
     .append("text")
     .attr("font-size", "20px")
+    // .attr("font-weight", "bold")
     .attr("text-anchor", "middle")
     .attr("alignment-baseline", "middle")
-    .attr("transform", "rotate(45, 73, 14)")
+    // .attr("transform", "rotate(45, 73, 14)")
     .style("pointer-events", "none")
-    .attr("x", 73)
-    .attr("y", 13)
+    .attr("x", 75)
+    .attr("y", 12)
     .attr("opacity", 1)
     .attr("fill", "red")
-    .text("+")
-    .style("display", "none")
+    .text("-")
+    // .style("display", "none")
     
 
 setupScaleSliders();

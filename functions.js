@@ -42,6 +42,10 @@ function updateSVGs(){
             return `(${dx.toFixed(unitPrecision)}, ${dy.toFixed(unitPrecision)})`;
         })
         .style("display", showWeldProps || showCentCoords ? "block" : "none");
+    
+    // unitsButton
+    //     .append("title")
+    //     .text(`units (${units})`)
 
         // document.getElementById("debugOutputs").innerHTML = "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
 
@@ -412,15 +416,15 @@ function InitGeom() {
 }
 
 function addWeld() { // test function to remove one weld
-    if (weldCount >= 10) {
-        return;
-    }
-    if (weldCount >= 9) {
+    if (weldCount >= 10) return;
+
+    if (weldCount >= 9 || geomLock) {
         document.getElementById("addWeld").disabled = true;
         addWIcon.attr("fill", "white")
     }
-    if (weldCount < 9) {
+    if (weldCount < 9 && !geomLock) {
         document.getElementById("addWeld").disabled = false;
+        document.getElementById("removeWeld").disabled = false;
         removeWIcon.attr("fill", "red")
     }
 
@@ -476,9 +480,14 @@ function addWeld() { // test function to remove one weld
 function addLoad() { // test function to remove one weld
     if (loadCount >= 10) return;
 
-    if (loadCount >= 9) {
+    if (loadCount >= 9 || geomLock) {
         document.getElementById("addLoad").disabled = true;
         // addLIcon.attr("fill", "white")
+    }
+    if (loadCount < 9 && !geomLock) {
+        document.getElementById("addLoad").disabled = false;
+        document.getElementById("removeLoad").disabled = false;
+        // removeLIcon.attr("fill", "red")
     }
 
 
@@ -513,13 +522,13 @@ function addLoad() { // test function to remove one weld
 function removeWeld(id) { // test function to remove one weld
     if (weldCount === 1) return;
 
-    if (weldCount <= 10) {
+    if (weldCount <= 10 && !geomLock) {
         document.getElementById("addWeld").disabled = false;
         addWIcon.attr("fill", "green");
     }
 
-    if (weldCount <= 2) {
-        // document.getElementById("addWeld").disabled = false;
+    if (weldCount <= 2 || geomLock) {
+        document.getElementById("removeWeld").disabled = true;
         removeWIcon.attr("fill", "white");
     }
     
@@ -566,6 +575,15 @@ function removeWeld(id) { // test function to remove one weld
 
 function removeLoad(id) { // test function to remove one weld
     if (loadCount === 1) return;
+
+    if (loadCount <= 10 && !geomLock) {
+        document.getElementById("addLoad").disabled = false;
+        // addLIcon.attr("fill", "green");
+    }
+    if (loadCount <= 2 || geomLock) {
+        document.getElementById("removeLoad").disabled = true;
+        // removeLIcon.attr("fill", "white");
+    }
     
     let index = loadProps.findIndex(obj => obj.id === id);
     if (index > -1) {
