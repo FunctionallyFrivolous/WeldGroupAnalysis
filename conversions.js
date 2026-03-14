@@ -25,5 +25,7 @@ function coordToDist(coord, axis) {
     else {
         dist = coord * distConvert * unitConvert;
     }
+
+    if (Math.abs(dist) < 0.0001) dist = 0;
     return dist;
 }

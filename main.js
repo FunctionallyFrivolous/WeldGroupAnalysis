@@ -6,10 +6,7 @@
         // Gives stress value(s) at current location
         // Colored relative to min/max stress scale
         // Only when geometry is locked
-    // Snap welds and loads to angles
-        // Vert & horiz are easy
-        // 45deg should be easy too
-    // Add buttons for weld/load remove?
+    // Snap welds and loads to 45deg?
     // Lock weld angle?
         // Hold shift when draging weld node to adjust length while keeping initial angle?
         // Auto lock when less than some amount of angle deviation?
@@ -365,8 +362,8 @@ const unitsButton = overlayGroup.append("g")
     .attr("fill", "black")
     .attr("opacity", 0.125)
     .on("click", function() {unitSwap()})
-    // .append("title")
-    // .text(`units (${units})`)
+    .append("title")
+    .text(`Toggle Units`)
 
 // const inspectIcon = overlayGroup.append("g")
 //     .append("text")
@@ -413,6 +410,8 @@ const addWButton = overlayGroup.append("g")
     .attr("fill", "black")
     .attr("opacity", 0.1)
     .on("click", function() {addWeld()})
+    .append("title")
+    .text(`Add Weld`)
 const addWIcon = overlayGroup.append("g")
     .append("text")
     .attr("font-size", "20px")
@@ -439,6 +438,8 @@ const removeWButton = overlayGroup.append("g")
     .attr("fill", "black")
     .attr("opacity", 0.1)
     .on("click", function() {removeWeld(selectedWeld)})
+    .append("title")
+    .text(`Delete Weld`)
     // .style("display", "none")
 const removeWIcon = overlayGroup.append("g")
     .append("text")
@@ -478,6 +479,8 @@ const addLButton = overlayGroup.append("g")
     .attr("fill", "black")
     .attr("opacity", 0.1)
     .on("click", function() {addLoad()})
+    .append("title")
+    .text(`Add Load`)
 const addLIcon = overlayGroup.append("g")
     .append("text")
     .attr("font-size", "20px")
@@ -504,6 +507,8 @@ const removeLButton = overlayGroup.append("g")
     .attr("fill", "black")
     .attr("opacity", 0.1)
     .on("click", function() {removeLoad(selectedLoad)})
+    .append("title")
+    .text(`Delete Weld`)
     // .style("display", "none")
 const removeLIcon = overlayGroup.append("g")
     .append("text")

@@ -157,6 +157,12 @@ function setupScaleSliders() {
         stressScale = parseFloat(StressScaleSlider.value);
         updateView();
     })
+
+    const snapSlider = document.getElementById("snapDistSlider");
+    snapSlider.addEventListener("input", () => {
+        snapDist = parseFloat(snapSlider.value);
+        updateView();
+    })
 }
 
 document.getElementById("addWeld").addEventListener("click", () => {

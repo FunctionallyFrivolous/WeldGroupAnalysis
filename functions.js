@@ -419,12 +419,12 @@ function addWeld() { // test function to remove one weld
     if (weldCount >= 10) return;
 
     if (weldCount >= 9 || geomLock) {
-        document.getElementById("addWeld").disabled = true;
+        // document.getElementById("addWeld").disabled = true;
         addWIcon.attr("fill", "white")
     }
     if (weldCount < 9 && !geomLock) {
-        document.getElementById("addWeld").disabled = false;
-        document.getElementById("removeWeld").disabled = false;
+        // document.getElementById("addWeld").disabled = false;
+        // document.getElementById("removeWeld").disabled = false;
         removeWIcon.attr("fill", "red")
     }
 
@@ -481,12 +481,12 @@ function addLoad() { // test function to remove one weld
     if (loadCount >= 10) return;
 
     if (loadCount >= 9 || geomLock) {
-        document.getElementById("addLoad").disabled = true;
+        // document.getElementById("addLoad").disabled = true;
         addLIcon.attr("fill", "white")
     }
     if (loadCount < 9 && !geomLock) {
-        document.getElementById("addLoad").disabled = false;
-        document.getElementById("removeLoad").disabled = false;
+        // document.getElementById("addLoad").disabled = false;
+        // document.getElementById("removeLoad").disabled = false;
         removeLIcon.attr("fill", "red")
     }
 
@@ -523,12 +523,12 @@ function removeWeld(id) { // test function to remove one weld
     if (weldCount === 1) return;
 
     if (weldCount <= 10 && !geomLock) {
-        document.getElementById("addWeld").disabled = false;
+        // document.getElementById("addWeld").disabled = false;
         addWIcon.attr("fill", "green");
     }
 
     if (weldCount <= 2 || geomLock) {
-        document.getElementById("removeWeld").disabled = true;
+        // document.getElementById("removeWeld").disabled = true;
         removeWIcon.attr("fill", "white");
     }
     
@@ -563,8 +563,10 @@ function removeWeld(id) { // test function to remove one weld
     
     weldCount = weldCoords.length;
     // weldDrag.attr("opacity", 0)
-    updateView();
 
+    selectedWeld = `load${weldCount}`
+
+    updateView();
     // updateWeldProps();
     updateLoadProps();
     dragWCoords
@@ -577,11 +579,11 @@ function removeLoad(id) { // test function to remove one weld
     if (loadCount === 1) return;
 
     if (loadCount <= 10 && !geomLock) {
-        document.getElementById("addLoad").disabled = false;
+        // document.getElementById("addLoad").disabled = false;
         addLIcon.attr("fill", "green");
     }
     if (loadCount <= 2 || geomLock) {
-        document.getElementById("removeLoad").disabled = true;
+        // document.getElementById("removeLoad").disabled = true;
         removeLIcon.attr("fill", "white");
     }
     
@@ -606,6 +608,8 @@ function removeLoad(id) { // test function to remove one weld
     }
 
     loadCount = loadProps.length;
+
+    selectedLoad = `load${loadCount}`
 
     updateView();
     updateWeldProps();
@@ -669,14 +673,33 @@ function updateDrags(){
                 updateStuff();
                 updateSVGs();
                 updateData();
+                let x_opp = 0;
+                let y_opp = 0;
+                if (d.id.includes("start")) {
+                    x_opp = dragWeld.points[1].x;
+                    y_opp = dragWeld.points[1].y;
+                } else {
+                    x_opp = dragWeld.points[0].x;
+                    y_opp = dragWeld.points[0].y;
+                }
+                // Snap to vertical
+                if (Math.abs(d.x - x_opp) < snapDist) {
+                    d.x = x_opp;
+                } 
+                // Snap to horizontal
+                else if (Math.abs(d.y - y_opp) < snapDist) {
+                    d.y = y_opp;
+                }
+                // Snap to nearby weld nodes
                 for (i = 0; i < nodes.length; i++) {
-                    if (d.id.slice(0,5) !== nodes[i].id.slice(0,5) && Math.abs(d.x - nodes[i].x) < 5 && Math.abs(d.y - nodes[i].y) < 5) {
+                    if (d.id.slice(0,5) !== nodes[i].id.slice(0,5) && Math.abs(d.x - nodes[i].x) < snapDist && Math.abs(d.y - nodes[i].y) < snapDist) {
                         d.x = nodes[i].x;
                         d.y = nodes[i].y;
                     }
                 }
+                // Snap to nearby loads
                 for (i = 0; i < loadProps.length; i++) {
-                    if (Math.abs(d.x - loadProps[i].x) < 5 && Math.abs(d.y - loadProps[i].y) < 5) {
+                    if (Math.abs(d.x - loadProps[i].x) < snapDist && Math.abs(d.y - loadProps[i].y) < snapDist) {
                         d.x = loadProps[i].x;
                         d.y = loadProps[i].y;
                     }
@@ -784,19 +807,22 @@ function updateDrags(){
                 d.y = event.y;
                 updateLoadProps();
                 // [d.x, d.y] = snapNodes(d.x, d.y);
+                // Snap to nearby weld nodes
                 for (i = 0; i < nodes.length; i++) {
-                    if (Math.abs(d.x - nodes[i].x) < 5 && Math.abs(d.y - nodes[i].y) < 5) {
+                    if (Math.abs(d.x - nodes[i].x) < snapDist && Math.abs(d.y - nodes[i].y) < snapDist) {
                         d.x = nodes[i].x;
                         d.y = nodes[i].y;
                     }
                 }
+                // Snap to nearby loads
                 for (i = 0; i < loadProps.length; i++) {
-                    if (d.id.slice(0,5) !== loadProps[i].id && Math.abs(event.x - loadProps[i].x) < 5 && Math.abs(event.y - loadProps[i].y) < 5) {
+                    if (d.id.slice(0,5) !== loadProps[i].id && Math.abs(event.x - loadProps[i].x) < snapDist && Math.abs(event.y - loadProps[i].y) < snapDist) {
                         d.x = loadProps[i].x;
                         d.y = loadProps[i].y;
                     }
                 }
-                if (Math.abs(d.x - centroidTot[0].x) < 5 && Math.abs(d.y - centroidTot[0].y) < 5) {
+                // Snap to centroid
+                if (Math.abs(d.x - centroidTot[0].x) < snapDist && Math.abs(d.y - centroidTot[0].y) < snapDist) {
                     d.x = centroidTot[0].x;
                     d.y = centroidTot[0].y;
                 }
@@ -892,6 +918,17 @@ function updateDrags(){
                 d.x = event.x;
                 d.y = event.y;
                 const dragLoad = loadProps.find(j => j.id === d.id);
+                // Snaps
+                const x_opp = dragLoad.x;
+                const y_opp = dragLoad.y;
+                // Snap to vertical
+                if (Math.abs(d.x - x_opp) < snapDist) {
+                    d.x = x_opp;
+                } 
+                // Snap to horizontal
+                else if (Math.abs(d.y - y_opp) < snapDist) {
+                    d.y = y_opp;
+                }
                 updateLoadProps();
                 updateAngles();
                 updateStuff();
