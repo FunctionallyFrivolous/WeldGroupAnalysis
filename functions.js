@@ -482,12 +482,12 @@ function addLoad() { // test function to remove one weld
 
     if (loadCount >= 9 || geomLock) {
         document.getElementById("addLoad").disabled = true;
-        // addLIcon.attr("fill", "white")
+        addLIcon.attr("fill", "white")
     }
     if (loadCount < 9 && !geomLock) {
         document.getElementById("addLoad").disabled = false;
         document.getElementById("removeLoad").disabled = false;
-        // removeLIcon.attr("fill", "red")
+        removeLIcon.attr("fill", "red")
     }
 
 
@@ -578,11 +578,11 @@ function removeLoad(id) { // test function to remove one weld
 
     if (loadCount <= 10 && !geomLock) {
         document.getElementById("addLoad").disabled = false;
-        // addLIcon.attr("fill", "green");
+        addLIcon.attr("fill", "green");
     }
     if (loadCount <= 2 || geomLock) {
         document.getElementById("removeLoad").disabled = true;
-        // removeLIcon.attr("fill", "white");
+        removeLIcon.attr("fill", "white");
     }
     
     let index = loadProps.findIndex(obj => obj.id === id);

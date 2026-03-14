@@ -78,7 +78,7 @@ const nodes = defaultCoords.map(j => ({ ...j }));
 
 const loadProps = [
     {id: "load1", x: 225, y: 125, th: 340, mag: 15, show: false},
-    {id: "load2", x: 100, y: 350, th: -125, mag: 50, show: false},
+    {id: "load2", x: 100, y: 350, th: -125, mag: 10, show: false},
 ]
 const loadArrows = [
     {id: "load1", x: 0, y: 0, mag: 0, show: false},

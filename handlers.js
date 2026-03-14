@@ -122,6 +122,8 @@ function lockUnlock() {
     document.getElementById("stressScaleSlider").disabled = geomLock ? true : false;
     addWIcon.style("display", geomLock ? "none" : "block")
     removeWIcon.style("display", geomLock ? "none" : "block")
+    addLIcon.style("display", geomLock ? "none" : "block")
+    removeLIcon.style("display", geomLock ? "none" : "block")
     lockIcon
         .text(geomLock ? "🔒" : "🔓")
         .attr("opacity", geomLock ? 1 : 0.75)
