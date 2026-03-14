@@ -86,7 +86,7 @@ function unitSwap() {
         units = "metric";
         unitSymbol = "mm";
         forceSymbol = "N";
-        momentSymbol = "N-mm"
+        momentSymbol = "N-m"
         unitConvert = 25.4;
         forceConvert = 4.448;
         unitPrecision = 0;

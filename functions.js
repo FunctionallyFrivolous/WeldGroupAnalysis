@@ -1173,11 +1173,12 @@ function updateWeldProps() {
             ${(wSelect.thk*unitConvert).toFixed(3)}${unitSymbol} thk`)
 
     centroidProps
-        .text(`Centroid: (${coordToDist(centroidTot[0].x, "x").toFixed(1)}, ${coordToDist(centroidTot[0].y, "y").toFixed(1)})`)
+        .text(`Centroid: (${coordToDist(centroidTot[0].x, "x").toFixed(unitPrecision)}, 
+        ${coordToDist(centroidTot[0].y, "y").toFixed(unitPrecision)})`)
     RxVProps
-        .text(`Vᵣₓ: ${(rxV.mag*forceConvert).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
+        .text(`Vᵣₓ: ${(rxV.mag).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
     RxMProps
-        .text(`Mᵣₓ: ${rxM.toFixed(1)} ${momentSymbol}`)
+        .text(`Mᵣₓ: ${(units === "metric" ? rxM/1000 : rxM).toFixed(1)} ${momentSymbol}`)
 }
 
 function updateLoadProps() {
@@ -1191,14 +1192,14 @@ function updateLoadProps() {
             @${lSelect.th.toFixed(1)}°`)
 
     centroidProps
-        .text(`Centroid: (${coordToDist(centroidTot[0].x, "x").toFixed(1)}, 
-        ${coordToDist(centroidTot[0].y, "y").toFixed(1)})`)
+        .text(`Centroid: (${coordToDist(centroidTot[0].x, "x").toFixed(unitPrecision)}, 
+        ${coordToDist(centroidTot[0].y, "y").toFixed(unitPrecision)})`)
         .style("display", showRx ? "block" : "none")
     RxVProps
-        .text(`Vᵣₓ: ${(rxV.mag*forceConvert).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
+        .text(`Vᵣₓ: ${(rxV.mag).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
         .style("display", showRx ? "block" : "none")
     RxMProps
-        .text(`Mᵣₓ: ${rxM.toFixed(1)} ${momentSymbol}`)
+        .text(`Mᵣₓ: ${(units === "metric" ? rxM/1000 : rxM).toFixed(1)} ${momentSymbol}`)
         .style("display", showRx ? "block" : "none")
 }
 
