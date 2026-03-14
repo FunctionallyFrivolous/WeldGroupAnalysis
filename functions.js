@@ -266,8 +266,8 @@ function updateRx() {
         // else rxMi = rxMi / 12;
         if (th_rxM > 180) rxMi = rxMi * -1
 
-        rxM = rxM + rxMi;
-        rxM = -rxM;
+        rxM = rxM - rxMi;
+        rxM = rxM;
         if (Math.abs(rxM) < 0.0001) rxM = 0;
     }
     updateMomentArc();
@@ -608,18 +608,18 @@ function removeLoad(id) { // test function to remove one weld
     loadCount = loadProps.length;
 
     updateView();
-    
-    updateLoadProps();
-    // dragLCoords
-    //     .style("display", "none");
-    // dragLProps
-    //     .style("display", "none");
+    updateWeldProps();
+    // updateLoadProps();
+    dragLCoords
+        .style("display", "none");
+    dragLProps
+        .style("display", "none");
 }
 
 function updateDrags(){
     svg.selectAll(".weld")
         .on("dblclick", function(event, d) {
-            if (event.defaultPrevented) return;
+            // if (event.defaultPrevented) return;
             removeWeld(d.id);
             // if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
             // else document.getElementById("addWeld").disabled = false;
@@ -917,7 +917,7 @@ function updateData() {
     // Welds //
     svg.selectAll(".weld")
         .on("dblclick", function(event, d) {
-            if (event.defaultPrevented) return;
+            // if (event.defaultPrevented) return;
             removeWeld(d.id);
             // if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
             // else document.getElementById("addWeld").disabled = false;

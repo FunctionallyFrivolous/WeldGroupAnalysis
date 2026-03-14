@@ -56,7 +56,7 @@ let stressScale = 25;
 const minLength = 25;
 
 let weldCount = 3;
-let loadCount = 1;
+let loadCount = 2;
 
 let selectedLoad = "load1";
 let selectedWeld = "weld1";
