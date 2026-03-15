@@ -1020,7 +1020,7 @@ function updateData() {
         .attr("stroke-width", 2)
         .style("stroke-linecap", "round")
         .attr("opacity", 0.5)
-        .attr("marker-end", "url(#B_arrowhead");
+        .attr("marker-end", "url(#arrowhead");
     enter.merge(tShear)
         .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
         .style("display", showTTor ? "block" : "none");
