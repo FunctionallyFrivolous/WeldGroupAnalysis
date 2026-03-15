@@ -16,7 +16,7 @@ let showCentCoords = false;
 let units = "inches";
 let unitSymbol = `"`;
 let forceSymbol = "lbf"
-let momentSymbol = "in-lb"
+let momentSymbol = "ft-lb"
 let stressSymbol = "psi"
 let unitPrecision = 1;
 
@@ -54,7 +54,7 @@ let max_t = 0;
 
 let dM = "M 0,50 A 50,50 0 0,0 100,50"
 
-let loadScale = 5;
+let loadScale = 0.5;
 let stressScale = 25;
 const minLength = 25;
 let snapDist = 10;
@@ -83,8 +83,8 @@ const defaultCoords = [
 const nodes = defaultCoords.map(j => ({ ...j })); 
 
 const loadProps = [
-    {id: "load1", x: 225, y: 125, th: 340, mag: 15, show: false},
-    {id: "load2", x: 100, y: 350, th: -125, mag: 10, show: false},
+    {id: "load1", x: 225, y: 125, th: 340, mag: 150, show: false},
+    {id: "load2", x: 100, y: 350, th: -125, mag: 100, show: false},
 ]
 const loadArrows = [
     {id: "load1", x: 0, y: 0, mag: 0, show: false},

@@ -78,7 +78,7 @@ function unitSwap() {
         units = "inches";
         unitSymbol = `"`;
         forceSymbol = "lbf";
-        momentSymbol = "in-lb"
+        momentSymbol = "ft-lb"
         stressSymbol = "psi"
         unitConvert = 1;
         forceConvert = 1;

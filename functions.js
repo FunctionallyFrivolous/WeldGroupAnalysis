@@ -685,28 +685,8 @@ function updateDrags(){
                     x_opp = dragWeld.points[0].x;
                     y_opp = dragWeld.points[0].y;
                 }
-                // Snap to vertical
-                if (Math.abs(d.x - x_opp) < snapDist) {
-                    d.x = x_opp;
-                } 
-                // Snap to horizontal
-                else if (Math.abs(d.y - y_opp) < snapDist) {
-                    d.y = y_opp;
-                }
-                // Snap to nearby weld nodes
-                for (i = 0; i < nodes.length; i++) {
-                    if (d.id.slice(0,5) !== nodes[i].id.slice(0,5) && Math.abs(d.x - nodes[i].x) < snapDist && Math.abs(d.y - nodes[i].y) < snapDist) {
-                        d.x = nodes[i].x;
-                        d.y = nodes[i].y;
-                    }
-                }
-                // Snap to nearby loads
-                for (i = 0; i < loadProps.length; i++) {
-                    if (Math.abs(d.x - loadProps[i].x) < snapDist && Math.abs(d.y - loadProps[i].y) < snapDist) {
-                        d.x = loadProps[i].x;
-                        d.y = loadProps[i].y;
-                    }
-                }
+                // Snap 
+                [d.x, d.y] = snapDrag(d.id, d.x, d.y, x_opp, y_opp)
                 updateStuff();
                 updateSVGs();
                 updateData();
@@ -809,26 +789,8 @@ function updateDrags(){
                 d.x = event.x;
                 d.y = event.y;
                 updateLoadProps();
-                // [d.x, d.y] = snapNodes(d.x, d.y);
-                // Snap to nearby weld nodes
-                for (i = 0; i < nodes.length; i++) {
-                    if (Math.abs(d.x - nodes[i].x) < snapDist && Math.abs(d.y - nodes[i].y) < snapDist) {
-                        d.x = nodes[i].x;
-                        d.y = nodes[i].y;
-                    }
-                }
-                // Snap to nearby loads
-                for (i = 0; i < loadProps.length; i++) {
-                    if (d.id.slice(0,5) !== loadProps[i].id && Math.abs(event.x - loadProps[i].x) < snapDist && Math.abs(event.y - loadProps[i].y) < snapDist) {
-                        d.x = loadProps[i].x;
-                        d.y = loadProps[i].y;
-                    }
-                }
-                // Snap to centroid
-                if (Math.abs(d.x - centroidTot[0].x) < snapDist && Math.abs(d.y - centroidTot[0].y) < snapDist) {
-                    d.x = centroidTot[0].x;
-                    d.y = centroidTot[0].y;
-                }
+                // Snap 
+                [d.x, d.y] = snapDrag(d.id, d.x, d.y)
                 updateArrows();
                 updateStuff();
                 updateSVGs();
@@ -924,14 +886,8 @@ function updateDrags(){
                 // Snaps
                 const x_opp = dragLoad.x;
                 const y_opp = dragLoad.y;
-                // Snap to vertical
-                if (Math.abs(d.x - x_opp) < snapDist) {
-                    d.x = x_opp;
-                } 
-                // Snap to horizontal
-                else if (Math.abs(d.y - y_opp) < snapDist) {
-                    d.y = y_opp;
-                }
+                // Snap
+                [d.x, d.y] = snapDrag(d.id, d.x, d.y, x_opp, y_opp)
                 updateLoadProps();
                 updateAngles();
                 updateStuff();
@@ -1260,9 +1216,9 @@ function updateWeldProps() {
     RxVProps
         .text(`Vᵣ: ${(rxV.mag).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
     RxMProps
-        .text(`Mᵣ: ${(units === "metric" ? rxM/1000 : rxM).toFixed(1)} ${momentSymbol}`)
+        .text(`Mᵣ: ${(units === "metric" ? rxM/1000 : rxM/12).toFixed(1)} ${momentSymbol}`)
     tMaxProps
-        .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 3 : 1)} ${stressSymbol}`)
+        .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
         .style("display", showTMax ? "block" : "none")
 }
 
@@ -1284,38 +1240,56 @@ function updateLoadProps() {
         .text(`Vᵣ: ${(rxV.mag).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
         .style("display", showRx ? "block" : "none")
     RxMProps
-        .text(`Mᵣ: ${(units === "metric" ? rxM/1000 : rxM).toFixed(1)} ${momentSymbol}`)
+        .text(`Mᵣ: ${(units === "metric" ? rxM/1000 : rxM/12).toFixed(1)} ${momentSymbol}`)
         .style("display", showRx ? "block" : "none")
     tMaxProps
-        .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 3 : 1)} ${stressSymbol}`)
+        .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
         .style("display", showTMax ? "block" : "none")
 }
 
-// function snapNodes(x, y) {
-//     let dx = 10;
-//     let dy = 10;
-//     for (i = 0; i < nodes.length; i++) {
-//         if (Math.abs(x - nodes[i].x) < 5 && Math.abs(y - nodes[i].y) < 5) {
-//             dx = nodes[i].x;
-//             dy = nodes[i].y;
-//         }
-//     }
-//     // for (i = 0; i < loadProps.length; i++) {
-//     //     if (id.slice(0,5) !== loadProps[i].id && Math.abs(x - loadProps[i].x) < 5 && Math.abs(y - loadProps[i].y) < 5) {
-//     //         dx = loadProps[i].x;
-//     //         dy = loadProps[i].y;
-//     //     }
-//     // }
-//     // if (Math.abs(x - centroidTot[0].x) < 5 && Math.abs(y - centroidTot[0].y) < 5) {
-//     //     dx = centroidTot[0].x;
-//     //     dy = centroidTot[0].y;
-//     // }
+function snapDrag(id, drx, dry, opx=0, opy=0) {
+    let dxf = drx;
+    let dyf = dry;
 
-//     updateArrows();
-//     updateStuff();
-//     updateSVGs();
-//     updateData();
-//     updateAngles();
+    if (Math.abs(drx - opx) < snapDist) {
+        dxf = opx;
+    } 
+    else if (Math.abs(dry - opy) < snapDist) {
+        dyf = opy;
+    }
 
-//     return dx, dy;
-// }
+    if (id.includes("weld")) {
+        for (i = 0; i < nodes.length; i++) {
+            if (id.slice(0,5) !== nodes[i].id.slice(0,5) && Math.abs(drx - nodes[i].x) < snapDist && Math.abs(dry - nodes[i].y) < snapDist) {
+                dxf = nodes[i].x;
+                dyf = nodes[i].y;
+            }
+        }
+        for (i = 0; i < loadProps.length; i++) {
+            if (Math.abs(drx - loadProps[i].x) < snapDist && Math.abs(dry - loadProps[i].y) < snapDist) {
+                dxf = loadProps[i].x;
+                dyf = loadProps[i].y;
+            }
+        }
+    } else {
+        for (i = 0; i < nodes.length; i++) {
+            if (Math.abs(drx - nodes[i].x) < snapDist && Math.abs(dry - nodes[i].y) < snapDist) {
+                dxf = nodes[i].x;
+                dyf = nodes[i].y;
+            }
+        }
+        for (i = 0; i < loadProps.length; i++) {
+            if (id.slice(0,5) !== loadProps[i].id && Math.abs(drx - loadProps[i].x) < snapDist && Math.abs(dry - loadProps[i].y) < snapDist) {
+                dxf = loadProps[i].x;
+                dyf = loadProps[i].y;
+            }
+        }
+        if (Math.abs(drx - centroidTot[0].x) < snapDist && Math.abs(dry - centroidTot[0].y) < snapDist) {
+            dxf = centroidTot[0].x;
+            dyf = centroidTot[0].y;
+        }
+    }
+    
+
+    return [dxf, dyf]
+}

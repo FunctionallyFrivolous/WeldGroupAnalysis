@@ -1,12 +1,8 @@
 // Do Next:
-    // Show/Hide coordinate axes/origin?
-        // Create SVG elements (easy, these ones will never move)
-        // Test with html button
-        // Move button to SVG
-        // Include ability to scale the axes (for cases when other elements are obstructing)?
-            // Or maybe just make them big enough that thats unlikely?
-            // Or have it scale to fill/remain in window. But it must pan in order to remain at the true origin
-                // This is end goal for sure...
+    // Show/Hide axes SVG button? Currently slider only (0 = hide)
+    // Scale axes to fill/remain in window. But it must pan in order to remain at the true origin
+        // This is end goal for sure...
+        // Overlay it and then update x,y vals to match pan
     // Drag-able weld inspection node
         // Gives stress value(s) at current location
         // Colored relative to min/max stress scale
