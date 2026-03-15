@@ -485,6 +485,7 @@ function addWeld() { // test function to remove one weld
 
     updateView();
     updateWeldProps();
+    updateLoadProps();
 }
 
 function addLoad() { // test function to remove one weld
@@ -523,6 +524,7 @@ function addLoad() { // test function to remove one weld
     loadCount = loadProps.length;
 
     updateView();
+    updateWeldProps();
     updateLoadProps();
 }
 
@@ -573,9 +575,10 @@ function removeWeld(id) { // test function to remove one weld
 
     selectedWeld = `weld${weldCount}`
 
-    // updateWeldProps();
-    updateLoadProps();
     updateView();
+    updateWeldProps();
+    updateLoadProps();
+    
     dragWCoords
         .style("display", "none");
     dragWProps
@@ -618,7 +621,7 @@ function removeLoad(id) { // test function to remove one weld
 
     updateView();
     updateWeldProps();
-    // updateLoadProps();
+    updateLoadProps();
     dragLCoords
         .style("display", "none");
     dragLProps
@@ -1004,7 +1007,7 @@ function updateData() {
         .attr("stroke-width", 2)
         .style("stroke-linecap", "round")
         .attr("opacity", 0.5)
-        .attr("marker-end", "url(#arrowhead");
+        .attr("marker-end", "url(#R_arrowhead");
     enter.merge(dShear)
         .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
         .style("display", showTDir ? "block" : "none");
@@ -1020,7 +1023,7 @@ function updateData() {
         .attr("stroke-width", 2)
         .style("stroke-linecap", "round")
         .attr("opacity", 0.5)
-        .attr("marker-end", "url(#arrowhead");
+        .attr("marker-end", "url(#B_arrowhead");
     enter.merge(tShear)
         .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
         .style("display", showTTor ? "block" : "none");
@@ -1036,7 +1039,7 @@ function updateData() {
         .attr("stroke-width", 2)
         .style("stroke-linecap", "round")
         .attr("opacity", 0.75)
-        .attr("marker-end", "url(#arrowhead");
+        .attr("marker-end", "url(#P_arrowhead");
     enter.merge(fShear)
         .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
         .style("display", showStress ? "block" : "none");
@@ -1052,7 +1055,7 @@ function updateData() {
         .attr("opacity", 0.7)
         .attr("fill", "none")
         .attr("points", "350,200 450,200")
-        .attr("marker-end", "url(#arrowhead")
+        .attr("marker-end", "url(#R_arrowhead")
         .attr("marker-start", "url(#dots")
     enter.merge(lVectors)
         .attr("points", d => d.points.map(l => `${l.x},${l.y}`).join(" "))
