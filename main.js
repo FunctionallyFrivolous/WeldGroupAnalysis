@@ -1,7 +1,12 @@
 // Do Next:
     // Show/Hide coordinate axes/origin?
-    // Text Overlay Updates
-        // Include stress values? (max on weld, val on current node, etc?)
+        // Create SVG elements (easy, these ones will never move)
+        // Test with html button
+        // Move button to SVG
+        // Include ability to scale the axes (for cases when other elements are obstructing)?
+            // Or maybe just make them big enough that thats unlikely?
+            // Or have it scale to fill/remain in window. But it must pan in order to remain at the true origin
+                // This is end goal for sure...
     // Drag-able weld inspection node
         // Gives stress value(s) at current location
         // Colored relative to min/max stress scale
@@ -53,7 +58,7 @@ const svg = d3.select("#topView"); // Defining the svg window (references elemen
 const zoomGroup = svg.append("g"); // Defines group that will contain all SVG elements that are effected by zoom/pan
 const overlayGroup = svg.append("g"); // Defines group that will contain SVG elements that ignore zoom/pan and remain overlaid on window
 
-// Define arrow marker for use at ends of force vectors
+// Define arrow marker for use at ends of vectors
 const arrowPath = "M 0, -5 L 10, 0 L 0, 5";
 const arrowGroup = zoomGroup.append("g")
     .append("defs")
@@ -65,7 +70,7 @@ const arrowGroup = zoomGroup.append("g")
     .attr("orient", "auto-start-reverse") // ensures direction of arrowhead follows the polyline
     .append("path")
     .attr("d", arrowPath)
-    .attr("fill", "darkred")
+    .attr("fill", "context-stroke")
 const arrowBGroup = zoomGroup.append("g")
     .append("defs")
     .append("marker")
@@ -77,17 +82,6 @@ const arrowBGroup = zoomGroup.append("g")
     .append("path")
     .attr("d", arrowPath)
     .attr("fill", "darkblue")
-const arrowPGroup = zoomGroup.append("g")
-    .append("defs")
-    .append("marker")
-    .attr("id", "P_arrowhead")
-    .attr("viewBox", "0 -5 10 10")
-    .attr("markerWidth", 4)
-    .attr("markerHeight", 4)
-    .attr("orient", "auto-start-reverse") // ensures direction of arrowhead follows the polyline
-    .append("path")
-    .attr("d", arrowPath)
-    .attr("fill", "indigo")
 
 // Define dot marker for use at origin of force vectors
 const dotGroup = zoomGroup.append("g")
@@ -191,7 +185,7 @@ const rxMGroup = zoomGroup.append("g")
     .attr("stroke-dasharray", "2,5")
     .attr("fill", "none")
     .attr("opacity", 0.5)
-    .attr("marker-end", "url(#B_arrowhead")
+    .attr("marker-end", "url(#arrowhead")
     .style("stroke-linecap", "round")
     .style("pointer-events", "none")
     // .attr("display", "block")
@@ -315,6 +309,18 @@ const RxMProps = overlayGroup.append("g")
     .attr("fill", "darkblue")
     // .style("display", "none")
     // .text(`RxM: ${rxM.toFixed(1)}`)
+const tMaxProps = overlayGroup.append("g")
+    .append("text")
+    .attr("font-size", "8pt")
+    // .attr("font-weight", "bold")
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", windowWidth/2)
+    .attr("y", 50)
+    .attr("fill", "darkorange")
+    // .style("display", "none")
+    // .text(`tmax: ${max_t.toFixed(1)}`)
 
 // On-Display Buttons
 const lockIcon = overlayGroup.append("g")
@@ -526,6 +532,18 @@ const removeLIcon = overlayGroup.append("g")
     .text("-")
     // .style("display", "none")
     
+
+const coordinates = zoomGroup.append("g")
+    .append("polyline")
+    .attr("points", `${origin[0]},${origin[1]-axisLength} ${origin} ${origin[0]+axisLength},${origin[1]}`)
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .attr("stroke-width", 2)
+    .attr("opacity", 0.5)
+    .attr("marker-end", "url(#arrowhead")
+    .attr("marker-start", "url(#arrowhead")
+
+
 
 setupScaleSliders();
 updateView();

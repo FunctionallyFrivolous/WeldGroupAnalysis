@@ -16,6 +16,7 @@ let units = "inches";
 let unitSymbol = `"`;
 let forceSymbol = "lbf"
 let momentSymbol = "in-lb"
+let stressSymbol = "psi"
 let unitPrecision = 1;
 
 let distConvert = 0.1; // svg window units to inches (10:1)
@@ -27,6 +28,7 @@ let inspection = false;
 let windowWidth = 500;
 let windowHeight = 500
 let origin = [windowWidth/2,windowHeight/2];
+let axisLength = 150;
 let xtemp = 0;
 let ytemp = 0;
 

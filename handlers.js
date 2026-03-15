@@ -44,6 +44,9 @@ document.getElementById("toggleTMax").addEventListener("click", () => {
     }
     const button = document.getElementById("toggleTMax");
     button.style.opacity = showTMax ? 1 : 0.50
+    tMaxProps
+        .text(`τₘₐₓ: ${(max_t*1000).toFixed(1)} ${stressSymbol}`)
+        .style("display", showTMax ? "block" : "none")
     updateView();
 })
 
@@ -76,6 +79,7 @@ function unitSwap() {
         unitSymbol = `"`;
         forceSymbol = "lbf";
         momentSymbol = "in-lb"
+        stressSymbol = "psi"
         unitConvert = 1;
         forceConvert = 1;
         unitPrecision = 1;
@@ -87,6 +91,7 @@ function unitSwap() {
         unitSymbol = "mm";
         forceSymbol = "N";
         momentSymbol = "N-m"
+        stressSymbol = "MPa"
         unitConvert = 25.4;
         forceConvert = 4.448;
         unitPrecision = 0;
@@ -114,12 +119,13 @@ function lockUnlock() {
     geomLock = !geomLock;
     // const button = document.getElementById("lockGeom");
     // button.textContent = geomLock ? "Unlock Geometry" : "Lock Geometry";
-    document.getElementById("addWeld").disabled = geomLock ? true : false;
-    document.getElementById("addLoad").disabled = geomLock ? true : false;
-    document.getElementById("removeWeld").disabled = geomLock ? true : false;
-    document.getElementById("removeLoad").disabled = geomLock ? true : false;
+    // document.getElementById("addWeld").disabled = geomLock ? true : false;
+    // document.getElementById("addLoad").disabled = geomLock ? true : false;
+    // document.getElementById("removeWeld").disabled = geomLock ? true : false;
+    // document.getElementById("removeLoad").disabled = geomLock ? true : false;
     document.getElementById("loadScaleSlider").disabled = geomLock ? true : false;
     document.getElementById("stressScaleSlider").disabled = geomLock ? true : false;
+    document.getElementById("snapDistSlider").disabled = geomLock ? true : false;
     addWIcon.style("display", geomLock ? "none" : "block")
     removeWIcon.style("display", geomLock ? "none" : "block")
     addLIcon.style("display", geomLock ? "none" : "block")

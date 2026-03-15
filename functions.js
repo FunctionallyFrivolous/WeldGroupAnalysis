@@ -1026,7 +1026,7 @@ function updateData() {
         .attr("stroke-width", 2)
         .style("stroke-linecap", "round")
         .attr("opacity", 0.75)
-        .attr("marker-end", "url(#P_arrowhead");
+        .attr("marker-end", "url(#arrowhead");
     enter.merge(fShear)
         .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
         .style("display", showStress ? "block" : "none");
@@ -1248,6 +1248,9 @@ function updateWeldProps() {
         .text(`Vᵣ: ${(rxV.mag).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
     RxMProps
         .text(`Mᵣ: ${(units === "metric" ? rxM/1000 : rxM).toFixed(1)} ${momentSymbol}`)
+    tMaxProps
+        .text(`τₘₐₓ: ${(max_t*1000).toFixed(1)} ${stressSymbol}`)
+        .style("display", showTMax ? "block" : "none")
 }
 
 function updateLoadProps() {
@@ -1270,6 +1273,9 @@ function updateLoadProps() {
     RxMProps
         .text(`Mᵣ: ${(units === "metric" ? rxM/1000 : rxM).toFixed(1)} ${momentSymbol}`)
         .style("display", showRx ? "block" : "none")
+    tMaxProps
+        .text(`τₘₐₓ: ${(max_t*1000).toFixed(1)} ${stressSymbol}`)
+        .style("display", showTMax ? "block" : "none")
 }
 
 // function snapNodes(x, y) {
