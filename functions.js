@@ -42,6 +42,16 @@ function updateSVGs(){
             return `(${dx.toFixed(unitPrecision)}, ${dy.toFixed(unitPrecision)})`;
         })
         .style("display", showWeldProps || showCentCoords ? "block" : "none");
+
+    coordAxes
+        .attr("points", `${origin[0]},${origin[1]-axisLength} ${origin} ${origin[0]+axisLength},${origin[1]}`)
+    xAxisLab
+        .attr("x", origin[0]+axisLength)
+        .attr("y", origin[1])
+    yAxisLab
+        .attr("x", origin[0])
+        .attr("y", origin[1]-axisLength)
+    originDot
     
     // unitsButton
     //     .append("title")

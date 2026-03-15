@@ -169,6 +169,16 @@ function setupScaleSliders() {
         snapDist = parseFloat(snapSlider.value);
         updateView();
     })
+
+    const axisSlider = document.getElementById("axisScaleSlider");
+    axisSlider.addEventListener("input", () => {
+        axisLength = parseFloat(axisSlider.value);
+        coordAxes.style("display", axisLength <= 1 ? "none" : "block")
+        xAxisLab.style("display", axisLength <= 1 ? "none" : "block")
+        yAxisLab.style("display", axisLength <= 1 ? "none" : "block")
+        originDot.style("display", axisLength <= 1 ? "none" : "block")
+        updateView();
+    })
 }
 
 // document.getElementById("addWeld").addEventListener("click", () => {

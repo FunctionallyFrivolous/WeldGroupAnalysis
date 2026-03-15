@@ -36,14 +36,18 @@
         <button id="addLoad">Add Load</button>
         <button id="removeLoad" disabled=true>Remove Load</button> -->
         <!-- <br> -->
-        <label style="margin-left: 0px;">Load Scale:</label>
-        <input type="range" style="margin-bottom: 5px; margin-top: 12px;" id="loadScaleSlider" orient="horizontal" value="5" min="0.5" max="50" step="1">
-        <!-- <br> -->
-        <label>Stress Scale:</label>
-        <input  style="margin-bottom: 5px; margin-top: 12px" type="range" id="stressScaleSlider" orient="horizontal" value="10" min="1" max="100" step="1">
+        <label>Coordinate Axes:</label>
+        <input  style="margin-bottom: 5px; margin-top: 12px" type="range" id="axisScaleSlider" orient="horizontal" value="0" min="1" max="500" step="1">
         <br>
-        <label style="margin-left: 0px;">Snap Threshold:</label>
+        <label>Snap Threshold:</label>
         <input  style="margin-bottom: 5px; margin-top: 5px" type="range" id="snapDistSlider" orient="horizontal" value="10" min="0" max="50" step="1">
+        <br>
+        <label>Load Scale:</label>
+        <input type="range" style="margin-bottom: 5px; margin-top: 5px;" id="loadScaleSlider" orient="horizontal" value="5" min="0.5" max="50" step="1">
+        <br>
+        <label>Stress Scale:</label>
+        <input  style="margin-bottom: 5px; margin-top: 5px" type="range" id="stressScaleSlider" orient="horizontal" value="10" min="1" max="100" step="1">
+        <br>
         </b>
         <p id="debugOutputs"></p>
         <script src="conversions.js"></script>

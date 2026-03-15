@@ -11,6 +11,7 @@ let showLoadProps = false;
 let showWeldProps = false;
 let dragWeldProps = false;
 let showCentCoords = false;
+// let showAxes = false;
 
 let units = "inches";
 let unitSymbol = `"`;
@@ -28,7 +29,7 @@ let inspection = false;
 let windowWidth = 500;
 let windowHeight = 500
 let origin = [windowWidth/2,windowHeight/2];
-let axisLength = 150;
+let axisLength = 0;
 let xtemp = 0;
 let ytemp = 0;
 
