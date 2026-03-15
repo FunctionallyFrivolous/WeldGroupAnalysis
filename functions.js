@@ -503,7 +503,7 @@ function addLoad() { // test function to remove one weld
 
     let newX = Math.floor(Math.random()*(450-50)+50);
 
-    let newMag = Math.floor(Math.random()*(25-5)+5);
+    let newMag = Math.floor(Math.random()*(250-50)+50);
     let newTh = Math.floor(Math.random()*(359-0)+0);
 
     loadProps.push(
@@ -685,7 +685,7 @@ function updateDrags(){
                     x_opp = dragWeld.points[0].x;
                     y_opp = dragWeld.points[0].y;
                 }
-                // Snap 
+                // Snap
                 [d.x, d.y] = snapDrag(d.id, d.x, d.y, x_opp, y_opp)
                 updateStuff();
                 updateSVGs();

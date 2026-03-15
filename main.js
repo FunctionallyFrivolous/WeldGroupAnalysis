@@ -8,6 +8,8 @@
         // Colored relative to min/max stress scale
         // Only when geometry is locked
     // Snap welds and loads to 45deg?
+    // Snap welds and loads to weld mid-points?
+        // Calc weld mid-points and apply typical snap logic
     // Lock weld angle?
         // Hold shift when draging weld node to adjust length while keeping initial angle?
         // Auto lock when less than some amount of angle deviation?
