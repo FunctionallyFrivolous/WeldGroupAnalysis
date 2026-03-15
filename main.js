@@ -59,10 +59,12 @@ const zoomGroup = svg.append("g"); // Defines group that will contain all SVG el
 const overlayGroup = svg.append("g"); // Defines group that will contain SVG elements that ignore zoom/pan and remain overlaid on window
 
 // Define arrow marker for use at ends of vectors
+const defs_a = zoomGroup.append("defs")
 const arrowPath = "M 0, -5 L 10, 0 L 0, 5";
-const arrowGroup = zoomGroup.append("g")
-    .append("defs")
-    .append("marker")
+// const arrowGroup = zoomGroup.append("g")
+defs_a.append("marker")
+    // .append("defs")
+    // .append("marker")
     .attr("id", "arrowhead")
     .attr("viewBox", "0 -5 10 10")
     .attr("markerWidth", 4)
@@ -200,10 +202,11 @@ const rxVector = rxVGroup.selectAll("polyline")
     .enter()
     .append("polyline")
     .attr("stroke", "darkred")
+    .attr("fill", "darkred")
     .attr("stroke-width", 3)
     .attr("stroke-dasharray", "2,5")
     .attr("opacity", 0.5)
-    .attr("fill", "none")
+    // .attr("fill", "none")
     .attr("marker-end", "url(#arrowhead")
     // .attr("marker-start", "url(#dots")
     .style("stroke-linecap", "round")
