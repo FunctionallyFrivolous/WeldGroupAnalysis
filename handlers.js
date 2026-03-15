@@ -45,7 +45,7 @@ document.getElementById("toggleTMax").addEventListener("click", () => {
     const button = document.getElementById("toggleTMax");
     button.style.opacity = showTMax ? 1 : 0.50
     tMaxProps
-        .text(`τₘₐₓ: ${(max_t*1000).toFixed(1)} ${stressSymbol}`)
+        .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 3 : 1)} ${stressSymbol}`)
         .style("display", showTMax ? "block" : "none")
     updateView();
 })

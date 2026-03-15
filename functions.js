@@ -1262,7 +1262,7 @@ function updateWeldProps() {
     RxMProps
         .text(`Mᵣ: ${(units === "metric" ? rxM/1000 : rxM).toFixed(1)} ${momentSymbol}`)
     tMaxProps
-        .text(`τₘₐₓ: ${(max_t*1000).toFixed(1)} ${stressSymbol}`)
+        .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 3 : 1)} ${stressSymbol}`)
         .style("display", showTMax ? "block" : "none")
 }
 
@@ -1287,7 +1287,7 @@ function updateLoadProps() {
         .text(`Mᵣ: ${(units === "metric" ? rxM/1000 : rxM).toFixed(1)} ${momentSymbol}`)
         .style("display", showRx ? "block" : "none")
     tMaxProps
-        .text(`τₘₐₓ: ${(max_t*1000).toFixed(1)} ${stressSymbol}`)
+        .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 3 : 1)} ${stressSymbol}`)
         .style("display", showTMax ? "block" : "none")
 }
 
