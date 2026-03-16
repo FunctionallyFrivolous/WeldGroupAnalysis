@@ -51,7 +51,10 @@ function updateSVGs(){
     yAxisLab
         .attr("x", origin[0])
         .attr("y", origin[1]-axisLength)
-    originDot
+    
+    editObject = weldCoords.find(j => j.id === selectedWeld);
+    editValue = coordToDist(editObject.points[0].x, "x");
+    if (!editing) testField.text(editValue.toFixed(2));
     
     // unitsButton
     //     .append("title")
@@ -425,7 +428,7 @@ function InitGeom() {
     loadPoints.length = loadCount;
 }
 
-function addWeld() { // test function to remove one weld
+function addWeld() {
     if (weldCount >= maxWelds) return;
 
     if (weldCount >= maxWelds-1 || geomLock) {
@@ -495,7 +498,7 @@ function addWeld() { // test function to remove one weld
     updateLoadProps();
 }
 
-function addLoad() { // test function to remove one weld
+function addLoad() {
     if (loadCount >= maxLoads) return;
 
     if (loadCount >= maxLoads-1 || geomLock) {
@@ -548,7 +551,7 @@ function addLoad() { // test function to remove one weld
     updateLoadProps();
 }
 
-function removeWeld(id) { // test function to remove one weld
+function removeWeld(id) {
     if (weldCount === 1) return;
 
     if (weldCount <= maxWelds && !geomLock) {
@@ -658,9 +661,13 @@ function removeLoad(id) { // test function to remove one weld
 
 function updateDrags(){
     svg.selectAll(".weld")
+        // .on("click", function(event, d) {
+        //     selectedWeld = d.id;
+        //     updateWeldProps();
+        // })
         .on("dblclick", function(event, d) {
             removeWeld(d.id);
-        });
+        })
 
     svg.selectAll(".load")
         .on("dblclick", function(event, d) {
@@ -740,7 +747,8 @@ function updateDrags(){
         .append("circle")
         .attr("r", 10)
         .attr("fill", "black")
-        .attr("opacity", 0);
+        .attr("opacity", 0)
+        .style("pointer-events", "none")
     enter.merge(weldDrag)
         .attr("cx", d => (d.points[1].x + d.points[0].x)/2)
         .attr("cy", d => (d.points[1].y + d.points[0].y)/2)
@@ -750,7 +758,6 @@ function updateDrags(){
                 xtemp = event.x;
                 ytemp = event.y;
                 weldDrag.attr("opacity", 0.1);
-                const weldNodes = nodes
                 showCentCoords = true;
                 updateWeldProps();
                 dragWCoords.style("display", "block")
@@ -959,7 +966,7 @@ function updateData() {
         .attr("stroke", "black")
         .style("stroke-linecap", "round")
         .attr("opacity", 0.4)
-        .attr("fill", "none");
+        .attr("fill", "none")
     enter.merge(weldLines)
         .attr("stroke-width", d => d.thk*weldThkScale)
         .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "));

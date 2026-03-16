@@ -296,6 +296,10 @@ svg.call(zoom)
 
 
 //Overlay Stuff
+let editLabel = "Start X"
+let editObject = weldCoords.find(j => j.id === selectedWeld);
+let editValue = coordToDist(editObject.points[0].x, "x");
+let editing = false;
 
 const dragWCoords = overlayGroup
     .append("text")
@@ -307,9 +311,12 @@ const dragWCoords = overlayGroup
     .attr("y", 40) //40 , 20
     .on("mousedown", function(event) {
         event.stopPropagation();
+        editObject = weldCoords.find(j => j.id === selectedWeld);
+        editValue = coordToDist(editObject.points[0].x, "x")        
         testBox.style("display", "block")
         testLabel.style("display", "block")
         testField.style("display", "block")
+        // editing = true;
     })
     // .style("display", "none");
 
@@ -334,10 +341,6 @@ const dragLCoords = overlayGroup
     .attr("y", 40) //40, 20
     // .style("display", "none");
 
-let editLabel = "Start X"
-let editObject = weldCoords.find(j => j.id === selectedWeld);
-let editValue = coordToDist(editObject.points[0].x, "x")
-
 const testBox = overlayGroup
     .append("rect")
     .attr("x", 5)
@@ -361,6 +364,7 @@ const testLabel = overlayGroup
     .attr("font-size", "14px")
     .text(`${editLabel}: `)
     .style("display", "none")
+    // .style("pointer-events", "none")
 
 
 let testContent = "0"
@@ -373,27 +377,33 @@ const testField = overlayGroup
     .attr("alignment-baseline", "middle")
     .style("text-align", "left")
     .attr("width", "60px")
-    .attr("height", "100%")
+    .attr("height", "20px")
     .append(`xhtml:div`)
     .append(`div`)
     .attr("contentEditable", true)
     .text(editValue.toFixed(2))
     .on("mousedown", function(event) {
         event.stopPropagation();
+        editing = true;
     })
     .on("keyup", function(event) {
         testContent = d3.select(this).text();
         if (!isFinite(testContent)) return;
         editObject.points[0].x = distToCoord(testContent, "x")
-        updateView();
         updateWeldProps();
         updateLoadProps();
+        updateView();
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
-            testBox.style("display", "none")
+            testBox
+                .style("display", "none")
+                .on("mousedown", function(event) {
+                    event.resumePropagation();
+                })
             testLabel.style("display", "none")
             testField.style("display", "none")
+            editing = false;
         }
     })
     .style("display", "none")
