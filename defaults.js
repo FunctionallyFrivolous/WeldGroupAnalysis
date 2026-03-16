@@ -29,7 +29,7 @@ let inspection = false;
 let windowWidth = 500;
 let windowHeight = 500
 let origin = [windowWidth/2,windowHeight/2];
-let axisLength = 0;
+let axisLength = 50;
 let xtemp = 0;
 let ytemp = 0;
 
@@ -55,7 +55,7 @@ let max_t = 0;
 let dM = "M 0,50 A 50,50 0 0,0 100,50"
 
 let loadScale = 0.5;
-let stressScale = 25;
+let stressScale = 3;
 const minLength = 25;
 let snapDist = 10;
 
@@ -84,7 +84,7 @@ const nodes = defaultCoords.map(j => ({ ...j }));
 
 const loadProps = [
     {id: "load1", x: 225, y: 125, th: 340, mag: 150, show: false},
-    {id: "load2", x: 100, y: 350, th: -125, mag: 100, show: false},
+    {id: "load2", x: 100, y: 350, th: 235, mag: 100, show: false},
 ]
 const loadArrows = [
     {id: "load1", x: 0, y: 0, mag: 0, show: false},

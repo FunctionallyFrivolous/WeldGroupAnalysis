@@ -4,12 +4,12 @@ document.getElementById("toggleRx").addEventListener("click", () => {
         .style("display", showRx ? "block" : "none")
     rxMGroup
         .style("display", showRx ? "block" : "none")
-    centroidProps
-        .style("display", showRx ? "block" : "none")
-    RxVProps
-        .style("display", showRx ? "block" : "none")
-    RxMProps
-        .style("display", showRx ? "block" : "none")
+    // centroidProps
+    //     .style("display", showRx ? "block" : "none")
+    // RxVProps
+    //     .style("display", showRx ? "block" : "none")
+    // RxMProps
+    //     .style("display", showRx ? "block" : "none")
     const button = document.getElementById("toggleRx");
     button.style.opacity = showRx ? 1 : 0.50 
 })
@@ -59,8 +59,8 @@ document.getElementById("toggleLoadProps").addEventListener("click", () => {
     showLoadProps = !showLoadProps
     const button = document.getElementById("toggleLoadProps");
     button.style.opacity = showLoadProps ? 1 : 0.50
-    dragLCoords.style("display", showLoadProps ? "block" : "none")
-    dragLProps.style("display", showLoadProps ? "block" : "none")
+    // dragLCoords.style("display", showLoadProps ? "block" : "none")
+    // dragLProps.style("display", showLoadProps ? "block" : "none")
     updateView();
 })
 
@@ -68,8 +68,8 @@ document.getElementById("toggleWeldProps").addEventListener("click", () => {
     showWeldProps = !showWeldProps
     const button = document.getElementById("toggleWeldProps");
     button.style.opacity = showWeldProps ? 1 : 0.50
-    dragWCoords.style("display", showWeldProps ? "block" : "none")
-    dragWProps.style("display", showWeldProps ? "block" : "none")
+    // dragWCoords.style("display", showWeldProps ? "block" : "none")
+    // dragWProps.style("display", showWeldProps ? "block" : "none")
     updateView();
 })
 
@@ -84,7 +84,7 @@ function unitSwap() {
         forceConvert = 1;
         unitPrecision = 1;
         weldThkScale = 40;
-        stressScale = 25;
+        stressScale = 3;
     }
     else {
         units = "metric";
@@ -96,7 +96,7 @@ function unitSwap() {
         forceConvert = 4.448;
         unitPrecision = 0;
         weldThkScale = 40;
-        stressScale = 2500;
+        stressScale = stressScale*145;
     }
 
     // const button = document.getElementById("toggleUnits");
@@ -204,3 +204,36 @@ function setupScaleSliders() {
 //     removeLoad(selectedLoad);
 //     updateView();
 // })
+
+document.getElementById("weldSize").addEventListener("input", function(event) {
+    const wSelect = weldCoords.find(j => j.id === selectedWeld)
+    wSelect.thk = event.target.valueAsNumber;
+    updateView();
+})
+document.getElementById("weldLen").addEventListener("input", function(event) {
+    const wSelect = weldCoords.find(j => j.id === selectedWeld)
+    wSelect.len = event.target.valueAsNumber;
+    updateView();
+})
+
+document.getElementById("weldStartX").addEventListener("input", function(event) {
+    const wSelect = weldCoords.find(j => j.id === selectedWeld)
+    wSelect.points[0].x = distToCoord(event.target.valueAsNumber, "x");
+    updateView();
+})
+document.getElementById("weldStartY").addEventListener("input", function(event) {
+    const wSelect = weldCoords.find(j => j.id === selectedWeld)
+    wSelect.points[0].y = distToCoord(event.target.valueAsNumber, "y");
+    updateView();
+})
+
+document.getElementById("weldEndX").addEventListener("input", function(event) {
+    const wSelect = weldCoords.find(j => j.id === selectedWeld)
+    wSelect.points[1].x = distToCoord(event.target.valueAsNumber, "x");
+    updateView();
+})
+document.getElementById("weldEndY").addEventListener("input", function(event) {
+    const wSelect = weldCoords.find(j => j.id === selectedWeld)
+    wSelect.points[1].y = distToCoord(event.target.valueAsNumber, "y");
+    updateView();
+})

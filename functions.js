@@ -483,6 +483,8 @@ function addWeld() { // test function to remove one weld
 
     weldCount = weldCoords.length;
 
+    selectedWeld = `weld${weldCount}`
+
     updateView();
     updateWeldProps();
     updateLoadProps();
@@ -522,6 +524,8 @@ function addLoad() { // test function to remove one weld
         {id: "load"+`${loadCount+1}`,points: [{x: newX, y: newY},{x: 0, y: 0}]}
     )
     loadCount = loadProps.length;
+
+    selectedLoad = `load${loadCount}`
 
     updateView();
     updateWeldProps();
@@ -579,10 +583,10 @@ function removeWeld(id) { // test function to remove one weld
     updateWeldProps();
     updateLoadProps();
     
-    dragWCoords
-        .style("display", "none");
-    dragWProps
-        .style("display", "none");
+    // dragWCoords
+    //     .style("display", "none");
+    // dragWProps
+    //     .style("display", "none");
 }
 
 function removeLoad(id) { // test function to remove one weld
@@ -622,10 +626,10 @@ function removeLoad(id) { // test function to remove one weld
     updateView();
     updateWeldProps();
     updateLoadProps();
-    dragLCoords
-        .style("display", "none");
-    dragLProps
-        .style("display", "none");
+    // dragLCoords
+    //     .style("display", "none");
+    // dragLProps
+    //     .style("display", "none");
 }
 
 function updateDrags(){
@@ -652,6 +656,8 @@ function updateDrags(){
         .attr("cy", d => d.y)
         .call(d3.drag()
             .on("start", (event, d) => {
+                // xtemp = event.x;
+                // ytemp = event.y;
                 selectedWeld = d.id.slice(0,5)
                 NodeDrag.attr("opacity",0.1);
                 const strIndex = d.id.indexOf("_");
@@ -1166,33 +1172,33 @@ function updateLabels() {
         .style("display", d => showLoadProps || loadProps.find(j => j.id === d.id).show ? "block" : "none");
     loadMagLabs.exit().remove();
 
-    const weldPropLabs = WeldPropLabsGroup.selectAll("text")
-        .data(weldCoords)
-    enter = weldPropLabs.enter()
-        .append("text")
-        .attr("font-size", "8px")
-        .attr("text-anchor", "left")
-        .style("pointer-events", "none")
-        // .style("display", "none");
-    enter.merge(weldPropLabs)
-        .attr("x", d => {
-            const dx = (d.points[1].x + d.points[0].x)/2
-            return dx+10;
-        })
-        .attr("y", d => {
-            const dy = (d.points[1].y + d.points[0].y)/2
-            return dy-10;
-        })
-        .text( d => {
-            const wLen = d.len;
-            const wThk = d.thk;
-            let figs = 0;
-            if (units === "inches") figs = 3;
-            else figs = 1;
-            return `L: ${wLen.toFixed(unitPrecision)}${unitSymbol}, thk: ${wThk.toFixed(figs)}${unitSymbol}`;
-        })
-        .style("display", d => showWeldProps || d.show ? "block" : "none");
-    weldPropLabs.exit().remove();
+    // const weldPropLabs = WeldPropLabsGroup.selectAll("text")
+    //     .data(weldCoords)
+    // enter = weldPropLabs.enter()
+    //     .append("text")
+    //     .attr("font-size", "8px")
+    //     .attr("text-anchor", "left")
+    //     .style("pointer-events", "none")
+    //     // .style("display", "none");
+    // enter.merge(weldPropLabs)
+    //     .attr("x", d => {
+    //         const dx = (d.points[1].x + d.points[0].x)/2
+    //         return dx+10;
+    //     })
+    //     .attr("y", d => {
+    //         const dy = (d.points[1].y + d.points[0].y)/2
+    //         return dy-10;
+    //     })
+    //     .text( d => {
+    //         const wLen = d.len;
+    //         const wThk = d.thk;
+    //         let figs = 0;
+    //         if (units === "inches") figs = 3;
+    //         else figs = 1;
+    //         return `L: ${wLen.toFixed(unitPrecision)}${unitSymbol}, thk: ${wThk.toFixed(figs)}${unitSymbol}`;
+    //     })
+    //     .style("display", d => showWeldProps || d.show ? "block" : "none");
+    // weldPropLabs.exit().remove();
         
 }
 
@@ -1220,6 +1226,25 @@ function updateWeldProps() {
     tMaxProps
         .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
         .style("display", showTMax ? "block" : "none")
+
+    const weldLenInput = document.getElementById("weldLen");
+    weldLenInput.value = (wSelect.len).toFixed(1);
+    const weldSizeInput = document.getElementById("weldSize");
+    weldSizeInput.value = (wSelect.thk*unitConvert).toFixed(3)
+
+    const weldSXInput = document.getElementById("weldStartX");
+    weldSXInput.value = coordToDist(wSelect.points[0].x,"x").toFixed(1);
+    const weldSYInput = document.getElementById("weldStartY");
+    weldSYInput.value = coordToDist(wSelect.points[0].y,"y").toFixed(1);
+
+    const weldEXInput = document.getElementById("weldEndX");
+    weldEXInput.value = coordToDist(wSelect.points[1].x,"x").toFixed(1);
+    const weldEYInput = document.getElementById("weldEndY");
+    weldEYInput.value = coordToDist(wSelect.points[1].y,"y").toFixed(1);
+
+    const weldIDLab = document.getElementById("weldLab");
+    const weldNo = wSelect.id.slice(4,5);
+    weldIDLab.textContent = `Weld ${weldNo}`;
 }
 
 function updateLoadProps() {
@@ -1245,51 +1270,92 @@ function updateLoadProps() {
     tMaxProps
         .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
         .style("display", showTMax ? "block" : "none")
+
+    const loadMagInput = document.getElementById("loadMag");
+    loadMagInput.value = lSelect.mag.toFixed(1);
+    const loadAngInput = document.getElementById("loadAng");
+    loadAngInput.value = lSelect.th.toFixed(1)
+
+    const loadSXInput = document.getElementById("loadStartX");
+    loadSXInput.value = coordToDist(lSelect.x,"x").toFixed(1);
+    const loadSYInput = document.getElementById("loadStartY");
+    loadSYInput.value = coordToDist(lSelect.y,"y").toFixed(1);
+
+    const loadIDLab = document.getElementById("loadLab");
+    const weldNo = lSelect.id.slice(4,5);
+    loadIDLab.textContent = `Load ${weldNo}`;
+
 }
 
-function snapDrag(id, drx, dry, opx=0, opy=0) {
+function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
     let dxf = drx;
     let dyf = dry;
 
+    // Snap to Weld mid-points
+    for (i = 0; i < weldCoords.length; i++) {
+        const midx = (weldCoords[i].points[1].x + weldCoords[i].points[0].x)/2;
+        const midy = (weldCoords[i].points[1].y + weldCoords[i].points[0].y)/2;
+        if (id !== weldCoords[i].id && Math.abs(drx - midx) < snapDist && Math.abs(dry - midy) < snapDist) {
+            dxf = midx;
+            dyf = midy;
+        }
+    }
+    
+    // Snap to Vertical
     if (Math.abs(drx - opx) < snapDist) {
         dxf = opx;
     } 
+    // Snap to Horizontal
     else if (Math.abs(dry - opy) < snapDist) {
         dyf = opy;
-    }
+    } 
+    // Hold original angle (?)
+    // else if (sdist < snapDist) {
+    //     const edist = Math.sqrt((dry-opy)*(dry-opy)+(drx-opx)*(drx-opx))
+    //     const odist = Math.sqrt((ory-opy)*(ory-opy)+(orx-opx)*(orx-opx))
+    //     const angx = edist/odist*(orx-opx)+opx
+    //     const angy = edist/odist*(ory-opy)+opy
+    //     const sdist = Math.sqrt((dry-angy)*(dry-angy)+(drx-angx)*(drx-angx))
+    //     dxf = angx;
+    //     dfy = angy;
+    // }
 
-    if (id.includes("weld")) {
+    if (id.includes("weld")) { // When dragging welds...
+        // Snap to other weld nodes
         for (i = 0; i < nodes.length; i++) {
             if (id.slice(0,5) !== nodes[i].id.slice(0,5) && Math.abs(drx - nodes[i].x) < snapDist && Math.abs(dry - nodes[i].y) < snapDist) {
                 dxf = nodes[i].x;
                 dyf = nodes[i].y;
             }
         }
+        // Snap to loads
         for (i = 0; i < loadProps.length; i++) {
             if (Math.abs(drx - loadProps[i].x) < snapDist && Math.abs(dry - loadProps[i].y) < snapDist) {
                 dxf = loadProps[i].x;
                 dyf = loadProps[i].y;
             }
         }
-    } else {
+    } else { // When dragging loads
+        // Snap to weld nodes
         for (i = 0; i < nodes.length; i++) {
             if (Math.abs(drx - nodes[i].x) < snapDist && Math.abs(dry - nodes[i].y) < snapDist) {
                 dxf = nodes[i].x;
                 dyf = nodes[i].y;
             }
         }
+        // Snap to other loads
         for (i = 0; i < loadProps.length; i++) {
             if (id.slice(0,5) !== loadProps[i].id && Math.abs(drx - loadProps[i].x) < snapDist && Math.abs(dry - loadProps[i].y) < snapDist) {
                 dxf = loadProps[i].x;
                 dyf = loadProps[i].y;
             }
         }
+        // Snap to centroid
         if (Math.abs(drx - centroidTot[0].x) < snapDist && Math.abs(dry - centroidTot[0].y) < snapDist) {
             dxf = centroidTot[0].x;
             dyf = centroidTot[0].y;
         }
     }
     
-
     return [dxf, dyf]
 }

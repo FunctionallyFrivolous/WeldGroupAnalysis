@@ -8,12 +8,14 @@
         // Colored relative to min/max stress scale
         // Only when geometry is locked
     // Snap welds and loads to 45deg?
-    // Snap welds and loads to weld mid-points?
-        // Calc weld mid-points and apply typical snap logic
+    // Apply snapping to weld drag (snap weld mid to other nodes)
     // Lock weld angle?
-        // Hold shift when draging weld node to adjust length while keeping initial angle?
-        // Auto lock when less than some amount of angle deviation?
-        // Use dist from event x,y to stationary node, calc new d x,y
+        // Make this another snap condition:
+            // Calculate original angle at drag start
+            // Calc dist from opposite node to event point
+            // Calc new x and y at calculated distance & original angle
+            // Set node coords to new calc'd x & y IF event x & y are within snap threshold of new x & y
+        // With this as a snap condition, user can turn it off with the slider!
     // Add user inputs?
         // First relevant one will be weld thk, since all others can be dragged
         // Units
@@ -116,7 +118,7 @@ const coordAxes = zoomGroup.append("g")
     .attr("stroke-dasharray", "2,3")
     .style("stroke-linecap", "round")
     .style("pointer-events", "none")
-    .style("display", "none")
+    // .style("display", "none")
 const xAxisLab = zoomGroup.append("g")
     .append("text")
     .attr("font-size", "14px")
@@ -128,7 +130,7 @@ const xAxisLab = zoomGroup.append("g")
     .attr("y", origin[1])
     .text("x")
     .attr("dx", 8)
-    .style("display", "none")
+    // .style("display", "none")
 const yAxisLab = zoomGroup.append("g")
     .append("text")
     .attr("font-size", "14px")
@@ -140,14 +142,14 @@ const yAxisLab = zoomGroup.append("g")
     .attr("y", origin[1]-axisLength)
     .text("y")
     .attr("dy", -8)
-    .style("display", "none")
+    // .style("display", "none")
 const originDot = zoomGroup.append("g")
     .append("circle")
     // .attr("opacity", 0.75)
     .attr("cx", origin[0])
     .attr("cy", origin[1])
     .attr("r", 3)
-    .style("display", "none")
+    // .style("display", "none")
 
 // Define dot marker for use at origin of force vectors
 const dotGroup = zoomGroup.append("g")
@@ -267,7 +269,6 @@ const centroidCoords = centroidCoordsGroup.selectAll("text")
     .style("pointer-events", "none")
     .attr("x", d => d.x)
     .attr("y", d => d.y)
-    // .text("hi tho")
     .style("display", "block");
 
 
@@ -285,11 +286,7 @@ svg.call(zoom)
 
 //Overlay Stuff
 
-// const dragWCoordsGroup = overlayGroup.append("g")
 const dragWCoords = overlayGroup.append("g")
-// const dragWCoords = dragWCoordsGroup.selectAll("text")
-    // .data(nodes)
-    // .enter()
     .append("text")
     .attr("font-size", "8pt")
     .attr("text-anchor", "start")
@@ -297,13 +294,9 @@ const dragWCoords = overlayGroup.append("g")
     .style("pointer-events", "none")
     .attr("x", 5)
     .attr("y", 40) //40 , 20
-    .style("display", "none");
+    // .style("display", "none");
 
-// const dragWPropsGroup = overlayGroup.append("g")
 const dragWProps = overlayGroup.append("g")
-// const dragWProps = dragWPropsGroup.selectAll("text")
-//     .data(nodes)
-//     .enter()
     .append("text")
     .attr("font-size", "8pt")
     .attr("text-anchor", "start")
@@ -311,14 +304,10 @@ const dragWProps = overlayGroup.append("g")
     .style("pointer-events", "none")
     .attr("x", 5)
     .attr("y", 25) //25 , 5
-    .style("display", "none")
+    // .style("display", "none")
 
 
-// const dragLCoordsGroup = overlayGroup.append("g")
 const dragLCoords = overlayGroup.append("g")
-// const dragLCoords = dragLCoordsGroup.selectAll("text")
-//     .data(loadProps)
-//     .enter()
     .append("text")
     .attr("font-size", "8pt")
     .attr("text-anchor", "end")
@@ -326,12 +315,9 @@ const dragLCoords = overlayGroup.append("g")
     .style("pointer-events", "none")
     .attr("x", windowWidth-5)
     .attr("y", 40) //40, 20
-    .style("display", "none");
-// const dragLPropsGroup = overlayGroup.append("g")
+    // .style("display", "none");
+
 const dragLProps = overlayGroup.append("g")
-// const dragLProps = dragLPropsGroup.selectAll("text")
-//     .data(loadProps)
-    // .enter()
     .append("text")
     .attr("font-size", "8pt")
     .attr("text-anchor", "end")
@@ -339,7 +325,7 @@ const dragLProps = overlayGroup.append("g")
     .style("pointer-events", "none")
     .attr("x", windowWidth-5)
     .attr("y", 25) //25, 5
-    .style("display", "none")
+    // .style("display", "none")
 
 const centroidProps = overlayGroup.append("g")
     .append("text")
