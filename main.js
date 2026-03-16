@@ -1,5 +1,29 @@
 // Do Next:
-    // Show/Hide axes SVG button? Currently slider only (0 = hide)
+    // Snap Upgrades
+        // Snap when dragging weld?
+        // Snap to 45deg?
+        // Snap/lock weld angle
+        // Snap to weld line (slide along weld)
+    // Move to SVG
+        // Weld & Load Props Buttons
+            // Double click on "Welds" / "Load" labels?
+        // Rx?
+            // Rx Button?
+            // Double click centroid?
+            // Both?
+        // Show/Hide stresses?
+            // Multiple buttons?
+            // Expanding menu?
+        // Axes
+            // Button
+            // Single click turns on/off
+            // Double click expands slider to adjust length 
+        // Settings
+            // Snap Threshold
+            // Load Scale
+            // Stress Scale
+        // Fit View Button
+            // Implement html button first
     // Scale axes to fill/remain in window. But it must pan in order to remain at the true origin
         // This is end goal for sure...
         // Overlay it and then update x,y vals to match pan
@@ -7,24 +31,6 @@
         // Gives stress value(s) at current location
         // Colored relative to min/max stress scale
         // Only when geometry is locked
-    // Snap welds and loads to 45deg?
-    // Apply snapping to weld drag (snap weld mid to other nodes)
-    // Lock weld angle?
-        // Make this another snap condition:
-            // Calculate original angle at drag start
-            // Calc dist from opposite node to event point
-            // Calc new x and y at calculated distance & original angle
-            // Set node coords to new calc'd x & y IF event x & y are within snap threshold of new x & y
-        // With this as a snap condition, user can turn it off with the slider!
-    // Add user inputs?
-        // First relevant one will be weld thk, since all others can be dragged
-        // Units
-        // Then load angle
-        // Then load coords?
-        // Then weld coords
-        // How?
-            // Static table with all that can be edited anytime?
-            // Click on a weld/load to select, display current stats and allow edit?
     // Add legend?
         // Click Button to show/hide
         // Design Elements
@@ -38,9 +44,6 @@
             // Geom Lock
             // Units
             // Add/Remove Weld/Load
-    // Fit View?
-        // Need to get min and max X and Y vals
-        // Center on centroid OR by min/max?
     // Add bending?!?
         // There's lots here, so this should be held until all pre-bending functionality is squared away
     // Add applied moments?
@@ -264,7 +267,7 @@ const centroidCoords = centroidCoordsGroup.selectAll("text")
     .data(centroidTot)
     .enter()
     .append("text")
-    .attr("font-size", "10px")
+    .attr("font-size", "9px")
     .attr("text-anchor", "middle")
     .style("pointer-events", "none")
     .attr("x", d => d.x)
@@ -452,9 +455,13 @@ const weldZone = overlayGroup.append("g")
     .attr("font-weight", "bold")
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "text-before-edge")
-    .style("pointer-events", "none")
+    // .style("pointer-events", "none")
     .attr("x", 27)
     .attr("y", 5)
+    .on("click", function(event, d) {
+        showWeldProps = !showWeldProps
+        updateView();
+        })
     .text("Welds")
     // .style("display", "none");
 
@@ -521,11 +528,16 @@ const loadZone = overlayGroup.append("g")
     .attr("font-weight", "bold")
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "text-before-edge")
-    .style("pointer-events", "none")
+    // .style("pointer-events", "none")
     .attr("x", windowWidth-27)
     .attr("y", 5)
+    .on("click", function(event, d) {
+        showLoadProps = !showLoadProps
+        updateView();
+    })
     .text("Loads")
     // .style("display", "none");
+    
 
 const addLButton = overlayGroup.append("g")
     .append("rect")

@@ -17,8 +17,8 @@
         <button id="toggleTTor" style="opacity: 0.5; font-family: serif">τ''<sub></sub></button>
         <button id="toggleTMax" style="opacity: 0.5; font-family: serif">τ<sub>max</sub></button>
         <!-- <button id="toggleCoords">Coords</button> -->
-        <button id="toggleLoadProps" style="opacity: 0.5">Load Props<sub></sub></button>
-        <button id="toggleWeldProps" style="opacity: 0.5">Weld Props<sub></sub></button>
+        <!-- <button id="toggleLoadProps" style="opacity: 0.5">Load Props<sub></sub></button>
+        <button id="toggleWeldProps" style="opacity: 0.5">Weld Props<sub></sub></button> -->
         </b>
         <br>
         <svg id="topView" width="500" height="500" 
@@ -38,12 +38,14 @@
         <br>
         <span>
         <label id="weldLab">Weld 1: </label>
+        <br>
         <input type="number" id="weldLen" placeholder="Length" min="1" step="1">
         <span id="lUnits">"</span>
         x
         <input type="number" id="weldSize" placeholder="Size" min="0.125" value="0" step="0.125">
         <span id="thkUnits">"</span>
-        Coords: (
+        <br>
+        (
         <input type="number" id="weldStartX" placeholder="x" min="0.1" value="0" step="0.1">
         ,
         <input type="number" id="weldStartY" placeholder="y" min="0.1" value="0" step="0.1">
@@ -55,11 +57,13 @@
         <br>
         <br>
         <label id="loadLab">Load 1: </label>
+        <br>
         <input type="number" id="loadMag" placeholder="Mag" min="1" step="1">
         <span id="fUnits">lbf</span>
         @
-        <input type="number" id="loadAng" placeholder="Angle" min="0" max="360" value="0" step="1">°
-        Coords: (
+        <input type="number" id="loadAng" placeholder="Angle" min="0" max="360" value="0" step="1">° 
+        <br>
+         (
         <input type="number" id="loadStartX" placeholder="x" min="0.1" value="0" step="0.1">
         ,
         <input type="number" id="loadStartY" placeholder="y" min="0.1" value="0" step="0.1">
