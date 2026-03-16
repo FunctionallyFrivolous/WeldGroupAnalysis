@@ -55,6 +55,7 @@
         // In theory should only need 3 points/values for this?
             // Max val will always be one of the ends of the weld
             // Min val will always be the point closest to the centroid
+    // Undo/Redo?
 
 // Initialize high level SVG stuff
 const svg = d3.select("#topView"); // Defining the svg window (references element from index.html)
@@ -522,6 +523,27 @@ const removeWIcon = overlayGroup.append("g")
     .text("-")
     // .style("display", "none")
 
+// let testContent = "hi"
+// const testField = overlayGroup.append("g")
+//     // .append("text")
+//     .append("foreignObject")
+//     .attr("x", 350)
+//     .attr("y", 5)
+//     .attr("width", "35px")
+//     .attr("height", "100%")
+//     .append(`xhtml:div`)
+//     .append(`div`)
+//     .attr("contentEditable", true)
+//     .text("Loads")
+//     .on("mousedown", function(event) {
+//         event.stopPropagation();
+//     })
+//     .on("keyup", function(d) {
+//         testContent = d3.select(this).text();
+//         // updateView();
+//         loadZone.text(testContent)
+//     })
+    
 const loadZone = overlayGroup.append("g")
     .append("text")
     .attr("font-size", "9pt")
@@ -536,8 +558,8 @@ const loadZone = overlayGroup.append("g")
         updateView();
     })
     .text("Loads")
+    // .text(testContent)
     // .style("display", "none");
-    
 
 const addLButton = overlayGroup.append("g")
     .append("rect")
@@ -557,7 +579,6 @@ const addLIcon = overlayGroup.append("g")
     .attr("font-size", "20px")
     .attr("text-anchor", "middle")
     // .attr("alignment-baseline", "middle")
-    .attr("text-anchor", "middle")
     .attr("font-family", "Arial, Helvetica, sans-serif")
     .style("pointer-events", "none")
     .attr("x", windowWidth-13)

@@ -438,19 +438,22 @@ function addWeld() { // test function to remove one weld
         removeWIcon.attr("fill", "red")
     }
 
-    let newY0 = 0;
-    if (weldCount === 3) newY0 = 100;
-    else newY0 = Math.floor(Math.random()*(450-50)+50);
-    let newY1 = 0;
-    if (weldCount === 3) newY1 = 100;
-    else newY1 = Math.floor(Math.random()*(450-50)+50);
-
     let newX0 = 0;
-    if (weldCount === 3) newX0 = 170;
-    else newX0 = Math.floor(Math.random()*(450-50)+50);
+    let newY0 = 0;
     let newX1 = 0;
-    if (weldCount === 3) newX1 = 330;
-    else newX1 = Math.floor(Math.random()*(450-50)+50);
+    let newY1 = 0;
+
+    if (backUpWelds.length > 0) {
+        newX0 = backUpWelds[0].points[0].x;
+        newY0 = backUpWelds[0].points[0].y;
+        newX1 = backUpWelds[0].points[1].x;
+        newY1 = backUpWelds[0].points[1].y;
+    } else {
+        newX0 = Math.floor(Math.random()*(450-50)+50);
+        newY0 = Math.floor(Math.random()*(450-50)+50);
+        newX1 = Math.floor(Math.random()*(450-50)+50);
+        newY1 = Math.floor(Math.random()*(450-50)+50);
+    }
 
     const newWeld = {startNode: [newX0,newY0], endNode: [newX1,newY1]};
     const addNodes = [
@@ -484,6 +487,8 @@ function addWeld() { // test function to remove one weld
     weldCount = weldCoords.length;
 
     selectedWeld = `weld${weldCount}`
+    
+    backUpWelds.splice(0,1);
 
     updateView();
     updateWeldProps();
@@ -500,13 +505,22 @@ function addLoad() { // test function to remove one weld
         removeLIcon.attr("fill", "red")
     }
 
+    let newX = 0;
+    let newY = 0;
+    let newTh = 0;
+    let newMag = 0;
 
-    let newY = Math.floor(Math.random()*(450-50)+50);
-
-    let newX = Math.floor(Math.random()*(450-50)+50);
-
-    let newMag = Math.floor(Math.random()*(250-50)+50);
-    let newTh = Math.floor(Math.random()*(359-0)+0);
+    if (backUpLoads.length > 0) {
+        newX = backUpLoads[0].x;
+        newY = backUpLoads[0].y;
+        newTh = backUpLoads[0].th;
+        newMag = backUpLoads[0].mag;
+    } else {
+        newX = Math.floor(Math.random()*(450-50)+50);
+        newY = Math.floor(Math.random()*(450-50)+50);
+        newTh = Math.floor(Math.random()*(359-0)+0);
+        newMag = Math.floor(Math.random()*(250-50)+50);
+    }
 
     loadProps.push(
         {id: "load"+`${loadCount+1}`, x: newX, y: newY, th: newTh, mag: newMag, show: false},
@@ -527,6 +541,8 @@ function addLoad() { // test function to remove one weld
 
     selectedLoad = `load${loadCount}`
 
+    backUpLoads.splice(0,1);
+
     updateView();
     updateWeldProps();
     updateLoadProps();
@@ -544,8 +560,12 @@ function removeWeld(id) { // test function to remove one weld
         // document.getElementById("removeWeld").disabled = true;
         removeWIcon.attr("fill", "white");
     }
-    
+
     let index = weldCoords.findIndex(obj => obj.id === id);
+
+    const weldBackup = {points: [{x: weldCoords[index].points[0].x, y: weldCoords[index].points[0].y},{x: weldCoords[index].points[1].x, y: weldCoords[index].points[1].y}], thk: weldCoords[index].thk}
+    backUpWelds.unshift(weldBackup);
+    
     if (index > -1) {
         weldCoords.splice(index, 1);
     }
@@ -573,7 +593,7 @@ function removeWeld(id) { // test function to remove one weld
             totalShear.splice(index, 1);
         }    
     }
-    
+
     weldCount = weldCoords.length;
     // weldDrag.attr("opacity", 0)
 
@@ -600,6 +620,10 @@ function removeLoad(id) { // test function to remove one weld
     }
     
     let index = loadProps.findIndex(obj => obj.id === id);
+
+    const loadBackup = {x: loadProps[index].x, y: loadProps[index].y, th: loadProps[index].th, mag: loadProps[index].mag}
+    backUpLoads.unshift(loadBackup);
+    
     if (index > -1) {
         loadProps.splice(index, 1);
     }

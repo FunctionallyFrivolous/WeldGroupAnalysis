@@ -60,7 +60,7 @@ const minLength = 25;
 let snapDist = 10;
 
 let weldCount = 3;
-let loadCount = 2;
+let loadCount = 1;
 const maxWelds = 10;
 const maxLoads = 10; 
 
@@ -148,6 +148,13 @@ const totalShear = [
     {id: "weld3_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
     {id: "weld4_start", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
     {id: "weld4_end", points: [{x: 0, y: 0}, {x: 0, y: 0}], mag: 0, th: 0},
+]
+
+const backUpWelds = [
+    {points: [{x: 170, y: 100},{x: 330, y: 100}], thk: defaultThk}
+]
+const backUpLoads = [
+    {x: 100, y: 350, th: 235, mag: 100}
 ]
 
 InitGeom();
