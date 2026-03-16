@@ -307,6 +307,8 @@ const dragWCoords = overlayGroup
     .attr("y", 40) //40 , 20
     .on("mousedown", function(event) {
         event.stopPropagation();
+        testBox.style("display", "block")
+        testLabel.style("display", "block")
         testField.style("display", "block")
     })
     // .style("display", "none");
@@ -348,6 +350,7 @@ const testBox = overlayGroup
     .on("mousedown", function(event) {
         event.stopPropagation();
     })
+    .style("display", "none")
 const testLabel = overlayGroup
     .append("text")
     .attr("x", 60)
@@ -357,13 +360,14 @@ const testLabel = overlayGroup
     .style("text-align", "right")
     .attr("font-size", "14px")
     .text(`${editLabel}: `)
+    .style("display", "none")
 
 
 let testContent = "0"
 const testField = overlayGroup
     .append("foreignObject")
     .attr("x", 70)
-    .attr("y", 71)
+    .attr("y", 70.5)
     .attr("font-size", "14px")
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
@@ -377,17 +381,22 @@ const testField = overlayGroup
     .on("mousedown", function(event) {
         event.stopPropagation();
     })
+    .on("keyup", function(event) {
+        testContent = d3.select(this).text();
+        if (!isFinite(testContent)) return;
+        editObject.points[0].x = distToCoord(testContent, "x")
+        updateView();
+        updateWeldProps();
+        updateLoadProps();
+    })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
-            testContent = d3.select(this).text();
-            if (!isFinite(testContent)) return;
-            // loadZone.text(testContent)
-            editObject.points[0].x = distToCoord(testContent, "x")
-            updateView();
-            testField
-                .style("display", "none")
+            testBox.style("display", "none")
+            testLabel.style("display", "none")
+            testField.style("display", "none")
         }
     })
+    .style("display", "none")
 
 const dragLProps = overlayGroup
     .append("text")
