@@ -85,6 +85,9 @@ function unitSwap() {
         unitPrecision = 1;
         weldThkScale = 40;
         stressScale = 3;
+        document.getElementById("lUnits").textContent = `"`;
+        document.getElementById("thkUnits").textContent = `"`;
+        document.getElementById("fUnits").textContent = `lbf`;
     }
     else {
         units = "metric";
@@ -97,10 +100,14 @@ function unitSwap() {
         unitPrecision = 0;
         weldThkScale = 40;
         stressScale = stressScale*145;
+        document.getElementById("lUnits").textContent = "mm";
+        document.getElementById("thkUnits").textContent = `mm`;
+        document.getElementById("fUnits").textContent = `N`;
     }
 
     // const button = document.getElementById("toggleUnits");
     // button.textContent = units === "metric" ? "Metric" : "Inches";
+
 
     updateView();
     updateWeldProps();
