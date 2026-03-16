@@ -67,6 +67,7 @@ const maxLoads = 10;
 let selectedLoad = "load1";
 let selectedWeld = "weld1";
 
+
 // A default set of nodes for 4 initial welds...
 const defaultCoords = [
     {id: "weld1_start", x: 150, y: 380, t: 0, show: false},

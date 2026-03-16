@@ -1,12 +1,18 @@
 // Do Next:
+    // Move direct user inputs to SVG
+        // Make props text click able
+        // Pops up an editable foreignObject
+        // Editing popup updates the associated value
+        // Include a label (in popup) for what value is being updated
+        // How to apply/exit?
+            // Enter key? Click outside popup?
+            // Ensure works on mobile and desktop
     // Snap Upgrades
-        // Snap when dragging weld?
+        // Snap when dragging weld (mid node)?
         // Snap to 45deg?
         // Snap/lock weld angle
         // Snap to weld line (slide along weld)
     // Move to SVG
-        // Weld & Load Props Buttons
-            // Double click on "Welds" / "Load" labels?
         // Rx?
             // Rx Button?
             // Double click centroid?
@@ -58,6 +64,7 @@
     // Undo/Redo?
 
 // Initialize high level SVG stuff
+
 const svg = d3.select("#topView"); // Defining the svg window (references element from index.html)
 const zoomGroup = svg.append("g"); // Defines group that will contain all SVG elements that are effected by zoom/pan
 const overlayGroup = svg.append("g"); // Defines group that will contain SVG elements that ignore zoom/pan and remain overlaid on window
@@ -290,17 +297,21 @@ svg.call(zoom)
 
 //Overlay Stuff
 
-const dragWCoords = overlayGroup.append("g")
+const dragWCoords = overlayGroup
     .append("text")
     .attr("font-size", "8pt")
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "text-before-edge")
-    .style("pointer-events", "none")
+    // .style("pointer-events", "none")
     .attr("x", 5)
     .attr("y", 40) //40 , 20
+    .on("mousedown", function(event) {
+        event.stopPropagation();
+        testField.style("display", "block")
+    })
     // .style("display", "none");
 
-const dragWProps = overlayGroup.append("g")
+const dragWProps = overlayGroup
     .append("text")
     .attr("font-size", "8pt")
     .attr("text-anchor", "start")
@@ -311,7 +322,7 @@ const dragWProps = overlayGroup.append("g")
     // .style("display", "none")
 
 
-const dragLCoords = overlayGroup.append("g")
+const dragLCoords = overlayGroup
     .append("text")
     .attr("font-size", "8pt")
     .attr("text-anchor", "end")
@@ -321,7 +332,64 @@ const dragLCoords = overlayGroup.append("g")
     .attr("y", 40) //40, 20
     // .style("display", "none");
 
-const dragLProps = overlayGroup.append("g")
+let editLabel = "Start X"
+let editObject = weldCoords.find(j => j.id === selectedWeld);
+let editValue = coordToDist(editObject.points[0].x, "x")
+
+const testBox = overlayGroup
+    .append("rect")
+    .attr("x", 5)
+    .attr("y", 60)
+    .attr("width", 130)
+    .attr("height", 40)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("opacity", 0.25)
+    .on("mousedown", function(event) {
+        event.stopPropagation();
+    })
+const testLabel = overlayGroup
+    .append("text")
+    .attr("x", 60)
+    .attr("y", 80)
+    .attr("text-anchor", "end")
+    .attr("alignment-baseline", "middle")
+    .style("text-align", "right")
+    .attr("font-size", "14px")
+    .text(`${editLabel}: `)
+
+
+let testContent = "0"
+const testField = overlayGroup
+    .append("foreignObject")
+    .attr("x", 70)
+    .attr("y", 71)
+    .attr("font-size", "14px")
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "middle")
+    .style("text-align", "left")
+    .attr("width", "60px")
+    .attr("height", "100%")
+    .append(`xhtml:div`)
+    .append(`div`)
+    .attr("contentEditable", true)
+    .text(editValue.toFixed(2))
+    .on("mousedown", function(event) {
+        event.stopPropagation();
+    })
+    .on("keydown", function(event) {
+        if (event.key === "Enter") {
+            testContent = d3.select(this).text();
+            if (!isFinite(testContent)) return;
+            // loadZone.text(testContent)
+            editObject.points[0].x = distToCoord(testContent, "x")
+            updateView();
+            testField
+                .style("display", "none")
+        }
+    })
+
+const dragLProps = overlayGroup
     .append("text")
     .attr("font-size", "8pt")
     .attr("text-anchor", "end")
@@ -331,7 +399,7 @@ const dragLProps = overlayGroup.append("g")
     .attr("y", 25) //25, 5
     // .style("display", "none")
 
-const centroidProps = overlayGroup.append("g")
+const centroidProps = overlayGroup
     .append("text")
     .attr("font-size", "8pt")
     // .attr("font-weight", "bold")
@@ -342,7 +410,7 @@ const centroidProps = overlayGroup.append("g")
     .attr("y", 5)
     // .style("display", "none")
     // .text("Centroid: ")
-const RxVProps = overlayGroup.append("g")
+const RxVProps = overlayGroup
     .append("text")
     .attr("font-size", "8pt")
     // .attr("font-weight", "bold")
@@ -354,7 +422,7 @@ const RxVProps = overlayGroup.append("g")
     .attr("fill", "darkred")
     // .style("display", "none")
     // .text("RxV: F= , th= ")
-const RxMProps = overlayGroup.append("g")
+const RxMProps = overlayGroup
     .append("text")
     .attr("font-size", "8pt")
     // .attr("font-weight", "bold")
@@ -366,7 +434,7 @@ const RxMProps = overlayGroup.append("g")
     .attr("fill", "darkblue")
     // .style("display", "none")
     // .text(`RxM: ${rxM.toFixed(1)}`)
-const tMaxProps = overlayGroup.append("g")
+const tMaxProps = overlayGroup
     .append("text")
     .attr("font-size", "8pt")
     // .attr("font-weight", "bold")
@@ -380,7 +448,7 @@ const tMaxProps = overlayGroup.append("g")
     // .text(`tmax: ${max_t.toFixed(1)}`)
 
 // On-Display Buttons
-const lockIcon = overlayGroup.append("g")
+const lockIcon = overlayGroup
     .append("text")
     .attr("font-size", "20px")
     .attr("text-anchor", "middle")
@@ -390,7 +458,7 @@ const lockIcon = overlayGroup.append("g")
     .attr("y", windowHeight-31)
     .attr("opacity", 0.75)
     .text("🔓")
-const lockButton = overlayGroup.append("g")
+const lockButton = overlayGroup
     .append("rect")
     .attr("x", 5)
     .attr("y", windowHeight-34)
@@ -404,7 +472,7 @@ const lockButton = overlayGroup.append("g")
     .append("title")
     .text("Lock/Unlock Geometry");
 
-const unitsIcon = overlayGroup.append("g")
+const unitsIcon = overlayGroup
     .append("text")
     .attr("font-size", "9pt")
     .attr("text-anchor", "middle")
@@ -414,7 +482,7 @@ const unitsIcon = overlayGroup.append("g")
     .attr("y", windowHeight-26)
     .attr("opacity", 0.75)
     .text("IN")
-const unitsButton = overlayGroup.append("g")
+const unitsButton = overlayGroup
     .append("rect")
     .attr("x", windowWidth-36)
     .attr("y", windowHeight-34)
