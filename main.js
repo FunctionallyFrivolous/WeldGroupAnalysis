@@ -1,11 +1,17 @@
 // Do Next:
     // User Inputs
-        // For welds, 4x props available:
-            // Always length and thk
-            // One x and one y prop, depending on selected node
-            // Mid node editing shifts entire weld
-    // Move direct user inputs to SVG
-        // Select prop to edit based on user selection
+        // Implement length edit
+            // Logic: Use length input to calc new "end" node position, based on "start" node coords and original slope
+        // Add loads version
+            // Should be much simpler as there are only 3 props so no need for logic to switch between each
+            // Then remove html buttons!!!
+        // Show edit fields by clicking any part of the overlay props (currenly only coords)
+            // Either add clickability to id/length/size line, or put a clickable box around all
+        // Alt method to close edit fields?
+            // Currently only "Enter" (maybe remove this)
+            // Click or dblclick on the field labels?
+            // Click on overlay props (same as opwn/show)
+                // Logical option to have both actions via same input
     // Snap Upgrades
         // Snap when dragging weld (mid node)?
         // Snap to 45deg?
@@ -14,7 +20,7 @@
     // Move to SVG
         // Rx?
             // Rx Button?
-            // Double click centroid?
+            // Double click on centroid?
             // Both?
         // Show/Hide stresses?
             // Multiple buttons?
@@ -27,6 +33,11 @@
             // Snap Threshold
             // Load Scale
             // Stress Scale
+            // These ^ should be buttons in SVG window that, when clicked, expand into a slider to change values
+                // Static line/polyline
+                // Dragable circle (lock in x axis)
+                // Update variables in the background based on drag y value
+                // Maybe also a dynamic line who's length increases with drag y value
         // Fit View Button
             // Implement html button first
     // Scale axes to fill/remain in window. But it must pan in order to remain at the true origin
@@ -326,19 +337,47 @@ const dragWCoords = overlayGroup
     .attr("x", 5)
     .attr("y", 40) //40 , 20
     .on("mousedown", function(event) {
-        event.stopPropagation();
-        selectEditProp();     
-        // inputWBox.style("display", "block")
-        inputWBox.style("display", "block")
-        inputWBox2.style("display", "block")
-        inputWLabel1.style("display", "block")
-        inputWField1.style("display", "block")
-        inputWLabel2.style("display", "block")
-        inputWField2.style("display", "block")
-        inputWLabelL.style("display", "block")
-        inputWFieldL.style("display", "block")
-        inputWLabelT.style("display", "block")
-        inputWFieldT.style("display", "block")
+        if (showWeldEdit) {
+            inputWBox.style("display", "none")
+            inputWBox2.style("display", "none")
+            inputWLabel1.style("display", "none")
+            inputWField1
+                .style("pointer-events", "none")
+                .style("display", "none")
+            inputWLabel2.style("display", "none")
+            inputWField2.style("display", "none")
+            inputWLabelL.style("display", "none")
+            inputWFieldL.style("display", "none")
+            inputWLabelT.style("display", "none")
+            inputWFieldT.style("display", "none")
+            editingW1 = false;
+            editingW2 = false;
+            editingWL = false;
+            editingWT = false;
+        } else {
+            event.stopPropagation();
+            selectEditProp();     
+            // inputWBox.style("display", "block")
+            inputWBox.style("display", "block")
+            inputWBox2.style("display", "block")
+            inputWLabel1.style("display", "block")
+            inputWField1
+                .style("display", "block")
+                .style("pointer-events", "auto")
+            inputWLabel2.style("display", "block")
+            inputWField2
+                .style("display", "block")
+                .style("pointer-events", "auto")
+            inputWLabelL.style("display", "block")
+            inputWFieldL
+                .style("display", "block")
+                .style("pointer-events", "auto")
+            inputWLabelT.style("display", "block")
+            inputWFieldT
+                .style("display", "block")
+                .style("pointer-events", "auto")
+        }
+        showWeldEdit = !showWeldEdit;
         // editing = true;
     })
     // .style("display", "none");
@@ -447,13 +486,18 @@ const inputWField1 = overlayGroup
     .style("text-align", "center")
     .attr("width", "60px")
     .attr("height", "20px")
+    .style("pointer-events", "none")
     .append(`xhtml:div`)
     .append(`div`)
     .attr("contentEditable", true)
     .text(editWValue1.toFixed(2))
     .on("mousedown", function(event) {
         event.stopPropagation();
-        editingW1 = true;
+        editingW1 = true; // true
+        editingW2 = false;
+        editingWL = false;
+        editingWT = false;
+        selectEditProp(); 
         editTempX = editWValue1;
     })
     .on("keyup", function(event) {
@@ -480,20 +524,13 @@ const inputWField1 = overlayGroup
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
-            inputWBox.style("display", "none")
-            inputWBox2.style("display", "none")
-            inputWLabel1.style("display", "none")
-            inputWField1.style("display", "none")
-            inputWLabel2.style("display", "none")
-            inputWField2.style("display", "none")
-            inputWLabelL.style("display", "none")
-            inputWFieldL.style("display", "none")
-            inputWLabelT.style("display", "none")
-            inputWFieldT.style("display", "none")
+            event.preventDefault();
+            event.target.blur();
             editingW1 = false;
             editingW2 = false;
             editingWL = false;
             editingWT = false;
+            selectEditProp(); 
         }
     })
     .style("display", "none")
@@ -509,13 +546,18 @@ const inputWField2 = overlayGroup
     .style("text-align", "center")
     .attr("width", "60px")
     .attr("height", "20px")
+    .style("pointer-events", "none")
     .append(`xhtml:div`)
     .append(`div`)
     .attr("contentEditable", true)
     .text(editWValue2.toFixed(2))
     .on("mousedown", function(event) {
         event.stopPropagation();
-        editingW2 = true;
+        editingW1 = false;
+        editingW2 = true; // true
+        editingWL = false;
+        editingWT = false;
+        selectEditProp(); 
         editTempY = editWValue2;
     })
     .on("keyup", function(event) {
@@ -539,20 +581,13 @@ const inputWField2 = overlayGroup
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
-            inputWBox.style("display", "none")
-            inputWBox2.style("display", "none")
-            inputWLabel1.style("display", "none")
-            inputWField1.style("display", "none")
-            inputWLabel2.style("display", "none")
-            inputWField2.style("display", "none")
-            inputWLabelL.style("display", "none")
-            inputWFieldL.style("display", "none")
-            inputWLabelT.style("display", "none")
-            inputWFieldT.style("display", "none")
+            event.preventDefault();
+            event.target.blur();
             editingW1 = false;
             editingW2 = false;
             editingWL = false;
             editingWT = false;
+            selectEditProp(); 
         }
     })
     .style("display", "none")
@@ -568,13 +603,18 @@ const inputWFieldL = overlayGroup
     .style("text-align", "center")
     .attr("width", "60px")
     .attr("height", "20px")
+    .style("pointer-events", "none")
     .append(`xhtml:div`)
     .append(`div`)
     .attr("contentEditable", true)
     .text(editWValueL.toFixed(2))
     .on("mousedown", function(event) {
         event.stopPropagation();
-        editingWL = true;
+        editingW1 = false;
+        editingW2 = false;
+        editingWL = true; // true
+        editingWT = false;
+        selectEditProp(); 
     })
     .on("keyup", function(event) {
         inputWContentL = d3.select(this).text();
@@ -586,20 +626,13 @@ const inputWFieldL = overlayGroup
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
-            inputWBox.style("display", "none")
-            inputWBox2.style("display", "none")
-            inputWLabel1.style("display", "none")
-            inputWField1.style("display", "none")
-            inputWLabel2.style("display", "none")
-            inputWField2.style("display", "none")
-            inputWLabelL.style("display", "none")
-            inputWFieldL.style("display", "none")
-            inputWLabelT.style("display", "none")
-            inputWFieldT.style("display", "none")
+            event.preventDefault();
+            event.target.blur();
             editingW1 = false;
             editingW2 = false;
             editingWL = false;
             editingWT = false;
+            selectEditProp(); 
         }
     })
     .style("display", "none")
@@ -615,13 +648,18 @@ const inputWFieldT = overlayGroup
     .style("text-align", "center")
     .attr("width", "60px")
     .attr("height", "20px")
+    .style("pointer-events", "none")
     .append(`xhtml:div`)
     .append(`div`)
     .attr("contentEditable", true)
     .text(editWValueT.toFixed(2))
     .on("mousedown", function(event) {
         event.stopPropagation();
-        editingWT = true;
+        editingW1 = false;
+        editingW2 = false;
+        editingWL = false;
+        editingWT = true; // true
+        selectEditProp(); 
     })
     .on("keyup", function(event) {
         inputWContentT = d3.select(this).text();
@@ -633,20 +671,13 @@ const inputWFieldT = overlayGroup
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
-            inputWBox.style("display", "none")
-            inputWBox2.style("display", "none")
-            inputWLabel1.style("display", "none")
-            inputWField1.style("display", "none")
-            inputWLabel2.style("display", "none")
-            inputWField2.style("display", "none")
-            inputWLabelL.style("display", "none")
-            inputWFieldL.style("display", "none")
-            inputWLabelT.style("display", "none")
-            inputWFieldT.style("display", "none")
+            event.preventDefault();
+            event.target.blur();
             editingW1 = false;
             editingW2 = false;
             editingWL = false;
             editingWT = false;
+            selectEditProp(); 
         }
     })
     .style("display", "none")

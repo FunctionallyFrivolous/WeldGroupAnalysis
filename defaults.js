@@ -7,8 +7,11 @@ let showTTor = false;
 let showTMax = false;
 // let showWeldCoords = false;
 // let showCoords = false;
-let showLoadProps = false;
 let showWeldProps = false;
+let showLoadProps = false;
+let showWeldEdit = false;
+let showLoadEdit = false;
+
 let dragWeldProps = false;
 let showCentCoords = false;
 // let showAxes = false;
