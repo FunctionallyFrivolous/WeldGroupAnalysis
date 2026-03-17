@@ -306,6 +306,8 @@ svg.call(zoom)
 
 
 //Overlay Stuff
+
+// Edit Fields - Welds
 let editWLabel1 = "Start X"
 let editWLabel2 = "Start Y"
 let editWLabelL = "Length"
@@ -328,16 +330,8 @@ let editDeltaX = 0;
 let editTempY = 0;
 let editDeltaY = 0;
 
-const dragWCoords = overlayGroup
-    .append("text")
-    .attr("font-size", "8pt")
-    .attr("text-anchor", "start")
-    .attr("alignment-baseline", "text-before-edge")
-    // .style("pointer-events", "none")
-    .attr("x", 5)
-    .attr("y", 40) //40 , 20
-    .on("mousedown", function(event) {
-        if (showWeldEdit) {
+function showHideWEdits(event) {
+    if (showWeldEdit) {
             inputWBox.style("display", "none")
             inputWBox2.style("display", "none")
             inputWLabel1.style("display", "none")
@@ -356,7 +350,7 @@ const dragWCoords = overlayGroup
             editingWT = false;
         } else {
             event.stopPropagation();
-            selectEditProp();     
+            selectWEditProp();     
             // inputWBox.style("display", "block")
             inputWBox.style("display", "block")
             inputWBox2.style("display", "block")
@@ -378,45 +372,32 @@ const dragWCoords = overlayGroup
                 .style("pointer-events", "auto")
         }
         showWeldEdit = !showWeldEdit;
-        // editing = true;
+}
+
+const dragWCoords = overlayGroup
+    .append("text")
+    .attr("font-size", "8pt")
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "text-before-edge")
+    // .style("pointer-events", "none")
+    .attr("x", 5)
+    .attr("y", 40) //40 , 20
+    .on("mousedown", function(event) {
+        showHideWEdits(event);
     })
-    // .style("display", "none");
 
 const dragWProps = overlayGroup
     .append("text")
     .attr("font-size", "8pt")
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "text-before-edge")
-    .style("pointer-events", "none")
+    // .style("pointer-events", "none")
     .attr("x", 5)
     .attr("y", 25) //25 , 5
-    // .style("display", "none")
-
-
-const dragLCoords = overlayGroup
-    .append("text")
-    .attr("font-size", "8pt")
-    .attr("text-anchor", "end")
-    .attr("alignment-baseline", "text-before-edge")
-    .style("pointer-events", "none")
-    .attr("x", windowWidth-5)
-    .attr("y", 40) //40, 20
-    // .style("display", "none");
-
-const inputWBox = overlayGroup
-    .append("rect")
-    .attr("x", -10) // -10
-    .attr("y", 60)
-    .attr("width", 65) // 65
-    .attr("height", 86)
-    .attr("rx", 5)
-    .attr("ry", 5)
-    .attr("fill-opacity", 0.25)
-    .attr("stroke", "black")
     .on("mousedown", function(event) {
-        event.stopPropagation();
+        showHideWEdits(event);
     })
-    .style("display", "none")
+
 const inputWBox2 = overlayGroup
     .append("rect")
     .attr("x", -10) // -10, -150
@@ -428,9 +409,9 @@ const inputWBox2 = overlayGroup
     .attr("fill-opacity", 0.1)
     .attr("fill", "black")
     .attr("stroke", "black")
-    .on("mousedown", function(event) {
-        event.stopPropagation();
-    })
+    // .on("mousedown", function(event) {
+    //     event.stopPropagation();
+    // })
     .style("display", "none")
 
 const inputWLabel1 = overlayGroup
@@ -441,8 +422,9 @@ const inputWLabel1 = overlayGroup
     .attr("alignment-baseline", "middle")
     .style("text-align", "right")
     .attr("font-size", "14px")
-    .text(`${editWLabel1}: `)
+    .text(`${editWLabel1}`)
     .style("display", "none")
+    .style("pointer-events", "none")
 const inputWLabel2 = overlayGroup
     .append("text")
     .attr("x", 50) //50
@@ -451,8 +433,9 @@ const inputWLabel2 = overlayGroup
     .attr("alignment-baseline", "middle")
     .style("text-align", "right")
     .attr("font-size", "14px")
-    .text(`${editWLabel2}: `)
+    .text(`${editWLabel2}`)
     .style("display", "none")
+    .style("pointer-events", "none")
 const inputWLabelL = overlayGroup
     .append("text")
     .attr("x", 50) //50
@@ -461,8 +444,9 @@ const inputWLabelL = overlayGroup
     .attr("alignment-baseline", "middle")
     .style("text-align", "right")
     .attr("font-size", "14px")
-    .text(`${editWLabelL}: `)
+    .text(`${editWLabelL}`)
     .style("display", "none")
+    .style("pointer-events", "none")
 const inputWLabelT = overlayGroup
     .append("text")
     .attr("x", 50) //50
@@ -471,7 +455,22 @@ const inputWLabelT = overlayGroup
     .attr("alignment-baseline", "middle")
     .style("text-align", "right")
     .attr("font-size", "14px")
-    .text(`${editWLabelT}: `)
+    .text(`${editWLabelT}`)
+    .style("display", "none")
+    .style("pointer-events", "none")
+const inputWBox = overlayGroup
+    .append("rect")
+    .attr("x", -10) // -10
+    .attr("y", 60)
+    .attr("width", 65) // 65
+    .attr("height", 86)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill-opacity", 0.25)
+    .attr("stroke", "black")
+    .on("mousedown", function(event) {
+        showHideWEdits(event);
+    })
     .style("display", "none")
 
 
@@ -497,15 +496,15 @@ const inputWField1 = overlayGroup
         editingW2 = false;
         editingWL = false;
         editingWT = false;
-        selectEditProp(); 
+        selectWEditProp(); 
         editTempX = editWValue1;
     })
     .on("keyup", function(event) {
         inputWContent1 = d3.select(this).text();
         if (!isFinite(inputWContent1)) return;
-        if (selectedProp.includes("start")) {
+        if (selectedWProp.includes("start")) {
             editWObject.points[0].x = distToCoord(inputWContent1, "x")
-        } else if (selectedProp.includes("end")) {
+        } else if (selectedWProp.includes("end")) {
             editWObject.points[1].x = distToCoord(inputWContent1, "x")
         } else {
             if (inputWContent1 === editTempX) {
@@ -520,7 +519,7 @@ const inputWField1 = overlayGroup
         updateWeldProps();
         updateLoadProps();
         updateView();
-        editWValue1 = coordToDist((editWObject.points[0].x+editWObject.points[1].x)/2, "x")
+        // editWValue1 = coordToDist((editWObject.points[0].x+editWObject.points[1].x)/2, "x")
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
@@ -530,7 +529,7 @@ const inputWField1 = overlayGroup
             editingW2 = false;
             editingWL = false;
             editingWT = false;
-            selectEditProp(); 
+            selectWEditProp(); 
         }
     })
     .style("display", "none")
@@ -557,15 +556,15 @@ const inputWField2 = overlayGroup
         editingW2 = true; // true
         editingWL = false;
         editingWT = false;
-        selectEditProp(); 
+        selectWEditProp(); 
         editTempY = editWValue2;
     })
     .on("keyup", function(event) {
         inputWContent2 = d3.select(this).text();
         if (!isFinite(inputWContent2)) return;
-        if (selectedProp.includes("start")) {
+        if (selectedWProp.includes("start")) {
             editWObject.points[0].y = distToCoord(inputWContent2, "y")
-        } else if (selectedProp.includes("end")) {
+        } else if (selectedWProp.includes("end")) {
             editWObject.points[1].y = distToCoord(inputWContent2, "y")
         } else {
             if (inputWContent2 === editTempY) return;
@@ -577,7 +576,7 @@ const inputWField2 = overlayGroup
         updateWeldProps();
         updateLoadProps();
         updateView();
-        editWValue2 = coordToDist((editWObject.points[0].y+editWObject.points[1].y)/2, "y")
+        // editWValue2 = coordToDist((editWObject.points[0].y+editWObject.points[1].y)/2, "y")
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
@@ -587,7 +586,7 @@ const inputWField2 = overlayGroup
             editingW2 = false;
             editingWL = false;
             editingWT = false;
-            selectEditProp(); 
+            selectWEditProp(); 
         }
     })
     .style("display", "none")
@@ -614,7 +613,7 @@ const inputWFieldL = overlayGroup
         editingW2 = false;
         editingWL = true; // true
         editingWT = false;
-        selectEditProp(); 
+        selectWEditProp(); 
     })
     .on("keyup", function(event) {
         inputWContentL = d3.select(this).text();
@@ -632,7 +631,7 @@ const inputWFieldL = overlayGroup
             editingW2 = false;
             editingWL = false;
             editingWT = false;
-            selectEditProp(); 
+            selectWEditProp(); 
         }
     })
     .style("display", "none")
@@ -659,7 +658,7 @@ const inputWFieldT = overlayGroup
         editingW2 = false;
         editingWL = false;
         editingWT = true; // true
-        selectEditProp(); 
+        selectWEditProp(); 
     })
     .on("keyup", function(event) {
         inputWContentT = d3.select(this).text();
@@ -677,20 +676,350 @@ const inputWFieldT = overlayGroup
             editingW2 = false;
             editingWL = false;
             editingWT = false;
-            selectEditProp(); 
+            selectWEditProp(); 
         }
     })
     .style("display", "none")
+
+// Edit Field - Loads
+let editLLabelX = "X"
+let editLLabelY = "Y"
+let editLLabelF = "Force"
+let editLLabelA = "Angle"
+
+let editLObject = loadProps.find(j => j.id === selectedLoad);
+
+let editLValueX = coordToDist(editLObject.x, "x");
+let editLValueY = coordToDist(editLObject.y, "y");
+let editLValueF = editLObject.mag;
+let editLValueA = editLObject.th;
+
+let editingLX = false;
+let editingLY = false;
+let editingLF = false;
+let editingLA = false;
+
+function showHideLEdits(event) {
+    if (showLoadEdit) {
+            inputLBox.style("display", "none")
+            inputLBox2.style("display", "none")
+            inputLLabelX.style("display", "none")
+            inputLFieldX
+                .style("pointer-events", "none")
+                .style("display", "none")
+            inputLLabelY.style("display", "none")
+            inputLFieldY.style("display", "none")
+            inputLLabelF.style("display", "none")
+            inputLFieldF.style("display", "none")
+            inputLLabelA.style("display", "none")
+            inputLFieldA.style("display", "none")
+            editingLX = false;
+            editingLY = false;
+            editingLF = false;
+            editingLA = false;
+        } else {
+            event.stopPropagation();
+            selectLEditProp();     
+            // inputWBox.style("display", "block")
+            inputLBox.style("display", "block")
+            inputLBox2.style("display", "block")
+            inputLLabelX.style("display", "block")
+            inputLFieldX
+                .style("display", "block")
+                .style("pointer-events", "auto")
+            inputLLabelY.style("display", "block")
+            inputLFieldY
+                .style("display", "block")
+                .style("pointer-events", "auto")
+            inputLLabelF.style("display", "block")
+            inputLFieldF
+                .style("display", "block")
+                .style("pointer-events", "auto")
+            inputLLabelA.style("display", "block")
+            inputLFieldA
+                .style("display", "block")
+                .style("pointer-events", "auto")
+        }
+        showLoadEdit = !showLoadEdit;
+}
+
+const dragLCoords = overlayGroup
+    .append("text")
+    .attr("font-size", "8pt")
+    .attr("text-anchor", "end")
+    .attr("alignment-baseline", "text-before-edge")
+    // .style("pointer-events", "none")
+    .attr("x", windowWidth-5)
+    .attr("y", 40) //40, 20
+    .on("mousedown", function(event) {
+        showHideLEdits(event);
+    })
+    // .style("display", "none");
 
 const dragLProps = overlayGroup
     .append("text")
     .attr("font-size", "8pt")
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "text-before-edge")
-    .style("pointer-events", "none")
+    // .style("pointer-events", "none")
     .attr("x", windowWidth-5)
     .attr("y", 25) //25, 5
+    .on("mousedown", function(event) {
+        showHideLEdits(event);
+    })
     // .style("display", "none")
+
+const inputLBox2 = overlayGroup
+    .append("rect")
+    .attr("x", 500+10-130) // -10, -150
+    .attr("y", 60)
+    .attr("width", 130) // 65
+    .attr("height", 86)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill-opacity", 0.1)
+    .attr("fill", "black")
+    .attr("stroke", "black")
+    .style("display", "none")
+
+const inputLLabelX = overlayGroup
+    .append("text")
+    .attr("x", 500-50) //50
+    .attr("y", 115)
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "middle")
+    .style("text-align", "right")
+    .attr("font-size", "14px")
+    .text(`${editLLabelX}`)
+    .style("display", "none")
+    .style("pointer-events", "none")
+const inputLLabelY = overlayGroup
+    .append("text")
+    .attr("x", 500-50) //50
+    .attr("y", 135)
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "middle")
+    .style("text-align", "right")
+    .attr("font-size", "14px")
+    .text(`${editLLabelY} `)
+    .style("display", "none")
+    .style("pointer-events", "none")
+const inputLLabelF = overlayGroup
+    .append("text")
+    .attr("x", 500-50) //50
+    .attr("y", 75)
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "middle")
+    .style("text-align", "right")
+    .attr("font-size", "14px")
+    .text(`${editLLabelF}`)
+    .style("display", "none")
+    .style("pointer-events", "none")
+const inputLLabelA = overlayGroup
+    .append("text")
+    .attr("x", 500-50) //50
+    .attr("y", 95)
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "middle")
+    .style("text-align", "right")
+    .attr("font-size", "14px")
+    .text(`${editLLabelA}`)
+    .style("display", "none")
+    .style("pointer-events", "none")
+const inputLBox = overlayGroup
+    .append("rect")
+    .attr("x", 500-65+10) // -10
+    .attr("y", 60)
+    .attr("width", 65) // 65
+    .attr("height", 86)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill-opacity", 0.25)
+    .attr("stroke", "black")
+    .on("mousedown", function(event) {
+        showHideLEdits(event);
+    })
+    .style("display", "none")
+
+let inputLContentX = "0"
+const inputLFieldX = overlayGroup
+    .append("foreignObject")
+    .attr("x", 500-117.5) //60, -60
+    .attr("y", 105)
+    .attr("font-size", "14px")
+    .attr("text-anchor", "end")
+    .attr("alignment-baseline", "middle")
+    .style("text-align", "center")
+    .attr("width", "60px")
+    .attr("height", "20px")
+    .style("pointer-events", "none")
+    .append(`xhtml:div`)
+    .append(`div`)
+    .attr("contentEditable", true)
+    .text(editLValueX.toFixed(2))
+    .on("mousedown", function(event) {
+        event.stopPropagation();
+        editingLX = true; // true
+        editingLY = false;
+        editingLF = false;
+        editingLA = false;
+        selectLEditProp(); 
+    })
+    .on("keyup", function(event) {
+        inputLContentX = d3.select(this).text();
+        if (!isFinite(inputLContentX)) return;
+        editLObject.x = distToCoord(inputLContentX, "x")
+        updateWeldProps();
+        updateLoadProps();
+        updateView();
+    })
+    .on("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            event.target.blur();
+            editingW1 = false;
+            editingW2 = false;
+            editingWL = false;
+            editingWT = false;
+            selectLEditProp(); 
+        }
+    })
+    .style("display", "none")
+
+let inputLContentY = "0"
+const inputLFieldY = overlayGroup
+    .append("foreignObject")
+    .attr("x", 500-117.5) //60, -60
+    .attr("y", 125)
+    .attr("font-size", "14px")
+    .attr("text-anchor", "end")
+    .attr("alignment-baseline", "middle")
+    .style("text-align", "center")
+    .attr("width", "60px")
+    .attr("height", "20px")
+    .style("pointer-events", "none")
+    .append(`xhtml:div`)
+    .append(`div`)
+    .attr("contentEditable", true)
+    .text(editLValueY.toFixed(2))
+    .on("mousedown", function(event) {
+        event.stopPropagation();
+        editingLX = false;
+        editingLY = true; // true
+        editingLF = false;
+        editingLA = false;
+        selectLEditProp(); 
+    })
+    .on("keyup", function(event) {
+        inputLContentY = d3.select(this).text();
+        if (!isFinite(inputLContentY)) return;
+        editLObject.y = distToCoord(inputLContentY, "y")
+        updateWeldProps();
+        updateLoadProps();
+        updateView();
+    })
+    .on("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            event.target.blur();
+            editingLX = false;
+            editingLY = false;
+            editingLF = false;
+            editingLA = false;
+            selectLEditProp(); 
+        }
+    })
+    .style("display", "none")
+
+let inputLContentF = "0"
+const inputLFieldF = overlayGroup
+    .append("foreignObject")
+    .attr("x", 500-117.5) //60, -60
+    .attr("y", 65)
+    .attr("font-size", "14px")
+    .attr("text-anchor", "end")
+    .attr("alignment-baseline", "middle")
+    .style("text-align", "center")
+    .attr("width", "60px")
+    .attr("height", "20px")
+    .style("pointer-events", "none")
+    .append(`xhtml:div`)
+    .append(`div`)
+    .attr("contentEditable", true)
+    .text(editLValueF.toFixed(2))
+    .on("mousedown", function(event) {
+        event.stopPropagation();
+        editingLX = false;
+        editingLY = false;
+        editingLF = true; // true
+        editingLA = false;
+        selectLEditProp(); 
+    })
+    .on("keyup", function(event) {
+        inputLContentF = d3.select(this).text();
+        if (!isFinite(inputLContentF)) return;
+        editLObject.mag = inputLContentF /forceConvert;
+        updateWeldProps();
+        updateLoadProps();
+        updateView();
+    })
+    .on("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            event.target.blur();
+            editingLX = false;
+            editingLY = false;
+            editingLF = false;
+            editingLA = false;
+            selectLEditProp(); 
+        }
+    })
+    .style("display", "none")
+
+let inputLContentA = "0"
+const inputLFieldA = overlayGroup
+    .append("foreignObject")
+    .attr("x", 500-117.5) //60, -60
+    .attr("y", 85)
+    .attr("font-size", "14px")
+    .attr("text-anchor", "end")
+    .attr("alignment-baseline", "middle")
+    .style("text-align", "center")
+    .attr("width", "60px")
+    .attr("height", "20px")
+    .style("pointer-events", "none")
+    .append(`xhtml:div`)
+    .append(`div`)
+    .attr("contentEditable", true)
+    .text(editLValueA.toFixed(2))
+    .on("mousedown", function(event) {
+        event.stopPropagation();
+        editingLX = false;
+        editingLY = false;
+        editingLF = false;
+        editingLA = true; // true
+        selectLEditProp(); 
+    })
+    .on("keyup", function(event) {
+        inputLContentA = d3.select(this).text();
+        if (!isFinite(inputWContentT)) return;
+        editLObject.th = inputLContentA * 1;
+        updateWeldProps();
+        updateLoadProps();
+        updateView();
+    })
+    .on("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            event.target.blur();
+            editingLX = false;
+            editingLY = false;
+            editingLF = false;
+            editingLA = false;
+            selectLEditProp(); 
+        }
+    })
+    .style("display", "none")
 
 const centroidProps = overlayGroup
     .append("text")

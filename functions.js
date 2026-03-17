@@ -484,6 +484,7 @@ function addWeld() {
     
     backUpWelds.splice(0,1);
 
+    selectWEditProp();
     updateView();
     updateWeldProps();
     updateLoadProps();
@@ -537,6 +538,7 @@ function addLoad() {
 
     backUpLoads.splice(0,1);
 
+    selectLEditProp();
     updateView();
     updateWeldProps();
     updateLoadProps();
@@ -591,7 +593,7 @@ function removeWeld(id) {
 
     selectedWeld = `weld${weldCount}`
 
-    selectEditProp();
+    selectWEditProp();
 
     updateView();
     updateWeldProps();
@@ -640,6 +642,8 @@ function removeLoad(id) { // test function to remove one weld
     loadCount = loadProps.length;
 
     selectedLoad = `load${loadCount}`
+
+    selectLEditProp();
 
     updateView();
     updateWeldProps();
@@ -690,8 +694,8 @@ function updateDrags(){
                 updateWeldProps();
                 dragWCoords.style("display", "block")
                 dragWProps.style("display", "block")
-                selectedProp = d.id
-                selectEditProp()
+                selectedWProp = d.id
+                selectWEditProp()
                 updateData();
                 updateSVGs();
             })
@@ -717,7 +721,7 @@ function updateDrags(){
                 }
                 // Snap
                 [d.x, d.y] = snapDrag(d.id, d.x, d.y, x_opp, y_opp)
-                selectEditProp()
+                selectWEditProp()
                 updateStuff();
                 updateSVGs();
                 updateData();
@@ -727,6 +731,7 @@ function updateDrags(){
                 weldDrag.attr("opacity", 0)
                 d.show = false;
                 showCentCoords = false;
+                selectWEditProp()
                 updateWeldProps();
                 updateStuff();
                 updateData();
@@ -748,8 +753,8 @@ function updateDrags(){
         .attr("cy", d => (d.points[1].y + d.points[0].y)/2)
         .call(d3.drag()
             .on("start", (event, d) => {
-                selectedProp = d.id
-                selectEditProp()
+                selectedWProp = d.id
+                selectWEditProp()
                 selectedWeld = d.id;
                 xtemp = event.x;
                 ytemp = event.y;
@@ -769,7 +774,7 @@ function updateDrags(){
                     d.points[i].x = d.points[i].x + x_delta;
                     d.points[i].y = d.points[i].y + y_delta;
                 }
-                selectEditProp()
+                selectWEditProp()
                 updateWeldProps();
                 updateStuff();
                 updateSVGs();
@@ -781,6 +786,7 @@ function updateDrags(){
                 weldDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
                 NodeDrag.attr("opacity", 0);
                 showCentCoords = false;
+                selectWEditProp()
                 updateWeldProps();
                 updateData();
                 updateSVGs();
@@ -815,6 +821,8 @@ function updateDrags(){
                 updateLoadProps();
                 dragLCoords.style("display", "block")
                 dragLProps.style("display", "block")
+                selectedLProp = d.id
+                selectLEditProp()
                 updateData();
                 updateSVGs();
             })
@@ -825,6 +833,7 @@ function updateDrags(){
                 updateLoadProps();
                 // Snap 
                 [d.x, d.y] = snapDrag(d.id, d.x, d.y)
+                selectLEditProp()
                 updateArrows();
                 updateStuff();
                 updateSVGs();
@@ -835,6 +844,7 @@ function updateDrags(){
                 // loadDrag.attr("opacity", 0);
                 loadDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
                 loadProps.find(j => j.id === d.id).show = false;
+                selectLEditProp()
                 updateLoadProps();
                 updateStuff();
                 updateData();
@@ -860,6 +870,8 @@ function updateDrags(){
                 magDrag.attr("opacity",0.1);
                 loadProps.find(j => j.id === d.id).show = true;
                 const dragLoad = loadProps.find(j => j.id === d.id);
+                selectedLProp = d.id
+                selectLEditProp()
                 updateLoadProps();
                 dragLCoords.style("display", "block")
                 dragLProps.style("display", "block")
@@ -873,6 +885,7 @@ function updateDrags(){
                 if (drag_L < minLength) return
                 loadProps.find(j => j.id === d.id).mag = drag_L / loadScale;
                 const dragLoad = loadProps.find(j => j.id === d.id);
+                selectLEditProp()
                 updateLoadProps();
                 updateAngles();
                 updateStuff();
@@ -884,6 +897,7 @@ function updateDrags(){
                 loadDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
                 loadProps.find(j => j.id === d.id).show = false;
                 const dragLoad = loadProps.find(j => j.id === d.id);
+                selectLEditProp()
                 updateLoadProps();
                 updateData();
             })
@@ -907,6 +921,8 @@ function updateDrags(){
                 angleDrag.attr("opacity",0.1);
                 loadProps.find(j => j.id === d.id).show = true;
                 const dragLoad = loadProps.find(j => j.id === d.id);
+                selectedLProp = d.id
+                selectLEditProp()
                 updateLoadProps();
                 dragLCoords.style("display", "block")
                 dragLProps.style("display", "block")
@@ -922,6 +938,7 @@ function updateDrags(){
                 const y_opp = dragLoad.y;
                 // Snap
                 [d.x, d.y] = snapDrag(d.id, d.x, d.y, x_opp, y_opp)
+                selectLEditProp()
                 updateLoadProps();
                 updateAngles();
                 updateStuff();
@@ -933,6 +950,7 @@ function updateDrags(){
                 loadDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
                 loadProps.find(j => j.id === d.id).show = false;
                 const dragLoad = loadProps.find(j => j.id === d.id);
+                selectLEditProp()
                 updateLoadProps();
                 updateData();
             })
@@ -1299,19 +1317,19 @@ function updateLoadProps() {
         .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
         .style("display", showTMax ? "block" : "none")
 
-    const loadMagInput = document.getElementById("loadMag");
-    loadMagInput.value = lSelect.mag.toFixed(1);
-    const loadAngInput = document.getElementById("loadAng");
-    loadAngInput.value = lSelect.th.toFixed(1)
+    // const loadMagInput = document.getElementById("loadMag");
+    // loadMagInput.value = lSelect.mag.toFixed(1);
+    // const loadAngInput = document.getElementById("loadAng");
+    // loadAngInput.value = lSelect.th.toFixed(1)
 
-    const loadSXInput = document.getElementById("loadStartX");
-    loadSXInput.value = coordToDist(lSelect.x,"x").toFixed(1);
-    const loadSYInput = document.getElementById("loadStartY");
-    loadSYInput.value = coordToDist(lSelect.y,"y").toFixed(1);
+    // const loadSXInput = document.getElementById("loadStartX");
+    // loadSXInput.value = coordToDist(lSelect.x,"x").toFixed(1);
+    // const loadSYInput = document.getElementById("loadStartY");
+    // loadSYInput.value = coordToDist(lSelect.y,"y").toFixed(1);
 
-    const loadIDLab = document.getElementById("loadLab");
-    const weldNo = lSelect.id.slice(4,5);
-    loadIDLab.textContent = `Load ${weldNo}`;
+    // const loadIDLab = document.getElementById("loadLab");
+    // const weldNo = lSelect.id.slice(4,5);
+    // loadIDLab.textContent = `Load ${weldNo}`;
 
 }
 
@@ -1388,20 +1406,20 @@ function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
     return [dxf, dyf]
 }
 
-function selectEditProp() {
+function selectWEditProp() {
     editingW1 = false;
     editingW2 = false;
     editingWL = false;
     editingWT = false;
 
-    if (selectedProp.includes("weld")) {
+    if (selectedWProp.includes("weld")) {
         editWObject = weldCoords.find(j => j.id === selectedWeld);
-        if (selectedProp.includes("start")) {
+        if (selectedWProp.includes("start")) {
             editWLabel1 = "Start X";
             editWLabel2 = "Start Y";
             editWValue1 = coordToDist(editWObject.points[0].x, "x")
             editWValue2 = coordToDist(editWObject.points[0].y, "y")
-        } else if (selectedProp.includes("end")) {
+        } else if (selectedWProp.includes("end")) {
             editWLabel1 = "End X";
             editWLabel2 = "End Y";
             editWValue1 = coordToDist(editWObject.points[1].x, "x")
@@ -1415,15 +1433,44 @@ function selectEditProp() {
         }
         editWValueL = editWObject.len// * unitConvert;
         editWValueT = editWObject.thk * unitConvert;
-    }
-    inputWLabel1.text(`${editWLabel1}: `)
-    inputWLabel2.text(`${editWLabel2}: `)
-    // inputWLabelL.text(`${editWLabelL}: `)
-    // inputWLabelT.text(`${editWLabelT}: `)
 
-    inputWField1.text(editWValue1.toFixed(2));
-    inputWField2.text(editWValue2.toFixed(2));
-    inputWFieldL.text(editWValueL.toFixed(2));
-    inputWFieldT.text(editWValueT);
+        inputWLabel1.text(`${editWLabel1}`)
+        inputWLabel2.text(`${editWLabel2}`)
+        // inputWLabelL.text(`${editWLabelL}`)
+        inputWLabelT.text(`${editWLabelT}`)
+
+        inputWField1.text(editWValue1.toFixed(2));
+        inputWField2.text(editWValue2.toFixed(2));
+        inputWFieldL.text(editWValueL.toFixed(2));
+        inputWFieldT.text(editWValueT);
+    }
+    // updateView();
+}
+
+function selectLEditProp() {
+    editingLX = false;
+    editingLY = false;
+    editingLF = false;
+    editingLA = false;
+
+    if (selectedLProp.includes("load")) {
+        editLObject = loadProps.find(j => j.id === selectedLoad);
+        editLLabelX = "X";
+        editLLabelY = "Y";
+        editLValueX = coordToDist(editLObject.x, "x")
+        editLValueY = coordToDist(editLObject.y, "y")
+        editLValueF = editLObject.mag * forceConvert;
+        editLValueA = editLObject.th;
+
+        inputLLabelX.text(`${editLLabelX}`)
+        inputLLabelY.text(`${editLLabelY}`)
+        inputLLabelF.text(`${editLLabelF}`)
+        inputLLabelA.text(`${editLLabelA}`)
+
+        inputLFieldX.text(editLValueX.toFixed(2));
+        inputLFieldY.text(editLValueY.toFixed(2));
+        inputLFieldF.text(editLValueF.toFixed(2));
+        inputLFieldA.text(editLValueA.toFixed(2));
+    }
     // updateView();
 }

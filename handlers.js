@@ -64,7 +64,7 @@ function unitSwap() {
         stressScale = 3;
         // document.getElementById("lUnits").textContent = `"`;
         // document.getElementById("thkUnits").textContent = `"`;
-        document.getElementById("fUnits").textContent = `lbf`;
+        // document.getElementById("fUnits").textContent = `lbf`;
     }
     else {
         units = "metric";
@@ -79,16 +79,18 @@ function unitSwap() {
         stressScale = stressScale*145;
         // document.getElementById("lUnits").textContent = "mm";
         // document.getElementById("thkUnits").textContent = `mm`;
-        document.getElementById("fUnits").textContent = `N`;
+        // document.getElementById("fUnits").textContent = `N`;
     }
 
-    selectEditProp()
+    selectWEditProp()
+    selectLEditProp()
 
     updateView();
     updateWeldProps();
     updateLoadProps();
 
-    selectEditProp()
+    selectWEditProp()
+    selectLEditProp()
 
     unitsIcon
         .text(units === "metric" ? "MM" : "IN")
