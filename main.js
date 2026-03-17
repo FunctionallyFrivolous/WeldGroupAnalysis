@@ -440,7 +440,7 @@ const inputWField1 = overlayGroup
         } else if (selectedProp.includes("end")) {
             editWObject.points[1].x = distToCoord(inputWContent1, "x")
         } else {
-            editWObject.len = inputWContent1
+            // editWObject.len = inputWContent1
         }
         updateWeldProps();
         updateLoadProps();
@@ -505,7 +505,7 @@ const inputWField2 = overlayGroup
         } else if (selectedProp.includes("end")) {
             editWObject.points[1].y = distToCoord(inputWContent2, "y")
         } else {
-            editWObject.len = inputWContent2
+            // editWObject.thk = inputWContent2
         }
         updateWeldProps();
         updateLoadProps();

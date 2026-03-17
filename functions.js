@@ -70,7 +70,7 @@ function updateView() {
     // //     + "Wx0: " + `${weldCoords[0].points[0].x*distConvert*unitConvert}` + "\n<br>"
     // //     + "rxV: " + `${rxV.mag.toFixed(1)}` + "\n<br>"
         // + "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
-    //     // + "welds: " + `${weldCount}` + "\n<br>"
+        // + "thing: " + `${editWValue2}` + "\n<br>"
 
     // document.getElementById("debugOutputs").innerHTML = dbugTxt;
 }
@@ -691,7 +691,7 @@ function updateDrags(){
                 dragWCoords.style("display", "block")
                 dragWProps.style("display", "block")
                 selectedProp = d.id
-                selectEditProp()
+                // selectEditProp()
                 updateData();
                 updateSVGs();
             })
