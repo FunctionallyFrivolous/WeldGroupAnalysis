@@ -1391,28 +1391,39 @@ function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
 function selectEditProp() {
     editingW1 = false;
     editingW2 = false;
+    editingWL = false;
+    editingWT = false;
+
     if (selectedProp.includes("weld")) {
         editWObject = weldCoords.find(j => j.id === selectedWeld);
         if (selectedProp.includes("start")) {
             editWLabel1 = "Start X";
             editWLabel2 = "Start Y";
             editWValue1 = coordToDist(editWObject.points[0].x, "x")
-            editWValue2 = coordToDist(editWObject.points[0].y, "y") 
+            editWValue2 = coordToDist(editWObject.points[0].y, "y")
         } else if (selectedProp.includes("end")) {
             editWLabel1 = "End X";
             editWLabel2 = "End Y";
             editWValue1 = coordToDist(editWObject.points[1].x, "x")
-            editWValue2 = coordToDist(editWObject.points[1].y, "y") 
-        } else {
-            editWLabel1 = "Length";
-            editWLabel2 = "Size";
-            editWValue1 = editWObject.len
-            editWValue2 = editWObject.thk * unitConvert
+            editWValue2 = coordToDist(editWObject.points[1].y, "y")
+        } 
+        else {
+            editWLabel1 = "Mid X";
+            editWLabel2 = "Mid Y";
+            editWValue1 = coordToDist((editWObject.points[0].x + editWObject.points[1].x)/2, "x")
+            editWValue2 = coordToDist((editWObject.points[0].y + editWObject.points[1].y)/2, "y")
         }
+        editWValueL = editWObject.len// * unitConvert;
+        editWValueT = editWObject.thk * unitConvert;
     }
     inputWLabel1.text(`${editWLabel1}: `)
     inputWLabel2.text(`${editWLabel2}: `)
+    // inputWLabelL.text(`${editWLabelL}: `)
+    // inputWLabelT.text(`${editWLabelT}: `)
+
     inputWField1.text(editWValue1.toFixed(2));
     inputWField2.text(editWValue2.toFixed(2));
+    inputWFieldL.text(editWValueL.toFixed(2));
+    inputWFieldT.text(editWValueT);
     // updateView();
 }

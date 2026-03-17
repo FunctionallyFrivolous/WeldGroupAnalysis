@@ -88,6 +88,8 @@ function unitSwap() {
     updateWeldProps();
     updateLoadProps();
 
+    selectEditProp()
+
     unitsIcon
         .text(units === "metric" ? "MM" : "IN")
     // unitsButton
