@@ -1,12 +1,6 @@
 // Do Next:
     // Move direct user inputs to SVG
-        // Make props text click able
-        // Pops up an editable foreignObject
-        // Editing popup updates the associated value
-        // Include a label (in popup) for what value is being updated
-        // How to apply/exit?
-            // Enter key? Click outside popup?
-            // Ensure works on mobile and desktop
+        // Select prop to edit based on user selection
     // Snap Upgrades
         // Snap when dragging weld (mid node)?
         // Snap to 45deg?
@@ -296,10 +290,16 @@ svg.call(zoom)
 
 
 //Overlay Stuff
-let editLabel = "Start X"
-let editObject = weldCoords.find(j => j.id === selectedWeld);
-let editValue = coordToDist(editObject.points[0].x, "x");
-let editing = false;
+let editWLabel1 = "Start X"
+let editWLabel2 = "Start Y"
+
+let editWObject = weldCoords.find(j => j.id === selectedWeld);
+
+let editWValue1 = coordToDist(editWObject.points[0].x, "x");
+let editWValue2 = coordToDist(editWObject.points[0].y, "y");
+
+let editingW1 = false;
+let editingW2 = false;
 
 const dragWCoords = overlayGroup
     .append("text")
@@ -311,11 +311,31 @@ const dragWCoords = overlayGroup
     .attr("y", 40) //40 , 20
     .on("mousedown", function(event) {
         event.stopPropagation();
-        editObject = weldCoords.find(j => j.id === selectedWeld);
-        editValue = coordToDist(editObject.points[0].x, "x")        
-        testBox.style("display", "block")
-        testLabel.style("display", "block")
-        testField.style("display", "block")
+        selectEditProp();       
+        // inputWBox.style("display", "block")
+        inputWBox
+            .transition()
+            .duration(500)
+            .attr("x", -10)
+        inputWBox2
+            // .transition()
+            // .duration(500)
+            // .attr("x", -10)
+            .style("display", "block")
+        inputWLabel1
+            .transition()
+            .duration(500)
+            .attr("x", 50)
+            // .style("display", "block")
+        inputWField1
+            .style("display", "block")
+        inputWLabel2
+            .transition()
+            .duration(500)
+            .attr("x", 50)
+            // .style("display", "block")
+        inputWField2
+            .style("display", "block")
         // editing = true;
     })
     // .style("display", "none");
@@ -341,69 +361,184 @@ const dragLCoords = overlayGroup
     .attr("y", 40) //40, 20
     // .style("display", "none");
 
-const testBox = overlayGroup
+const inputWBox = overlayGroup
     .append("rect")
-    .attr("x", 5)
+    .attr("x", -80) // -10
     .attr("y", 60)
-    .attr("width", 130)
-    .attr("height", 40)
+    .attr("width", 65) // 65
+    .attr("height", 47)
     .attr("rx", 5)
     .attr("ry", 5)
-    .attr("opacity", 0.25)
+    .attr("fill-opacity", 0.25)
+    .attr("stroke", "black")
+    .on("mousedown", function(event) {
+        event.stopPropagation();
+    })
+    // .style("display", "none")
+const inputWBox2 = overlayGroup
+    .append("rect")
+    .attr("x", -10) // -10, -150
+    .attr("y", 60)
+    .attr("width", 130) // 65
+    .attr("height", 47)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill-opacity", 0.1)
+    .attr("fill", "black")
+    .attr("stroke", "black")
     .on("mousedown", function(event) {
         event.stopPropagation();
     })
     .style("display", "none")
-const testLabel = overlayGroup
+
+const inputWLabel1 = overlayGroup
     .append("text")
-    .attr("x", 60)
-    .attr("y", 80)
+    .attr("x", -10) //50
+    .attr("y", 75)
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "middle")
     .style("text-align", "right")
     .attr("font-size", "14px")
-    .text(`${editLabel}: `)
-    .style("display", "none")
-    // .style("pointer-events", "none")
+    .text(`${editWLabel1}: `)
+    // .style("display", "none")
+const inputWLabel2 = overlayGroup
+    .append("text")
+    .attr("x", -10) //50
+    .attr("y", 95)
+    .attr("text-anchor", "end")
+    .attr("alignment-baseline", "middle")
+    .style("text-align", "right")
+    .attr("font-size", "14px")
+    .text(`${editWLabel2}: `)
+    // .style("display", "none")
 
 
-let testContent = "0"
-const testField = overlayGroup
+let inputWContent1 = "0"
+const inputWField1 = overlayGroup
     .append("foreignObject")
-    .attr("x", 70)
-    .attr("y", 70.5)
+    .attr("x", 57.5) //60, -60
+    .attr("y", 65)
     .attr("font-size", "14px")
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
-    .style("text-align", "left")
+    .style("text-align", "center")
     .attr("width", "60px")
     .attr("height", "20px")
     .append(`xhtml:div`)
     .append(`div`)
     .attr("contentEditable", true)
-    .text(editValue.toFixed(2))
+    .text(editWValue1.toFixed(2))
     .on("mousedown", function(event) {
         event.stopPropagation();
-        editing = true;
+        editingW1 = true;
     })
     .on("keyup", function(event) {
-        testContent = d3.select(this).text();
-        if (!isFinite(testContent)) return;
-        editObject.points[0].x = distToCoord(testContent, "x")
+        inputWContent1 = d3.select(this).text();
+        if (!isFinite(inputWContent1)) return;
+        if (selectedProp.includes("start")) {
+            editWObject.points[0].x = distToCoord(inputWContent1, "x")
+        } else if (selectedProp.includes("end")) {
+            editWObject.points[1].x = distToCoord(inputWContent1, "x")
+        } else {
+            editWObject.len = inputWContent1
+        }
         updateWeldProps();
         updateLoadProps();
         updateView();
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
-            testBox
+            inputWBox
+                // .style("display", "none")
+                .transition()
+                .duration(500)
+                .attr("x", -80)
+                // .on("mousedown", function(event) {
+                //     event.resumePropagation();
+                // })
+            inputWBox2
                 .style("display", "none")
-                .on("mousedown", function(event) {
-                    event.resumePropagation();
-                })
-            testLabel.style("display", "none")
-            testField.style("display", "none")
-            editing = false;
+            inputWLabel1
+                .transition()
+                .duration(500)
+                .attr("x", -10)
+                // .style("display", "none")
+            inputWField1
+                .style("display", "none")
+            inputWLabel2
+                .transition()
+                .duration(500)
+                .attr("x", -10)
+                // .style("display", "none")
+            inputWField2
+                .style("display", "none")
+            editingW1 = false;
+            editingW2 = false;
+        }
+    })
+    .style("display", "none")
+
+let inputWContent2 = "0"
+const inputWField2 = overlayGroup
+    .append("foreignObject")
+    .attr("x", 57.5) //60, -60
+    .attr("y", 85)
+    .attr("font-size", "14px")
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "middle")
+    .style("text-align", "center")
+    .attr("width", "60px")
+    .attr("height", "20px")
+    .append(`xhtml:div`)
+    .append(`div`)
+    .attr("contentEditable", true)
+    .text(editWValue2.toFixed(2))
+    .on("mousedown", function(event) {
+        event.stopPropagation();
+        editingW2 = true;
+    })
+    .on("keyup", function(event) {
+        inputWContent2 = d3.select(this).text();
+        if (!isFinite(inputWContent2)) return;
+        if (selectedProp.includes("start")) {
+            editWObject.points[0].y = distToCoord(inputWContent2, "y")
+        } else if (selectedProp.includes("end")) {
+            editWObject.points[1].y = distToCoord(inputWContent2, "y")
+        } else {
+            editWObject.len = inputWContent2
+        }
+        updateWeldProps();
+        updateLoadProps();
+        updateView();
+    })
+    .on("keydown", function(event) {
+        if (event.key === "Enter") {
+            inputWBox
+                // .style("display", "none")
+                .transition()
+                .duration(500)
+                .attr("x", -80)
+                // .on("mousedown", function(event) {
+                //     event.resumePropagation();
+                // })
+            inputWBox2
+                .style("display", "none")
+            inputWLabel1
+                .transition()
+                .duration(500)
+                .attr("x", -10)
+                // .style("display", "none")
+            inputWField1
+                .style("display", "none")
+            inputWLabel2
+                .transition()
+                .duration(500)
+                .attr("x", -10)
+                // .style("display", "none")
+            inputWField2
+                .style("display", "none")
+            editingW1 = false;
+            editingW2 = false;
         }
     })
     .style("display", "none")
@@ -609,27 +744,6 @@ const removeWIcon = overlayGroup.append("g")
     .attr("fill", "red")
     .text("-")
     // .style("display", "none")
-
-// let testContent = "hi"
-// const testField = overlayGroup.append("g")
-//     // .append("text")
-//     .append("foreignObject")
-//     .attr("x", 350)
-//     .attr("y", 5)
-//     .attr("width", "35px")
-//     .attr("height", "100%")
-//     .append(`xhtml:div`)
-//     .append(`div`)
-//     .attr("contentEditable", true)
-//     .text("Loads")
-//     .on("mousedown", function(event) {
-//         event.stopPropagation();
-//     })
-//     .on("keyup", function(d) {
-//         testContent = d3.select(this).text();
-//         // updateView();
-//         loadZone.text(testContent)
-//     })
     
 const loadZone = overlayGroup.append("g")
     .append("text")
@@ -645,7 +759,6 @@ const loadZone = overlayGroup.append("g")
         updateView();
     })
     .text("Loads")
-    // .text(testContent)
     // .style("display", "none");
 
 const addLButton = overlayGroup.append("g")

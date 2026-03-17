@@ -66,7 +66,7 @@ const maxLoads = 10;
 
 let selectedLoad = "load1";
 let selectedWeld = "weld1";
-
+let selectedProp = "weld1_start";
 
 // A default set of nodes for 4 initial welds...
 const defaultCoords = [
@@ -103,13 +103,7 @@ const weldCoords = [
     {id: "weld3", points: [[0,0], [0,0]], thk: defaultThk, len: 0, A: 0, C: [0,0], Ix: 0, Iy: 0, J: 0, show: false},
     {id: "weld4", points: [[0,0], [0,0]], thk: defaultThk, len: 0, A: 0, C: [0,0], Ix: 0, Iy: 0, J: 0, show: false},
 ]
-// const weldMids = [
-//     {id: "weld1", x: 0, y: 0, show: false},
-//     {id: "weld2", x: 0, y: 0, show: false},
-//     {id: "weld3", x: 0, y: 0, show: false},
-//     {id: "weld4", x: 0, y: 0, show: false},
-// ]
-// weldCoords = weldCoords.slice(0,1);
+
 updateWelds(); // populate weld points, length, area from initial nodes data
 
 const loadPoints = [

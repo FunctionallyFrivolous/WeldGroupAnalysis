@@ -52,15 +52,9 @@ function updateSVGs(){
         .attr("x", origin[0])
         .attr("y", origin[1]-axisLength)
     
-    editObject = weldCoords.find(j => j.id === selectedWeld);
-    editValue = coordToDist(editObject.points[0].x, "x");
-    if (!editing) testField.text(editValue.toFixed(2));
-    
     // unitsButton
     //     .append("title")
     //     .text(`units (${units})`)
-
-        // document.getElementById("debugOutputs").innerHTML = "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
 
 }
 
@@ -432,12 +426,9 @@ function addWeld() {
     if (weldCount >= maxWelds) return;
 
     if (weldCount >= maxWelds-1 || geomLock) {
-        // document.getElementById("addWeld").disabled = true;
         addWIcon.attr("fill", "white")
     }
     if (weldCount < maxWelds-1 && !geomLock) {
-        // document.getElementById("addWeld").disabled = false;
-        // document.getElementById("removeWeld").disabled = false;
         removeWIcon.attr("fill", "red")
     }
 
@@ -555,12 +546,10 @@ function removeWeld(id) {
     if (weldCount === 1) return;
 
     if (weldCount <= maxWelds && !geomLock) {
-        // document.getElementById("addWeld").disabled = false;
         addWIcon.attr("fill", "green");
     }
 
     if (weldCount <= 2 || geomLock) {
-        // document.getElementById("removeWeld").disabled = true;
         removeWIcon.attr("fill", "white");
     }
 
@@ -601,6 +590,8 @@ function removeWeld(id) {
     // weldDrag.attr("opacity", 0)
 
     selectedWeld = `weld${weldCount}`
+
+    selectEditProp();
 
     updateView();
     updateWeldProps();
@@ -699,6 +690,8 @@ function updateDrags(){
                 updateWeldProps();
                 dragWCoords.style("display", "block")
                 dragWProps.style("display", "block")
+                selectedProp = d.id
+                selectEditProp()
                 updateData();
                 updateSVGs();
             })
@@ -724,6 +717,7 @@ function updateDrags(){
                 }
                 // Snap
                 [d.x, d.y] = snapDrag(d.id, d.x, d.y, x_opp, y_opp)
+                selectEditProp()
                 updateStuff();
                 updateSVGs();
                 updateData();
@@ -754,6 +748,8 @@ function updateDrags(){
         .attr("cy", d => (d.points[1].y + d.points[0].y)/2)
         .call(d3.drag()
             .on("start", (event, d) => {
+                selectedProp = d.id
+                selectEditProp()
                 selectedWeld = d.id;
                 xtemp = event.x;
                 ytemp = event.y;
@@ -773,6 +769,7 @@ function updateDrags(){
                     d.points[i].x = d.points[i].x + x_delta;
                     d.points[i].y = d.points[i].y + y_delta;
                 }
+                selectEditProp()
                 updateWeldProps();
                 updateStuff();
                 updateSVGs();
@@ -1258,24 +1255,24 @@ function updateWeldProps() {
         .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
         .style("display", showTMax ? "block" : "none")
 
-    const weldLenInput = document.getElementById("weldLen");
-    weldLenInput.value = (wSelect.len).toFixed(1);
-    const weldSizeInput = document.getElementById("weldSize");
-    weldSizeInput.value = (wSelect.thk*unitConvert).toFixed(3)
+    // const weldLenInput = document.getElementById("weldLen");
+    // weldLenInput.value = (wSelect.len).toFixed(1);
+    // const weldSizeInput = document.getElementById("weldSize");
+    // weldSizeInput.value = (wSelect.thk*unitConvert).toFixed(3)
 
-    const weldSXInput = document.getElementById("weldStartX");
-    weldSXInput.value = coordToDist(wSelect.points[0].x,"x").toFixed(1);
-    const weldSYInput = document.getElementById("weldStartY");
-    weldSYInput.value = coordToDist(wSelect.points[0].y,"y").toFixed(1);
+    // const weldSXInput = document.getElementById("weldStartX");
+    // weldSXInput.value = coordToDist(wSelect.points[0].x,"x").toFixed(1);
+    // const weldSYInput = document.getElementById("weldStartY");
+    // weldSYInput.value = coordToDist(wSelect.points[0].y,"y").toFixed(1);
 
-    const weldEXInput = document.getElementById("weldEndX");
-    weldEXInput.value = coordToDist(wSelect.points[1].x,"x").toFixed(1);
-    const weldEYInput = document.getElementById("weldEndY");
-    weldEYInput.value = coordToDist(wSelect.points[1].y,"y").toFixed(1);
+    // const weldEXInput = document.getElementById("weldEndX");
+    // weldEXInput.value = coordToDist(wSelect.points[1].x,"x").toFixed(1);
+    // const weldEYInput = document.getElementById("weldEndY");
+    // weldEYInput.value = coordToDist(wSelect.points[1].y,"y").toFixed(1);
 
-    const weldIDLab = document.getElementById("weldLab");
-    const weldNo = wSelect.id.slice(4,5);
-    weldIDLab.textContent = `Weld ${weldNo}`;
+    // const weldIDLab = document.getElementById("weldLab");
+    // const weldNo = wSelect.id.slice(4,5);
+    // weldIDLab.textContent = `Weld ${weldNo}`;
 }
 
 function updateLoadProps() {
@@ -1389,4 +1386,33 @@ function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
     }
     
     return [dxf, dyf]
+}
+
+function selectEditProp() {
+    editingW1 = false;
+    editingW2 = false;
+    if (selectedProp.includes("weld")) {
+        editWObject = weldCoords.find(j => j.id === selectedWeld);
+        if (selectedProp.includes("start")) {
+            editWLabel1 = "Start X";
+            editWLabel2 = "Start Y";
+            editWValue1 = coordToDist(editWObject.points[0].x, "x")
+            editWValue2 = coordToDist(editWObject.points[0].y, "y") 
+        } else if (selectedProp.includes("end")) {
+            editWLabel1 = "End X";
+            editWLabel2 = "End Y";
+            editWValue1 = coordToDist(editWObject.points[1].x, "x")
+            editWValue2 = coordToDist(editWObject.points[1].y, "y") 
+        } else {
+            editWLabel1 = "Length";
+            editWLabel2 = "Size";
+            editWValue1 = editWObject.len
+            editWValue2 = editWObject.thk
+        }
+    }
+    inputWLabel1.text(`${editWLabel1}: `)
+    inputWLabel2.text(`${editWLabel2}: `)
+    inputWField1.text(editWValue1.toFixed(2));
+    inputWField2.text(editWValue2.toFixed(2));
+    updateView();
 }

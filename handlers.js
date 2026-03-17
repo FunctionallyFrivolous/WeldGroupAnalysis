@@ -50,29 +50,6 @@ document.getElementById("toggleTMax").addEventListener("click", () => {
     updateView();
 })
 
-// document.getElementById("toggleCoords").addEventListener("click", () => {
-//     showCoords = !showCoords
-//     updateView();
-// })
-
-// document.getElementById("toggleLoadProps").addEventListener("click", () => {
-//     showLoadProps = !showLoadProps
-//     const button = document.getElementById("toggleLoadProps");
-//     button.style.opacity = showLoadProps ? 1 : 0.50
-//     // dragLCoords.style("display", showLoadProps ? "block" : "none")
-//     // dragLProps.style("display", showLoadProps ? "block" : "none")
-//     updateView();
-// })
-
-// document.getElementById("toggleWeldProps").addEventListener("click", () => {
-//     showWeldProps = !showWeldProps
-//     const button = document.getElementById("toggleWeldProps");
-//     button.style.opacity = showWeldProps ? 1 : 0.50
-//     // dragWCoords.style("display", showWeldProps ? "block" : "none")
-//     // dragWProps.style("display", showWeldProps ? "block" : "none")
-//     updateView();
-// })
-
 function unitSwap() {
     if (units === "metric") {
         units = "inches";
@@ -105,10 +82,6 @@ function unitSwap() {
         document.getElementById("fUnits").textContent = `N`;
     }
 
-    // const button = document.getElementById("toggleUnits");
-    // button.textContent = units === "metric" ? "Metric" : "Inches";
-
-
     updateView();
     updateWeldProps();
     updateLoadProps();
@@ -118,18 +91,9 @@ function unitSwap() {
     // unitsButton
     //     .attr("opacity", units === "metric" ? 0.25 : 0)
 }
-// document.getElementById("toggleUnits").addEventListener("click", () => {
-//     unitSwap();
-// })
 
 function lockUnlock() {
     geomLock = !geomLock;
-    // const button = document.getElementById("lockGeom");
-    // button.textContent = geomLock ? "Unlock Geometry" : "Lock Geometry";
-    // document.getElementById("addWeld").disabled = geomLock ? true : false;
-    // document.getElementById("addLoad").disabled = geomLock ? true : false;
-    // document.getElementById("removeWeld").disabled = geomLock ? true : false;
-    // document.getElementById("removeLoad").disabled = geomLock ? true : false;
     document.getElementById("loadScaleSlider").disabled = geomLock ? true : false;
     document.getElementById("stressScaleSlider").disabled = geomLock ? true : false;
     document.getElementById("snapDistSlider").disabled = geomLock ? true : false;
@@ -143,10 +107,6 @@ function lockUnlock() {
     lockButton
         .attr("opacity", geomLock ? 0.125 : 0)
 }
-
-// document.getElementById("lockGeom").addEventListener("click", () => {
-//     lockUnlock();
-// })
 
 // function inspect() {
 //     inspection = !inspection;
@@ -188,59 +148,35 @@ function setupScaleSliders() {
     })
 }
 
-// document.getElementById("addWeld").addEventListener("click", () => {
-//     addWeld();
-//     // if (weldCount >= 9) document.getElementById("addWeld").disabled = true;
-//     // else document.getElementById("addWeld").disabled = false;
+// document.getElementById("weldSize").addEventListener("input", function(event) {
+//     const wSelect = weldCoords.find(j => j.id === selectedWeld)
+//     wSelect.thk = event.target.valueAsNumber;
+//     updateView();
+// })
+// document.getElementById("weldLen").addEventListener("input", function(event) {
+//     const wSelect = weldCoords.find(j => j.id === selectedWeld)
+//     wSelect.len = event.target.valueAsNumber;
 //     updateView();
 // })
 
-// document.getElementById("addLoad").addEventListener("click", () => {
-//     addLoad();
-//     // if (loadCount >= 9) document.getElementById("addLoad").disabled = true;
-//     // else document.getElementById("addLoad").disabled = false;
+// document.getElementById("weldStartX").addEventListener("input", function(event) {
+//     const wSelect = weldCoords.find(j => j.id === selectedWeld)
+//     wSelect.points[0].x = distToCoord(event.target.valueAsNumber, "x");
+//     updateView();
+// })
+// document.getElementById("weldStartY").addEventListener("input", function(event) {
+//     const wSelect = weldCoords.find(j => j.id === selectedWeld)
+//     wSelect.points[0].y = distToCoord(event.target.valueAsNumber, "y");
 //     updateView();
 // })
 
-// document.getElementById("removeWeld").addEventListener("click", () => {
-//     removeWeld(selectedWeld);
+// document.getElementById("weldEndX").addEventListener("input", function(event) {
+//     const wSelect = weldCoords.find(j => j.id === selectedWeld)
+//     wSelect.points[1].x = distToCoord(event.target.valueAsNumber, "x");
 //     updateView();
 // })
-
-// document.getElementById("removeLoad").addEventListener("click", () => {
-//     removeLoad(selectedLoad);
+// document.getElementById("weldEndY").addEventListener("input", function(event) {
+//     const wSelect = weldCoords.find(j => j.id === selectedWeld)
+//     wSelect.points[1].y = distToCoord(event.target.valueAsNumber, "y");
 //     updateView();
 // })
-
-document.getElementById("weldSize").addEventListener("input", function(event) {
-    const wSelect = weldCoords.find(j => j.id === selectedWeld)
-    wSelect.thk = event.target.valueAsNumber;
-    updateView();
-})
-document.getElementById("weldLen").addEventListener("input", function(event) {
-    const wSelect = weldCoords.find(j => j.id === selectedWeld)
-    wSelect.len = event.target.valueAsNumber;
-    updateView();
-})
-
-document.getElementById("weldStartX").addEventListener("input", function(event) {
-    const wSelect = weldCoords.find(j => j.id === selectedWeld)
-    wSelect.points[0].x = distToCoord(event.target.valueAsNumber, "x");
-    updateView();
-})
-document.getElementById("weldStartY").addEventListener("input", function(event) {
-    const wSelect = weldCoords.find(j => j.id === selectedWeld)
-    wSelect.points[0].y = distToCoord(event.target.valueAsNumber, "y");
-    updateView();
-})
-
-document.getElementById("weldEndX").addEventListener("input", function(event) {
-    const wSelect = weldCoords.find(j => j.id === selectedWeld)
-    wSelect.points[1].x = distToCoord(event.target.valueAsNumber, "x");
-    updateView();
-})
-document.getElementById("weldEndY").addEventListener("input", function(event) {
-    const wSelect = weldCoords.find(j => j.id === selectedWeld)
-    wSelect.points[1].y = distToCoord(event.target.valueAsNumber, "y");
-    updateView();
-})
