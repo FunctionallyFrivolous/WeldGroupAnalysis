@@ -82,6 +82,8 @@ function unitSwap() {
         document.getElementById("fUnits").textContent = `N`;
     }
 
+    selectEditProp()
+
     updateView();
     updateWeldProps();
     updateLoadProps();

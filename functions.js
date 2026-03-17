@@ -1407,7 +1407,7 @@ function selectEditProp() {
             editWLabel1 = "Length";
             editWLabel2 = "Size";
             editWValue1 = editWObject.len
-            editWValue2 = editWObject.thk
+            editWValue2 = editWObject.thk * unitConvert
         }
     }
     inputWLabel1.text(`${editWLabel1}: `)
