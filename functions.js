@@ -691,7 +691,7 @@ function updateDrags(){
                 dragWCoords.style("display", "block")
                 dragWProps.style("display", "block")
                 selectedProp = d.id
-                // selectEditProp()
+                selectEditProp()
                 updateData();
                 updateSVGs();
             })
@@ -717,7 +717,7 @@ function updateDrags(){
                 }
                 // Snap
                 [d.x, d.y] = snapDrag(d.id, d.x, d.y, x_opp, y_opp)
-                // selectEditProp()
+                selectEditProp()
                 updateStuff();
                 updateSVGs();
                 updateData();
@@ -1414,5 +1414,5 @@ function selectEditProp() {
     inputWLabel2.text(`${editWLabel2}: `)
     inputWField1.text(editWValue1.toFixed(2));
     inputWField2.text(editWValue2.toFixed(2));
-    updateView();
+    // updateView();
 }

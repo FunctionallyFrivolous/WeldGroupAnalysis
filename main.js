@@ -311,7 +311,7 @@ const dragWCoords = overlayGroup
     .attr("y", 40) //40 , 20
     .on("mousedown", function(event) {
         event.stopPropagation();
-        selectEditProp();       
+        selectEditProp();     
         // inputWBox.style("display", "block")
         inputWBox
             .transition()
