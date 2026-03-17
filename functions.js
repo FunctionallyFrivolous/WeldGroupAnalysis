@@ -717,7 +717,7 @@ function updateDrags(){
                 }
                 // Snap
                 [d.x, d.y] = snapDrag(d.id, d.x, d.y, x_opp, y_opp)
-                selectEditProp()
+                // selectEditProp()
                 updateStuff();
                 updateSVGs();
                 updateData();
