@@ -246,7 +246,14 @@ const cMark = centroidGroup.selectAll("circle")
     .attr("stroke-opacity", 0.68)
     .style("pointer-events", "none")
     .attr("cx", d => d.x)
-    .attr("cy", d => d.y);
+    .attr("cy", d => d.y)
+    // .on("dblclick", function() {
+    //     showRx = !showRx
+    //     rxVector
+    //         .style("display", showRx ? "block" : "none")
+    //     rxMGroup
+    //         .style("display", showRx ? "block" : "none")
+    // })
 
 // Reaction force vector (at centroid)
 const rxVGroup = zoomGroup.append("g")
@@ -307,11 +314,18 @@ svg.call(zoom)
 
 //Overlay Stuff
 
+const editBoxOffset = -10
+const editBoxHeight = 57;
+const editFontSize = 12;
+const editLabelX = 45;
+const editFieldWidth = 55;
+const editShowHide = "none"
+
 // Edit Fields - Welds
-let editWLabel1 = "Start X"
-let editWLabel2 = "Start Y"
-let editWLabelL = "Length"
-let editWLabelT = "Size"
+let editWLabel1 = `X (${units === "metric" ? "mm" : "in"})`
+let editWLabel2 = `Y (${units === "metric" ? "mm" : "in"})`
+let editWLabelL = `L (${units === "metric" ? "mm" : "in"})`
+let editWLabelT = `W (${units === "metric" ? "mm" : "in"})`
 
 let editWObject = weldCoords.find(j => j.id === selectedWeld);
 
@@ -394,96 +408,99 @@ const dragWProps = overlayGroup
     // .style("pointer-events", "none")
     .attr("x", 5)
     .attr("y", 25) //25 , 5
-    .on("mousedown", function(event) {
-        showHideWEdits(event);
-    })
+    // .on("mousedown", function(event) {
+    //     showHideWEdits(event);
+    // })
 
 const inputWBox2 = overlayGroup
     .append("rect")
-    .attr("x", -10) // -10, -150
-    .attr("y", 60)
-    .attr("width", 130) // 65
+    .attr("x", editBoxOffset) // -10, -150
+    .attr("y", editBoxHeight)
+    .attr("width", editBoxOffset+125) // 65
     .attr("height", 86)
     .attr("rx", 5)
     .attr("ry", 5)
     .attr("fill-opacity", 0.1)
     .attr("fill", "black")
     .attr("stroke", "black")
+    .attr("stroke-width", 0.5)
     // .on("mousedown", function(event) {
     //     event.stopPropagation();
     // })
-    .style("display", "none")
+    .style("display", editShowHide)
 
 const inputWLabel1 = overlayGroup
     .append("text")
-    .attr("x", 50) //50
-    .attr("y", 115)
+    .attr("x", editLabelX) //50
+    .attr("y", editBoxHeight+55)
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "middle")
     .style("text-align", "right")
-    .attr("font-size", "14px")
+    .attr("font-size", `${editFontSize}px`)
     .text(`${editWLabel1}`)
-    .style("display", "none")
+    .style("display", editShowHide)
     .style("pointer-events", "none")
 const inputWLabel2 = overlayGroup
     .append("text")
-    .attr("x", 50) //50
-    .attr("y", 135)
+    .attr("x", editLabelX) //50
+    .attr("y", editBoxHeight+75)
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "middle")
     .style("text-align", "right")
-    .attr("font-size", "14px")
+    .attr("font-size", `${editFontSize}px`)
     .text(`${editWLabel2}`)
-    .style("display", "none")
+    .style("display", editShowHide)
     .style("pointer-events", "none")
 const inputWLabelL = overlayGroup
     .append("text")
-    .attr("x", 50) //50
-    .attr("y", 75)
+    .attr("x", editLabelX) //50
+    .attr("y", editBoxHeight+15)
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "middle")
     .style("text-align", "right")
-    .attr("font-size", "14px")
+    .attr("font-size", `${editFontSize}px`)
     .text(`${editWLabelL}`)
-    .style("display", "none")
+    .style("display", editShowHide)
     .style("pointer-events", "none")
 const inputWLabelT = overlayGroup
     .append("text")
-    .attr("x", 50) //50
-    .attr("y", 95)
+    .attr("x", editLabelX) //50
+    .attr("y", editBoxHeight+35)
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "middle")
     .style("text-align", "right")
-    .attr("font-size", "14px")
+    .attr("font-size", `${editFontSize}px`)
     .text(`${editWLabelT}`)
-    .style("display", "none")
+    .style("display", editShowHide)
     .style("pointer-events", "none")
+
 const inputWBox = overlayGroup
     .append("rect")
-    .attr("x", -10) // -10
-    .attr("y", 60)
-    .attr("width", 65) // 65
+    .attr("x", editBoxOffset) // -10
+    .attr("y", editBoxHeight)
+    .attr("width", editLabelX-editBoxOffset+5) // 65
     .attr("height", 86)
-    .attr("rx", 5)
-    .attr("ry", 5)
+    // .attr("rx", 5)
+    // .attr("ry", 5)
     .attr("fill-opacity", 0.25)
     .attr("stroke", "black")
+    .attr("stroke-width", 0.5)
     .on("mousedown", function(event) {
         showHideWEdits(event);
     })
-    .style("display", "none")
+    .style("display", editShowHide)
 
 
 let inputWContent1 = "0"
 const inputWField1 = overlayGroup
     .append("foreignObject")
-    .attr("x", 57.5) //60, -60
-    .attr("y", 105)
-    .attr("font-size", "14px")
+    .attr("x", editLabelX-editBoxOffset-5) //60, -60
+    .attr("y", editBoxHeight+47)
+    .attr("font-size", `${editFontSize}px`)
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
     .style("text-align", "center")
-    .attr("width", "60px")
+    .attr("width", `${editFieldWidth}px`)
     .attr("height", "20px")
     .style("pointer-events", "none")
     .append(`xhtml:div`)
@@ -532,18 +549,18 @@ const inputWField1 = overlayGroup
             selectWEditProp(); 
         }
     })
-    .style("display", "none")
+    .style("display", editShowHide)
 
 let inputWContent2 = "0"
 const inputWField2 = overlayGroup
     .append("foreignObject")
-    .attr("x", 57.5) //60, -60
-    .attr("y", 125)
-    .attr("font-size", "14px")
+    .attr("x", editLabelX-editBoxOffset-5) //60, -60
+    .attr("y", editBoxHeight+67)
+    .attr("font-size", `${editFontSize}px`)
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
     .style("text-align", "center")
-    .attr("width", "60px")
+    .attr("width", `${editFieldWidth}px`)
     .attr("height", "20px")
     .style("pointer-events", "none")
     .append(`xhtml:div`)
@@ -589,18 +606,18 @@ const inputWField2 = overlayGroup
             selectWEditProp(); 
         }
     })
-    .style("display", "none")
+    .style("display", editShowHide)
 
 let inputWContentL = "0"
 const inputWFieldL = overlayGroup
     .append("foreignObject")
-    .attr("x", 57.5) //60, -60
-    .attr("y", 65)
-    .attr("font-size", "14px")
+    .attr("x", editLabelX-editBoxOffset-5) //60, -60
+    .attr("y", editBoxHeight+7)
+    .attr("font-size", `${editFontSize}px`)
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
     .style("text-align", "center")
-    .attr("width", "60px")
+    .attr("width", `${editFieldWidth}px`)
     .attr("height", "20px")
     .style("pointer-events", "none")
     .append(`xhtml:div`)
@@ -634,18 +651,18 @@ const inputWFieldL = overlayGroup
             selectWEditProp(); 
         }
     })
-    .style("display", "none")
+    .style("display", editShowHide)
 
 let inputWContentT = "0"
 const inputWFieldT = overlayGroup
     .append("foreignObject")
-    .attr("x", 57.5) //60, -60
-    .attr("y", 85)
-    .attr("font-size", "14px")
+    .attr("x", editLabelX-editBoxOffset-5) //60, -60
+    .attr("y", editBoxHeight+27)
+    .attr("font-size", `${editFontSize}px`)
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
     .style("text-align", "center")
-    .attr("width", "60px")
+    .attr("width", `${editFieldWidth}px`)
     .attr("height", "20px")
     .style("pointer-events", "none")
     .append(`xhtml:div`)
@@ -679,13 +696,13 @@ const inputWFieldT = overlayGroup
             selectWEditProp(); 
         }
     })
-    .style("display", "none")
+    .style("display", editShowHide)
 
 // Edit Field - Loads
-let editLLabelX = "X"
-let editLLabelY = "Y"
-let editLLabelF = "Force"
-let editLLabelA = "Angle"
+let editLLabelX = `X (${units === "metric" ? "mm" : "in"})`
+let editLLabelY = `Y (${units === "metric" ? "mm" : "in"})`
+let editLLabelF = `F (${units === "metric" ? "N" : "lbf"})`
+let editLLabelA = `θ (°)`
 
 let editLObject = loadProps.find(j => j.id === selectedLoad);
 
@@ -764,93 +781,96 @@ const dragLProps = overlayGroup
     // .style("pointer-events", "none")
     .attr("x", windowWidth-5)
     .attr("y", 25) //25, 5
-    .on("mousedown", function(event) {
-        showHideLEdits(event);
-    })
+    // .on("mousedown", function(event) {
+    //     showHideLEdits(event);
+    // })
     // .style("display", "none")
 
 const inputLBox2 = overlayGroup
     .append("rect")
-    .attr("x", 500+10-130) // -10, -150
-    .attr("y", 60)
-    .attr("width", 130) // 65
+    .attr("x", 500+editBoxOffset-editLabelX-50) // -10, -150
+    .attr("y", editBoxHeight)
+    .attr("width", 125) // 65
     .attr("height", 86)
     .attr("rx", 5)
     .attr("ry", 5)
     .attr("fill-opacity", 0.1)
     .attr("fill", "black")
     .attr("stroke", "black")
-    .style("display", "none")
+    .attr("stroke-width", 0.5)
+    .style("display", editShowHide)
 
 const inputLLabelX = overlayGroup
     .append("text")
-    .attr("x", 500-50) //50
-    .attr("y", 115)
+    .attr("x", 500-editLabelX) //50
+    .attr("y", editBoxHeight+55)
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
     .style("text-align", "right")
-    .attr("font-size", "14px")
+    .attr("font-size", `${editFontSize}px`)
     .text(`${editLLabelX}`)
-    .style("display", "none")
+    .style("display", editShowHide)
     .style("pointer-events", "none")
 const inputLLabelY = overlayGroup
     .append("text")
-    .attr("x", 500-50) //50
-    .attr("y", 135)
+    .attr("x", 500-editLabelX) //50
+    .attr("y", editBoxHeight+75)
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
     .style("text-align", "right")
-    .attr("font-size", "14px")
+    .attr("font-size", `${editFontSize}px`)
     .text(`${editLLabelY} `)
-    .style("display", "none")
+    .style("display", editShowHide)
     .style("pointer-events", "none")
 const inputLLabelF = overlayGroup
     .append("text")
-    .attr("x", 500-50) //50
-    .attr("y", 75)
+    .attr("x", 500-editLabelX) //50
+    .attr("y", editBoxHeight+15)
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
     .style("text-align", "right")
-    .attr("font-size", "14px")
+    .attr("font-size", `${editFontSize}px`)
     .text(`${editLLabelF}`)
-    .style("display", "none")
+    .style("display", editShowHide)
     .style("pointer-events", "none")
 const inputLLabelA = overlayGroup
     .append("text")
-    .attr("x", 500-50) //50
-    .attr("y", 95)
+    .attr("x", 500-editLabelX) //50
+    .attr("y", editBoxHeight+35)
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
     .style("text-align", "right")
-    .attr("font-size", "14px")
+    .attr("font-size", `${editFontSize}px`)
     .text(`${editLLabelA}`)
-    .style("display", "none")
+    .style("display", editShowHide)
     .style("pointer-events", "none")
+
 const inputLBox = overlayGroup
     .append("rect")
-    .attr("x", 500-65+10) // -10
-    .attr("y", 60)
+    .attr("x", 500-editLabelX-5) // -10
+    .attr("y", editBoxHeight)
     .attr("width", 65) // 65
     .attr("height", 86)
-    .attr("rx", 5)
-    .attr("ry", 5)
+    // .attr("rx", 5)
+    // .attr("ry", 5)
     .attr("fill-opacity", 0.25)
     .attr("stroke", "black")
+    .attr("stroke-width", 0.5)
     .on("mousedown", function(event) {
         showHideLEdits(event);
     })
-    .style("display", "none")
+    .style("display", editShowHide)
 
 let inputLContentX = "0"
 const inputLFieldX = overlayGroup
     .append("foreignObject")
-    .attr("x", 500-117.5) //60, -60
-    .attr("y", 105)
-    .attr("font-size", "14px")
+    .attr("x", 500-editLabelX-60) //60, -60
+    .attr("y", editBoxHeight+47)
+    .attr("font-size", `${editFontSize}px`)
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "middle")
     .style("text-align", "center")
-    .attr("width", "60px")
+    .attr("width", `${editFieldWidth}px`)
     .attr("height", "20px")
     .style("pointer-events", "none")
     .append(`xhtml:div`)
@@ -884,18 +904,18 @@ const inputLFieldX = overlayGroup
             selectLEditProp(); 
         }
     })
-    .style("display", "none")
+    .style("display", editShowHide)
 
 let inputLContentY = "0"
 const inputLFieldY = overlayGroup
     .append("foreignObject")
-    .attr("x", 500-117.5) //60, -60
-    .attr("y", 125)
-    .attr("font-size", "14px")
+    .attr("x", 500-editLabelX-60) //60, -60
+    .attr("y", editBoxHeight+67)
+    .attr("font-size", `${editFontSize}px`)
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "middle")
     .style("text-align", "center")
-    .attr("width", "60px")
+    .attr("width", `${editFieldWidth}px`)
     .attr("height", "20px")
     .style("pointer-events", "none")
     .append(`xhtml:div`)
@@ -929,18 +949,18 @@ const inputLFieldY = overlayGroup
             selectLEditProp(); 
         }
     })
-    .style("display", "none")
+    .style("display", editShowHide)
 
 let inputLContentF = "0"
 const inputLFieldF = overlayGroup
     .append("foreignObject")
-    .attr("x", 500-117.5) //60, -60
-    .attr("y", 65)
-    .attr("font-size", "14px")
+    .attr("x", 500-editLabelX-60) //60, -60
+    .attr("y", editBoxHeight+7)
+    .attr("font-size", `${editFontSize}px`)
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "middle")
     .style("text-align", "center")
-    .attr("width", "60px")
+    .attr("width", `${editFieldWidth}px`)
     .attr("height", "20px")
     .style("pointer-events", "none")
     .append(`xhtml:div`)
@@ -974,18 +994,18 @@ const inputLFieldF = overlayGroup
             selectLEditProp(); 
         }
     })
-    .style("display", "none")
+    .style("display", editShowHide)
 
 let inputLContentA = "0"
 const inputLFieldA = overlayGroup
     .append("foreignObject")
-    .attr("x", 500-117.5) //60, -60
-    .attr("y", 85)
-    .attr("font-size", "14px")
+    .attr("x", 500-editLabelX-60) //60, -60
+    .attr("y", editBoxHeight+27)
+    .attr("font-size", `${editFontSize}px`)
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "middle")
     .style("text-align", "center")
-    .attr("width", "60px")
+    .attr("width", `${editFieldWidth}px`)
     .attr("height", "20px")
     .style("pointer-events", "none")
     .append(`xhtml:div`)
@@ -1019,7 +1039,7 @@ const inputLFieldA = overlayGroup
             selectLEditProp(); 
         }
     })
-    .style("display", "none")
+    .style("display", editShowHide)
 
 const centroidProps = overlayGroup
     .append("text")
@@ -1068,6 +1088,20 @@ const tMaxProps = overlayGroup
     .attr("fill", "indigo")
     // .style("display", "none")
     // .text(`tmax: ${max_t.toFixed(1)}`)
+const RxShowHide = overlayGroup
+    .append("rect")
+    .attr("x", `${250-50}`)
+    .attr("y", "0")
+    .attr("width", "100")
+    .attr("height", "50")
+    .attr("opacity", 0)
+    .on("click", function() {
+        showRx = !showRx
+        rxVector
+            .style("display", showRx ? "block" : "none")
+        rxMGroup
+            .style("display", showRx && Math.abs(rxM) > 0.1 ? "block" : "none")
+    })
 
 // On-Display Buttons
 const lockIcon = overlayGroup

@@ -1415,28 +1415,32 @@ function selectWEditProp() {
     if (selectedWProp.includes("weld")) {
         editWObject = weldCoords.find(j => j.id === selectedWeld);
         if (selectedWProp.includes("start")) {
-            editWLabel1 = "Start X";
-            editWLabel2 = "Start Y";
+            editWLabel1 = `X (${units === "metric" ? "mm" : "in"})`;
+            editWLabel2 = `Y (${units === "metric" ? "mm" : "in"})`;
             editWValue1 = coordToDist(editWObject.points[0].x, "x")
             editWValue2 = coordToDist(editWObject.points[0].y, "y")
         } else if (selectedWProp.includes("end")) {
-            editWLabel1 = "End X";
-            editWLabel2 = "End Y";
+            editWLabel1 = `X (${units === "metric" ? "mm" : "in"})`;
+            editWLabel2 = `Y (${units === "metric" ? "mm" : "in"})`;
             editWValue1 = coordToDist(editWObject.points[1].x, "x")
             editWValue2 = coordToDist(editWObject.points[1].y, "y")
         } 
         else {
-            editWLabel1 = "Mid X";
-            editWLabel2 = "Mid Y";
+            editWLabel1 = `X (${units === "metric" ? "mm" : "in"})`;
+            editWLabel2 = `Y (${units === "metric" ? "mm" : "in"})`;
             editWValue1 = coordToDist((editWObject.points[0].x + editWObject.points[1].x)/2, "x")
             editWValue2 = coordToDist((editWObject.points[0].y + editWObject.points[1].y)/2, "y")
         }
+        
+        editWLabelT = `W (${units === "metric" ? "mm" : "in"})`;
+        editWLabelL = `L (${units === "metric" ? "mm" : "in"})`;
+
         editWValueL = editWObject.len// * unitConvert;
         editWValueT = editWObject.thk * unitConvert;
 
         inputWLabel1.text(`${editWLabel1}`)
         inputWLabel2.text(`${editWLabel2}`)
-        // inputWLabelL.text(`${editWLabelL}`)
+        inputWLabelL.text(`${editWLabelL}`)
         inputWLabelT.text(`${editWLabelT}`)
 
         inputWField1.text(editWValue1.toFixed(2));
@@ -1455,8 +1459,10 @@ function selectLEditProp() {
 
     if (selectedLProp.includes("load")) {
         editLObject = loadProps.find(j => j.id === selectedLoad);
-        editLLabelX = "X";
-        editLLabelY = "Y";
+        editLLabelX = `X (${units === "metric" ? "mm" : "in"})`;
+        editLLabelY = `Y (${units === "metric" ? "mm" : "in"})`;
+        editLLabelF = `F (${units === "metric" ? "N" : "lbf"})`;
+
         editLValueX = coordToDist(editLObject.x, "x")
         editLValueY = coordToDist(editLObject.y, "y")
         editLValueF = editLObject.mag * forceConvert;

@@ -1,18 +1,18 @@
-document.getElementById("toggleRx").addEventListener("click", () => {
-    showRx = !showRx
-    rxVector
-        .style("display", showRx ? "block" : "none")
-    rxMGroup
-        .style("display", showRx ? "block" : "none")
-    // centroidProps
-    //     .style("display", showRx ? "block" : "none")
-    // RxVProps
-    //     .style("display", showRx ? "block" : "none")
-    // RxMProps
-    //     .style("display", showRx ? "block" : "none")
-    const button = document.getElementById("toggleRx");
-    button.style.opacity = showRx ? 1 : 0.50 
-})
+// document.getElementById("toggleRx").addEventListener("click", () => {
+//     showRx = !showRx
+//     rxVector
+//         .style("display", showRx ? "block" : "none")
+//     rxMGroup
+//         .style("display", showRx ? "block" : "none")
+//     // centroidProps
+//     //     .style("display", showRx ? "block" : "none")
+//     // RxVProps
+//     //     .style("display", showRx ? "block" : "none")
+//     // RxMProps
+//     //     .style("display", showRx ? "block" : "none")
+//     const button = document.getElementById("toggleRx");
+//     button.style.opacity = showRx ? 1 : 0.50 
+// })
 
 document.getElementById("toggleStress").addEventListener("click", () => {
     showStress = !showStress
@@ -62,9 +62,6 @@ function unitSwap() {
         unitPrecision = 1;
         weldThkScale = 40;
         stressScale = 3;
-        // document.getElementById("lUnits").textContent = `"`;
-        // document.getElementById("thkUnits").textContent = `"`;
-        // document.getElementById("fUnits").textContent = `lbf`;
     }
     else {
         units = "metric";
@@ -77,9 +74,6 @@ function unitSwap() {
         unitPrecision = 0;
         weldThkScale = 40;
         stressScale = stressScale*145;
-        // document.getElementById("lUnits").textContent = "mm";
-        // document.getElementById("thkUnits").textContent = `mm`;
-        // document.getElementById("fUnits").textContent = `N`;
     }
 
     selectWEditProp()
