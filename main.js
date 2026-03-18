@@ -300,7 +300,7 @@ svg.call(zoom)
 //Overlay Stuff
 
 const editBoxOffset = -10
-const editBoxHeight = 57;
+const editBoxHeight = 40; 
 const editFontSize = 12;
 const editLabelX = 45;
 const editFieldWidth = 55;
@@ -378,24 +378,35 @@ const dragWCoords = overlayGroup
     .attr("font-size", "8pt")
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "text-before-edge")
-    // .style("pointer-events", "none")
+    .style("pointer-events", "none")
     .attr("x", 5)
-    .attr("y", 40) //40 , 20
-    .on("mousedown", function(event) {
-        showHideWEdits(event);
-    })
+    .attr("y", 40-19) //40 , 20
+    // .on("mousedown", function(event) {
+    //     showHideWEdits(event);
+    // })
 
 const dragWProps = overlayGroup
     .append("text")
     .attr("font-size", "8pt")
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "text-before-edge")
-    // .style("pointer-events", "none")
+    .style("pointer-events", "none")
     .attr("x", 5)
-    .attr("y", 25) //25 , 5
+    .attr("y", 25-19) //25 , 5
     // .on("mousedown", function(event) {
     //     showHideWEdits(event);
     // })
+
+const showHideWProps = overlayGroup
+    .append("rect")
+    .attr("x", 0)
+    .attr("Y", 0)
+    .attr("width", 150)
+    .attr("height", 40)
+    .attr("opacity", 0)
+    .on("mousedown", function(event) {
+        showHideWEdits(event);
+    })
 
 const inputWBox2 = overlayGroup
     .append("rect")
@@ -718,12 +729,12 @@ const dragLCoords = overlayGroup
     .attr("font-size", "8pt")
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "text-before-edge")
-    // .style("pointer-events", "none")
+    .style("pointer-events", "none")
     .attr("x", windowWidth-5)
-    .attr("y", 40) //40, 20
-    .on("mousedown", function(event) {
-        showHideLEdits(event);
-    })
+    .attr("y", 40-19) //40, 20
+    // .on("mousedown", function(event) {
+    //     showHideLEdits(event);
+    // })
     // .style("display", "none");
 
 const dragLProps = overlayGroup
@@ -731,13 +742,24 @@ const dragLProps = overlayGroup
     .attr("font-size", "8pt")
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "text-before-edge")
-    // .style("pointer-events", "none")
+    .style("pointer-events", "none")
     .attr("x", windowWidth-5)
-    .attr("y", 25) //25, 5
+    .attr("y", 25-19) //25, 5
     // .on("mousedown", function(event) {
     //     showHideLEdits(event);
     // })
     // .style("display", "none")
+
+const showHideLProps = overlayGroup
+    .append("rect")
+    .attr("x", windowWidth-150)
+    .attr("Y", 0)
+    .attr("width", 150)
+    .attr("height", 40)
+    .attr("opacity", 0)
+    .on("mousedown", function(event) {
+        showHideLEdits(event);
+    })
 
 const inputLBox2 = overlayGroup
     .append("rect")
@@ -1031,6 +1053,7 @@ const RxShowHide = overlayGroup
     })
 
 // On-Display Buttons
+const yShift = 30;
 const lockIcon = overlayGroup
     .append("text")
     .attr("font-size", "20px")
@@ -1038,13 +1061,13 @@ const lockIcon = overlayGroup
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
     .attr("x", 19)
-    .attr("y", windowHeight-31)
+    .attr("y", windowHeight-31-yShift)
     .attr("opacity", 0.75)
     .text("🔓")
 const lockButton = overlayGroup
     .append("rect")
     .attr("x", 5)
-    .attr("y", windowHeight-34)
+    .attr("y", windowHeight-34-yShift)
     .attr("width", 29)
     .attr("height", 30)
     .attr("rx", 5)
@@ -1062,13 +1085,13 @@ const unitsIcon = overlayGroup
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
     .attr("x", windowWidth-20)
-    .attr("y", windowHeight-26)
+    .attr("y", windowHeight-26-yShift)
     .attr("opacity", 0.75)
     .text("IN")
 const unitsButton = overlayGroup
     .append("rect")
     .attr("x", windowWidth-36)
-    .attr("y", windowHeight-34)
+    .attr("y", windowHeight-34-yShift)
     .attr("width", 32)
     .attr("height", 30)
     .attr("rx", 5)
@@ -1106,10 +1129,10 @@ const weldZone = overlayGroup.append("g")
     .attr("font-size", "9pt")
     .attr("font-weight", "bold")
     .attr("text-anchor", "start")
-    .attr("alignment-baseline", "text-before-edge")
+    .attr("alignment-baseline", "text-after-edge")
     // .style("pointer-events", "none")
     .attr("x", 27)
-    .attr("y", 5)
+    .attr("y", windowHeight-5)
     .on("click", function(event, d) {
         showWeldProps = !showWeldProps
         updateView();
@@ -1120,7 +1143,7 @@ const weldZone = overlayGroup.append("g")
 const addWButton = overlayGroup.append("g")
     .append("rect")
     .attr("x", 4)
-    .attr("y", 3)
+    .attr("y", windowHeight-3-18)
     .attr("width", 18)
     .attr("height", 18)
     .attr("rx", 5)
@@ -1139,7 +1162,7 @@ const addWIcon = overlayGroup.append("g")
     .attr("font-family", "Arial, Helvetica, sans-serif")
     .style("pointer-events", "none")
     .attr("x", 13)
-    .attr("y", 12)
+    .attr("y", windowHeight-12)
     .attr("dy", "0.35em")
     .attr("opacity", 1)
     .attr("fill", "green")
@@ -1148,7 +1171,7 @@ const addWIcon = overlayGroup.append("g")
 const removeWButton = overlayGroup.append("g")
     .append("rect")
     .attr("x", 66)
-    .attr("y", 3)
+    .attr("y", windowHeight-3-18)
     .attr("width", 18)
     .attr("height", 18)
     .attr("rx", 5)
@@ -1168,7 +1191,7 @@ const removeWIcon = overlayGroup.append("g")
     // .attr("transform", "rotate(45, 73, 14)")
     .style("pointer-events", "none")
     .attr("x", 75)
-    .attr("y", 12)
+    .attr("y", windowHeight-12)
     .attr("opacity", 1)
     .attr("fill", "red")
     .text("-")
@@ -1179,10 +1202,10 @@ const loadZone = overlayGroup.append("g")
     .attr("font-size", "9pt")
     .attr("font-weight", "bold")
     .attr("text-anchor", "end")
-    .attr("alignment-baseline", "text-before-edge")
+    .attr("alignment-baseline", "text-after-edge")
     // .style("pointer-events", "none")
     .attr("x", windowWidth-27)
-    .attr("y", 5)
+    .attr("y", windowHeight-5)
     .on("click", function(event, d) {
         showLoadProps = !showLoadProps
         updateView();
@@ -1193,7 +1216,7 @@ const loadZone = overlayGroup.append("g")
 const addLButton = overlayGroup.append("g")
     .append("rect")
     .attr("x", windowWidth-4-18)
-    .attr("y", 3)
+    .attr("y", windowHeight-3-18)
     .attr("width", 18)
     .attr("height", 18)
     .attr("rx", 5)
@@ -1211,7 +1234,7 @@ const addLIcon = overlayGroup.append("g")
     .attr("font-family", "Arial, Helvetica, sans-serif")
     .style("pointer-events", "none")
     .attr("x", windowWidth-13)
-    .attr("y", 12)
+    .attr("y", windowHeight-12)
     .attr("dy", "0.35em")
     .attr("opacity", 1)
     .attr("fill", "green")
@@ -1220,7 +1243,7 @@ const addLIcon = overlayGroup.append("g")
 const removeLButton = overlayGroup.append("g")
     .append("rect")
     .attr("x", windowWidth-66-18)
-    .attr("y", 3)
+    .attr("y", windowHeight-3-18)
     .attr("width", 18)
     .attr("height", 18)
     .attr("rx", 5)
@@ -1240,7 +1263,7 @@ const removeLIcon = overlayGroup.append("g")
     // .attr("transform", "rotate(45, 73, 14)")
     .style("pointer-events", "none")
     .attr("x", windowWidth-75)
-    .attr("y", 12)
+    .attr("y", windowHeight-12)
     .attr("opacity", 1)
     // .attr("fill", "white")
     .attr("fill", "red")

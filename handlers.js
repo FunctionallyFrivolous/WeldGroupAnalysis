@@ -97,10 +97,10 @@ function lockUnlock() {
     document.getElementById("loadScaleSlider").disabled = geomLock ? true : false;
     document.getElementById("stressScaleSlider").disabled = geomLock ? true : false;
     document.getElementById("snapDistSlider").disabled = geomLock ? true : false;
-    addWIcon.style("display", geomLock ? "none" : "block")
-    removeWIcon.style("display", geomLock ? "none" : "block")
-    addLIcon.style("display", geomLock ? "none" : "block")
-    removeLIcon.style("display", geomLock ? "none" : "block")
+    addWIcon.attr("fill", geomLock ? "white" : "green")
+    removeWIcon.attr("fill", geomLock ? "white" : "red")
+    addLIcon.attr("fill", geomLock ? "white" : "green")
+    removeLIcon.attr("fill", geomLock ? "white" : "red")
     lockIcon
         .text(geomLock ? "🔒" : "🔓")
         .attr("opacity", geomLock ? 1 : 0.75)

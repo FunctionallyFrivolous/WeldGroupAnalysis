@@ -120,6 +120,7 @@ function updateWelds() {
 }
 
 function updateWeldLength(newLen) {
+    const lenNew = Math.max(0.1,newLen)
     const wSelect = weldCoords.find(j => j.id === selectedWeld)
 
     // const wNodes = nodes.find(n => n.id.includes(selectedWeld));
@@ -137,8 +138,8 @@ function updateWeldLength(newLen) {
 
         const oldLen = Math.sqrt((oldDy)*(oldDy)+(oldDx)*(oldDx));
 
-        const newDx = oldDx/oldLen * distToCoord(newLen, "L");
-        const newDy = oldDy/oldLen * distToCoord(newLen, "L");
+        const newDx = oldDx/oldLen * distToCoord(lenNew, "L");
+        const newDy = oldDy/oldLen * distToCoord(lenNew, "L");
 
         const newX1 = x0 + newDx;
         const newY1 = y0 + newDy;
@@ -489,7 +490,7 @@ function InitGeom() {
 }
 
 function addWeld() {
-    if (weldCount >= maxWelds) return;
+    if (weldCount >= maxWelds || geomLock) return;
 
     if (weldCount >= maxWelds-1 || geomLock) {
         addWIcon.attr("fill", "white")
@@ -557,7 +558,7 @@ function addWeld() {
 }
 
 function addLoad() {
-    if (loadCount >= maxLoads) return;
+    if (loadCount >= maxLoads || geomLock) return;
 
     if (loadCount >= maxLoads-1 || geomLock) {
         addLIcon.attr("fill", "white")
@@ -611,7 +612,7 @@ function addLoad() {
 }
 
 function removeWeld(id) {
-    if (weldCount === 1) return;
+    if (weldCount === 1 || geomLock) return;
 
     if (weldCount <= maxWelds && !geomLock) {
         addWIcon.attr("fill", "green");
@@ -672,7 +673,7 @@ function removeWeld(id) {
 }
 
 function removeLoad(id) { // test function to remove one weld
-    if (loadCount === 1) return;
+    if (loadCount === 1 || geomLock) return;
 
     if (loadCount <= maxLoads && !geomLock) {
         addLIcon.attr("fill", "green");
