@@ -120,12 +120,13 @@ function updateWelds() {
 }
 
 function updateWeldLength(newLen) {
+
     const lenNew = Math.max(0.1,newLen)
     const wSelect = weldCoords.find(j => j.id === selectedWeld)
 
     // const wNodes = nodes.find(n => n.id.includes(selectedWeld));
     const oNode = nodes.find(n => n.id === selectedWProp);
-    const mNode = nodes.find(n => n.id !== selectedWProp);
+    const mNode = nodes.find(n => n.id.includes(selectedWeld) && n.id !== selectedWProp);
 
     if (selectedWProp.length !== 5) {
         const x0 = oNode.x;
@@ -660,11 +661,11 @@ function removeWeld(id) {
 
     selectedWeld = `weld${weldCount}`
 
-    selectWEditProp();
-
     updateView();
     updateWeldProps();
     updateLoadProps();
+
+    selectWEditProp();
     
     // dragWCoords
     //     .style("display", "none");
@@ -710,11 +711,14 @@ function removeLoad(id) { // test function to remove one weld
 
     selectedLoad = `load${loadCount}`
 
-    selectLEditProp();
+    
 
     updateView();
     updateWeldProps();
     updateLoadProps();
+
+    selectLEditProp();
+
     // dragLCoords
     //     .style("display", "none");
     // dragLProps
@@ -1326,7 +1330,7 @@ function updateWeldProps() {
             ${coordToDist(wSelect.points[1].y,"y").toFixed(unitPrecision)})`
         )
     dragWProps
-        .text(`${wSelect.id}: ${wSelect.len.toFixed(unitPrecision)}${unitSymbol} L x 
+        .text(`Weld ${wSelect.id.slice(4,5)}: ${wSelect.len.toFixed(unitPrecision)}${unitSymbol} L x 
             ${(wSelect.thk*unitConvert).toFixed(3)}${unitSymbol} thk`)
 
     centroidProps
@@ -1348,7 +1352,7 @@ function updateLoadProps() {
         .text(`(${coordToDist(lSelect.x,"x").toFixed(unitPrecision)}, 
             ${coordToDist(lSelect.y,"y").toFixed(unitPrecision)})`)
     dragLProps
-        .text(`${lSelect.id}: ${(lSelect.mag*forceConvert).toFixed(1)}${forceSymbol}, 
+        .text(`Load ${lSelect.id.slice(4,5) }: ${(lSelect.mag*forceConvert).toFixed(1)}${forceSymbol}, 
             @${lSelect.th.toFixed(1)}°`)
 
     centroidProps
@@ -1370,6 +1374,14 @@ function updateLoadProps() {
 function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
     let dxf = drx;
     let dyf = dry;
+
+    // // Snap to axes / origin
+    // if (Math.abs(drx - origin[0]) < snapDist) {
+    //     dxf = origin[0];
+    // } 
+    // if (Math.abs(dry - origin[1]) < snapDist) {
+    //     dyf = origin[1];
+    // } 
 
     // Snap to Weld mid-points
     for (i = 0; i < weldCoords.length; i++) {

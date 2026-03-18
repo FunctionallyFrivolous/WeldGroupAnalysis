@@ -105,7 +105,8 @@ function lockUnlock() {
         .text(geomLock ? "🔒" : "🔓")
         .attr("opacity", geomLock ? 1 : 0.75)
     lockButton
-        .attr("opacity", geomLock ? 0.125 : 0)
+        .attr("fill-opacity", geomLock ? 0.125 : 0)
+        .attr("stroke-opacity", geomLock ? 0 : 0.25)
 }
 
 // function inspect() {

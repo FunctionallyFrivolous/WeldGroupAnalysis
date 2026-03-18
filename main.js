@@ -1054,6 +1054,7 @@ const RxShowHide = overlayGroup
 
 // On-Display Buttons
 const yShift = 30;
+
 const lockIcon = overlayGroup
     .append("text")
     .attr("font-size", "20px")
@@ -1073,10 +1074,13 @@ const lockButton = overlayGroup
     .attr("rx", 5)
     .attr("ry", 5)
     .attr("fill", "black")
-    .attr("opacity", 0)
+    .attr("fill-opacity", 0)
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5)
+    .attr("stroke-opacity", 0.25)
     .on("click", function() {lockUnlock()})
-    .append("title")
-    .text("Lock/Unlock Geometry");
+    // .append("title")
+    // .text("Lock/Unlock Geometry");
 
 const unitsIcon = overlayGroup
     .append("text")
@@ -1099,8 +1103,8 @@ const unitsButton = overlayGroup
     .attr("fill", "black")
     .attr("opacity", 0.125)
     .on("click", function() {unitSwap()})
-    .append("title")
-    .text(`Toggle Units`)
+    // .append("title")
+    // .text(`Toggle Units`)
 
 // const inspectIcon = overlayGroup.append("g")
 //     .append("text")
@@ -1130,13 +1134,13 @@ const weldZone = overlayGroup.append("g")
     .attr("font-weight", "bold")
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "text-after-edge")
-    // .style("pointer-events", "none")
+    .style("pointer-events", "none")
     .attr("x", 27)
     .attr("y", windowHeight-5)
-    .on("click", function(event, d) {
-        showWeldProps = !showWeldProps
-        updateView();
-        })
+    // .on("click", function(event, d) {
+    //     showWeldProps = !showWeldProps
+    //     updateView();
+    //     })
     .text("Welds")
     // .style("display", "none");
 
@@ -1203,13 +1207,13 @@ const loadZone = overlayGroup.append("g")
     .attr("font-weight", "bold")
     .attr("text-anchor", "end")
     .attr("alignment-baseline", "text-after-edge")
-    // .style("pointer-events", "none")
+    .style("pointer-events", "none")
     .attr("x", windowWidth-27)
     .attr("y", windowHeight-5)
-    .on("click", function(event, d) {
-        showLoadProps = !showLoadProps
-        updateView();
-    })
+    // .on("click", function(event, d) {
+    //     showLoadProps = !showLoadProps
+    //     updateView();
+    // })
     .text("Loads")
     // .style("display", "none");
 
@@ -1266,7 +1270,7 @@ const removeLIcon = overlayGroup.append("g")
     .attr("y", windowHeight-12)
     .attr("opacity", 1)
     // .attr("fill", "white")
-    .attr("fill", "red")
+    .attr("fill", loadCount === 1 ? "white" : "red")
     .text("-")
     // .style("display", "none")
     
