@@ -70,7 +70,7 @@ function updateView() {
     // //     + "Wx0: " + `${weldCoords[0].points[0].x*distConvert*unitConvert}` + "\n<br>"
     // //     + "rxV: " + `${rxV.mag.toFixed(1)}` + "\n<br>"
         // + "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
-        // + "thing: " + `${editWValue2}` + "\n<br>"
+        // + "thing: " + `${editWValueY}` + "\n<br>"
 
     // document.getElementById("debugOutputs").innerHTML = dbugTxt;
 }
@@ -117,6 +117,72 @@ function updateWelds() {
 
         J_tot = J_tot + (Ji+ weldCoords[w].A * ri*ri);
     }
+}
+
+function updateWeldLength(newLen) {
+    const wSelect = weldCoords.find(j => j.id === selectedWeld)
+
+    // const wNodes = nodes.find(n => n.id.includes(selectedWeld));
+    const oNode = nodes.find(n => n.id === selectedWProp);
+    const mNode = nodes.find(n => n.id !== selectedWProp);
+
+    if (selectedWProp.length !== 5) {
+        const x0 = oNode.x;
+        const y0 = oNode.y;
+        const x1 = mNode.x;
+        const y1 = mNode.y;
+
+        const oldDx = x1-x0;
+        const oldDy = y1-y0;
+
+        const oldLen = Math.sqrt((oldDy)*(oldDy)+(oldDx)*(oldDx));
+
+        const newDx = oldDx/oldLen * distToCoord(newLen, "L");
+        const newDy = oldDy/oldLen * distToCoord(newLen, "L");
+
+        const newX1 = x0 + newDx;
+        const newY1 = y0 + newDy;
+
+        mNode.x = newX1;
+        mNode.y = newY1;
+    } 
+    // else {
+    //     const x0 = (wSelect.points[0].x + wSelect.points[1].x)/2;
+    //     const y0 = (wSelect.points[0].y + wSelect.points[1].y)/2;
+    //     const x1 = wSelect.points[0].x;
+    //     const y1 = wSelect.points[0].y;
+    //     const x2 = wSelect.points[1].x;
+    //     const y2 = wSelect.points[1].y;
+
+    //     const oldPoints = [{x: x1, y: y1},{x: x2, y: y2}]
+
+    //     const mSNode = nodes.find(n => n.id.includes(`${selectedWeld}_start`));
+    //     const mENode = nodes.find(n => n.id.includes(`${selectedWeld}_end`));
+
+    //     const movePoints = [mSNode,mENode];
+
+    //     for (i = 0; i < oldPoints.length-1; i++) {
+
+    //         const oldDx = oldPoints[i].x-x0;
+    //         const oldDy = oldPoints[i].x-y0;
+
+    //         const oldLen = Math.sqrt((oldDy)*(oldDy)+(oldDx)*(oldDx));
+
+    //         const newDx = oldDx/oldLen * distToCoord(newLen, "L");
+    //         const newDy = oldDy/oldLen * distToCoord(newLen, "L");
+
+    //         const newX1 = x0 + newDx;
+    //         const newY1 = y0 + newDy;
+
+    //         document.getElementById("debugOutputs").innerHTML = 
+    //             `${selectedWeld}, ${selectedWProp}, ${mSNode.x}`
+
+    //         movePoints[i].x = newX1;
+    //         movePoints[i].y = newY1;
+    //     }
+    // }
+
+    updateWelds();
 }
 
 function updateArea() {
@@ -1272,25 +1338,6 @@ function updateWeldProps() {
     tMaxProps
         .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
         .style("display", showTMax ? "block" : "none")
-
-    // const weldLenInput = document.getElementById("weldLen");
-    // weldLenInput.value = (wSelect.len).toFixed(1);
-    // const weldSizeInput = document.getElementById("weldSize");
-    // weldSizeInput.value = (wSelect.thk*unitConvert).toFixed(3)
-
-    // const weldSXInput = document.getElementById("weldStartX");
-    // weldSXInput.value = coordToDist(wSelect.points[0].x,"x").toFixed(1);
-    // const weldSYInput = document.getElementById("weldStartY");
-    // weldSYInput.value = coordToDist(wSelect.points[0].y,"y").toFixed(1);
-
-    // const weldEXInput = document.getElementById("weldEndX");
-    // weldEXInput.value = coordToDist(wSelect.points[1].x,"x").toFixed(1);
-    // const weldEYInput = document.getElementById("weldEndY");
-    // weldEYInput.value = coordToDist(wSelect.points[1].y,"y").toFixed(1);
-
-    // const weldIDLab = document.getElementById("weldLab");
-    // const weldNo = wSelect.id.slice(4,5);
-    // weldIDLab.textContent = `Weld ${weldNo}`;
 }
 
 function updateLoadProps() {
@@ -1316,20 +1363,6 @@ function updateLoadProps() {
     tMaxProps
         .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
         .style("display", showTMax ? "block" : "none")
-
-    // const loadMagInput = document.getElementById("loadMag");
-    // loadMagInput.value = lSelect.mag.toFixed(1);
-    // const loadAngInput = document.getElementById("loadAng");
-    // loadAngInput.value = lSelect.th.toFixed(1)
-
-    // const loadSXInput = document.getElementById("loadStartX");
-    // loadSXInput.value = coordToDist(lSelect.x,"x").toFixed(1);
-    // const loadSYInput = document.getElementById("loadStartY");
-    // loadSYInput.value = coordToDist(lSelect.y,"y").toFixed(1);
-
-    // const loadIDLab = document.getElementById("loadLab");
-    // const weldNo = lSelect.id.slice(4,5);
-    // loadIDLab.textContent = `Load ${weldNo}`;
 
 }
 
@@ -1407,44 +1440,44 @@ function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
 }
 
 function selectWEditProp() {
-    editingW1 = false;
-    editingW2 = false;
+    editingWX = false;
+    editingWY = false;
     editingWL = false;
     editingWT = false;
 
     if (selectedWProp.includes("weld")) {
         editWObject = weldCoords.find(j => j.id === selectedWeld);
         if (selectedWProp.includes("start")) {
-            editWLabel1 = `X (${units === "metric" ? "mm" : "in"})`;
-            editWLabel2 = `Y (${units === "metric" ? "mm" : "in"})`;
-            editWValue1 = coordToDist(editWObject.points[0].x, "x")
-            editWValue2 = coordToDist(editWObject.points[0].y, "y")
+            editWLabelX = `X (${units === "metric" ? "mm" : "in"})`;
+            editWLabelY = `Y (${units === "metric" ? "mm" : "in"})`;
+            editWValueX = coordToDist(editWObject.points[0].x, "x")
+            editWValueY = coordToDist(editWObject.points[0].y, "y")
         } else if (selectedWProp.includes("end")) {
-            editWLabel1 = `X (${units === "metric" ? "mm" : "in"})`;
-            editWLabel2 = `Y (${units === "metric" ? "mm" : "in"})`;
-            editWValue1 = coordToDist(editWObject.points[1].x, "x")
-            editWValue2 = coordToDist(editWObject.points[1].y, "y")
+            editWLabelX = `X (${units === "metric" ? "mm" : "in"})`;
+            editWLabelY = `Y (${units === "metric" ? "mm" : "in"})`;
+            editWValueX = coordToDist(editWObject.points[1].x, "x")
+            editWValueY = coordToDist(editWObject.points[1].y, "y")
         } 
         else {
-            editWLabel1 = `X (${units === "metric" ? "mm" : "in"})`;
-            editWLabel2 = `Y (${units === "metric" ? "mm" : "in"})`;
-            editWValue1 = coordToDist((editWObject.points[0].x + editWObject.points[1].x)/2, "x")
-            editWValue2 = coordToDist((editWObject.points[0].y + editWObject.points[1].y)/2, "y")
+            editWLabelX = `X (${units === "metric" ? "mm" : "in"})`;
+            editWLabelY = `Y (${units === "metric" ? "mm" : "in"})`;
+            editWValueX = coordToDist((editWObject.points[0].x + editWObject.points[1].x)/2, "x")
+            editWValueY = coordToDist((editWObject.points[0].y + editWObject.points[1].y)/2, "y")
         }
         
         editWLabelT = `W (${units === "metric" ? "mm" : "in"})`;
         editWLabelL = `L (${units === "metric" ? "mm" : "in"})`;
 
-        editWValueL = editWObject.len// * unitConvert;
+        editWValueL = editWObject.len;
         editWValueT = editWObject.thk * unitConvert;
 
-        inputWLabel1.text(`${editWLabel1}`)
-        inputWLabel2.text(`${editWLabel2}`)
+        inputWLabelX.text(`${editWLabelX}`)
+        inputWLabelY.text(`${editWLabelY}`)
         inputWLabelL.text(`${editWLabelL}`)
         inputWLabelT.text(`${editWLabelT}`)
 
-        inputWField1.text(editWValue1.toFixed(2));
-        inputWField2.text(editWValue2.toFixed(2));
+        inputWFieldX.text(editWValueX.toFixed(2));
+        inputWFieldY.text(editWValueY.toFixed(2));
         inputWFieldL.text(editWValueL.toFixed(2));
         inputWFieldT.text(editWValueT);
     }
