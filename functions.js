@@ -1461,19 +1461,19 @@ function selectWEditProp() {
     if (selectedWProp.includes("weld")) {
         editWObject = weldCoords.find(j => j.id === selectedWeld);
         if (selectedWProp.includes("start")) {
-            editWLabelX = `X (${units === "metric" ? "mm" : "in"})`;
-            editWLabelY = `Y (${units === "metric" ? "mm" : "in"})`;
+            editWLabelX = `X₁ (${units === "metric" ? "mm" : "in"})`;
+            editWLabelY = `Y₁ (${units === "metric" ? "mm" : "in"})`;
             editWValueX = coordToDist(editWObject.points[0].x, "x")
             editWValueY = coordToDist(editWObject.points[0].y, "y")
         } else if (selectedWProp.includes("end")) {
-            editWLabelX = `X (${units === "metric" ? "mm" : "in"})`;
-            editWLabelY = `Y (${units === "metric" ? "mm" : "in"})`;
+            editWLabelX = `X₂ (${units === "metric" ? "mm" : "in"})`;
+            editWLabelY = `Y₂ (${units === "metric" ? "mm" : "in"})`;
             editWValueX = coordToDist(editWObject.points[1].x, "x")
             editWValueY = coordToDist(editWObject.points[1].y, "y")
         } 
         else {
-            editWLabelX = `X (${units === "metric" ? "mm" : "in"})`;
-            editWLabelY = `Y (${units === "metric" ? "mm" : "in"})`;
+            editWLabelX = `Xₘ (${units === "metric" ? "mm" : "in"})`;
+            editWLabelY = `Yₘ (${units === "metric" ? "mm" : "in"})`;
             editWValueX = coordToDist((editWObject.points[0].x + editWObject.points[1].x)/2, "x")
             editWValueY = coordToDist((editWObject.points[0].y + editWObject.points[1].y)/2, "y")
         }

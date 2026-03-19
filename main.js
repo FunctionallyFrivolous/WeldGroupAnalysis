@@ -399,11 +399,19 @@ const dragWProps = overlayGroup
 
 const showHideWProps = overlayGroup
     .append("rect")
-    .attr("x", 0)
-    .attr("Y", 0)
-    .attr("width", 150)
-    .attr("height", 40)
+    .attr("x", -10)
+    .attr("y", -10)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("width", 160)
+    .attr("height", 50)
     .attr("opacity", 0)
+    .on("mouseover", function () {
+        showHideWProps.attr("opacity", 0.1)
+    })
+    .on("mouseout", function () {
+        showHideWProps.attr("opacity", 0)
+    })
     .on("mousedown", function(event) {
         showHideWEdits(event);
     })
@@ -752,11 +760,19 @@ const dragLProps = overlayGroup
 
 const showHideLProps = overlayGroup
     .append("rect")
-    .attr("x", windowWidth-150)
-    .attr("Y", 0)
-    .attr("width", 150)
-    .attr("height", 40)
+    .attr("x", windowWidth-150+10)
+    .attr("y", -10)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("width", 160)
+    .attr("height", 50)
     .attr("opacity", 0)
+    .on("mouseover", function () {
+        showHideLProps.attr("opacity", 0.1)
+    })
+    .on("mouseout", function () {
+        showHideLProps.attr("opacity", 0)
+    })
     .on("mousedown", function(event) {
         showHideLEdits(event);
     })
@@ -1039,11 +1055,19 @@ const tMaxProps = overlayGroup
     // .text(`tmax: ${max_t.toFixed(1)}`)
 const RxShowHide = overlayGroup
     .append("rect")
-    .attr("x", `${250-50}`)
-    .attr("y", "0")
-    .attr("width", "100")
-    .attr("height", "50")
+    .attr("x", 250-55)
+    .attr("y", -10)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("width", 110)
+    .attr("height", 65)
     .attr("opacity", 0)
+    .on("mouseover", function () {
+        RxShowHide.attr("opacity", 0.1)
+    })
+    .on("mouseout", function () {
+        RxShowHide.attr("opacity", 0)
+    })
     .on("click", function() {
         showRx = !showRx
         rxVector
