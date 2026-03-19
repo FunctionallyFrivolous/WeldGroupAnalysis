@@ -14,41 +14,70 @@
 //     button.style.opacity = showRx ? 1 : 0.50 
 // })
 
-document.getElementById("toggleStress").addEventListener("click", () => {
+function showHideStress() {
     showStress = !showStress
-    const button = document.getElementById("toggleStress");
-    button.style.opacity = showStress ? 1 : 0.50
+    // const button = document.getElementById("toggleStress");
+    // button.style.opacity = showStress ? 1 : 0.50
+    stressButton
+        .attr("fill-opacity", showStress ? 0.125 : 0)
+        .attr("stroke-opacity", showStress ? 0 : 0.25)
     updateView();
-})
+}
+// document.getElementById("toggleStress").addEventListener("click", () => {
+//     showHideStress();
+// })
 
-document.getElementById("toggleTDir").addEventListener("click", () => {
+function showHideTDir() {
     showTDir = !showTDir
-    const button = document.getElementById("toggleTDir");
-    button.style.opacity = showTDir ? 1 : 0.50
+    // const button = document.getElementById("toggleTDir");
+    // button.style.opacity = showTDir ? 1 : 0.50
+    tDirButton
+        .attr("fill-opacity", showTDir ? 0.125 : 0)
+        .attr("stroke-opacity", showTDir ? 0 : 0.25)
     updateView();
-})
+}
 
-document.getElementById("toggleTTor").addEventListener("click", () => {
+// document.getElementById("toggleTDir").addEventListener("click", () => {
+//     showHideTDir();
+// })
+
+function showHideTTor() {
     showTTor = !showTTor
-    const button = document.getElementById("toggleTTor");
-    button.style.opacity = showTTor ? 1 : 0.50
+    // const button = document.getElementById("toggleTTor");
+    // button.style.opacity = showTTor ? 1 : 0.50
+    tTorButton
+        .attr("fill-opacity", showTTor ? 0.125 : 0)
+        .attr("stroke-opacity", showTTor ? 0 : 0.25)
     updateView();
-})
+}
 
-document.getElementById("toggleTMax").addEventListener("click", () => {
+// document.getElementById("toggleTTor").addEventListener("click", () => {
+//     showHideTTor();
+// })
+
+function showHideTMax() {
     showTMax = !showTMax
     if (!showTMax) {
         for (i = 0; i < nodes.length; i++) {
             nodes[i].display = "none"
         }
     }
-    const button = document.getElementById("toggleTMax");
-    button.style.opacity = showTMax ? 1 : 0.50
+    // const button = document.getElementById("toggleTMax");
+    // button.style.opacity = showTMax ? 1 : 0.50
     tMaxProps
         .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 3 : 1)} ${stressSymbol}`)
         .style("display", showTMax ? "block" : "none")
+    RxShowHide
+        .attr("height", showTMax ? 80 : 65)
+    tMaxButton
+        .attr("fill-opacity", showTMax ? 0.125 : 0)
+        .attr("stroke-opacity", showTMax ? 0 : 0.25)
     updateView();
-})
+}
+
+// document.getElementById("toggleTMax").addEventListener("click", () => {
+//     showHideTMax();
+// })
 
 function unitSwap() {
     if (units === "metric") {
@@ -97,10 +126,10 @@ function lockUnlock() {
     document.getElementById("loadScaleSlider").disabled = geomLock ? true : false;
     document.getElementById("stressScaleSlider").disabled = geomLock ? true : false;
     document.getElementById("snapDistSlider").disabled = geomLock ? true : false;
-    addWIcon.attr("fill", geomLock ? "white" : "green")
-    removeWIcon.attr("fill", geomLock ? "white" : "red")
-    addLIcon.attr("fill", geomLock ? "white" : "green")
-    removeLIcon.attr("fill", geomLock ? "white" : "red")
+    addWIcon.attr("fill", geomLock || weldCount >= maxWelds ? "white" : "green")
+    removeWIcon.attr("fill", geomLock || weldCount <= 1 ? "white" : "red")
+    addLIcon.attr("fill", geomLock || loadCount >= maxLoads ? "white" : "green")
+    removeLIcon.attr("fill", geomLock || loadCount <= 1 ? "white" : "red")
     lockIcon
         .text(geomLock ? "🔒" : "🔓")
         .attr("opacity", geomLock ? 1 : 0.75)

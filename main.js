@@ -1,9 +1,6 @@
 // Do Next:
     // User Inputs
-        // Upgrade logic of length edit
-            // Determine which node(s) to move based on selection
-            // Selected node is stationary/origin
-            // If mid node is selected, push both nodes outward
+        // Mid node version, push both nodes outward
     // Snap Upgrades
         // Snap when dragging weld (mid node)?
         // Snap to 45deg?
@@ -403,7 +400,7 @@ const showHideWProps = overlayGroup
     .attr("y", -10)
     .attr("rx", 5)
     .attr("ry", 5)
-    .attr("width", 160)
+    .attr("width", 180)
     .attr("height", 50)
     .attr("opacity", 0)
     .on("mouseover", function () {
@@ -764,7 +761,7 @@ const showHideLProps = overlayGroup
     .attr("y", -10)
     .attr("rx", 5)
     .attr("ry", 5)
-    .attr("width", 160)
+    .attr("width", 180)
     .attr("height", 50)
     .attr("opacity", 0)
     .on("mouseover", function () {
@@ -1105,6 +1102,116 @@ const lockButton = overlayGroup
     .on("click", function() {lockUnlock()})
     // .append("title")
     // .text("Lock/Unlock Geometry");
+
+const stressIcon = overlayGroup
+    .append("text")
+    .attr("font-size", "20px")
+    .attr("font-family", "ariel")
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 19)
+    .attr("y", windowHeight-31-yShift-35)
+    .attr("opacity", 0.75)
+    .text("τ")
+const stressButton = overlayGroup
+    .append("rect")
+    .attr("x", 5)
+    .attr("y", windowHeight-34-yShift-35)
+    .attr("width", 29)
+    .attr("height", 30)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", "black")
+    .attr("fill-opacity", 0)
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5)
+    .attr("stroke-opacity", 0.25)
+    .on("click", function() {showHideStress()})
+
+const tDirIcon = overlayGroup
+    .append("text")
+    .attr("font-size", "18px")
+    .attr("font-family", "ariel")
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 19)
+    .attr("y", windowHeight-31-yShift-35-35)
+    .attr("opacity", 0.75)
+    .text("τ'")
+const tDirButton = overlayGroup
+    .append("rect")
+    .attr("x", 5)
+    .attr("y", windowHeight-34-yShift-35-35)
+    .attr("width", 29)
+    .attr("height", 30)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", "black")
+    .attr("fill-opacity", 0)
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5)
+    .attr("stroke-opacity", 0.25)
+    .on("click", function() {showHideTDir()})
+
+const tTorIcon = overlayGroup
+    .append("text")
+    .attr("font-size", "18px")
+    .attr("font-family", "ariel")
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 19)
+    .attr("y", windowHeight-31-yShift-35-35-35)
+    .attr("opacity", 0.75)
+    .text("τ''")
+const tTorButton = overlayGroup
+    .append("rect")
+    .attr("x", 5)
+    .attr("y", windowHeight-34-yShift-35-35-35)
+    .attr("width", 29)
+    .attr("height", 30)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", "black")
+    .attr("fill-opacity", 0)
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5)
+    .attr("stroke-opacity", 0.25)
+    .on("click", function() {showHideTTor()})
+
+const tMaxIcon = overlayGroup
+    .append("text")
+    .attr("font-size", "18px")
+    .attr("font-family", "ariel")
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 19)
+    .attr("y", windowHeight-31-yShift-35-35-35-35)
+    .attr("opacity", 0.75)
+    .text("τ")
+tMaxIcon.append("tspan")
+    .text("max")
+    .style("font-size", "0.5em")
+    .attr("dx", "0.1em")
+    .attr("dy", "2em")
+
+const tMaxButton = overlayGroup
+    .append("rect")
+    .attr("x", 5)
+    .attr("y", windowHeight-34-yShift-35-35-35-35)
+    .attr("width", 29)
+    .attr("height", 30)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", "black")
+    .attr("fill-opacity", 0)
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5)
+    .attr("stroke-opacity", 0.25)
+    .on("click", function() {showHideTMax()})
 
 const unitsIcon = overlayGroup
     .append("text")
