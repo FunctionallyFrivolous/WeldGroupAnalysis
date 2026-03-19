@@ -119,6 +119,7 @@ function unitSwap() {
         .text(units === "metric" ? "MM" : "IN")
     // unitsButton
     //     .attr("opacity", units === "metric" ? 0.25 : 0)
+    showHideWProps.attr("width", units === "metric" ? 180 : 160)
 }
 
 function lockUnlock() {

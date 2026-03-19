@@ -400,17 +400,12 @@ const showHideWProps = overlayGroup
     .attr("y", -10)
     .attr("rx", 5)
     .attr("ry", 5)
-    .attr("width", 180)
+    .attr("width", 160)
     .attr("height", 50)
-    .attr("opacity", 0)
-    .on("mouseover", function () {
-        showHideWProps.attr("opacity", 0.1)
-    })
-    .on("mouseout", function () {
-        showHideWProps.attr("opacity", 0)
-    })
+    .attr("opacity", 0.1)
     .on("mousedown", function(event) {
-        showHideWEdits(event);
+        showHideWProps.attr("opacity", 0.1)
+        showHideWEdits(event)
     })
 
 const inputWBox2 = overlayGroup
@@ -763,13 +758,7 @@ const showHideLProps = overlayGroup
     .attr("ry", 5)
     .attr("width", 180)
     .attr("height", 50)
-    .attr("opacity", 0)
-    .on("mouseover", function () {
-        showHideLProps.attr("opacity", 0.1)
-    })
-    .on("mouseout", function () {
-        showHideLProps.attr("opacity", 0)
-    })
+    .attr("opacity", 0.1)
     .on("mousedown", function(event) {
         showHideLEdits(event);
     })
@@ -1058,13 +1047,7 @@ const RxShowHide = overlayGroup
     .attr("ry", 5)
     .attr("width", 110)
     .attr("height", 65)
-    .attr("opacity", 0)
-    .on("mouseover", function () {
-        RxShowHide.attr("opacity", 0.1)
-    })
-    .on("mouseout", function () {
-        RxShowHide.attr("opacity", 0)
-    })
+    .attr("opacity", 0.1)
     .on("click", function() {
         showRx = !showRx
         rxVector
