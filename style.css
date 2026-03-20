@@ -32,23 +32,6 @@ button {
     margin-bottom: 6px;
 }
 
-input[type="number"] {
-    width: 3em;
-    text-align: center;
-}
-
-input[id*="Start"] {
-    width: 3em;
-    -moz-appearance: textfield;
-    appearance: textfield;
-}
-
-input[id*="End"] {
-    width: 3em;
-    -moz-appearance: textfield;
-    appearance: textfield;
-}
-
 svg {
     width: 600px;
     height: auto;

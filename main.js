@@ -473,7 +473,11 @@ const inputWBox = overlayGroup
     .style("display", editShowHide)
 
 const inputWFieldsGroup = overlayGroup.append("g")
-    .attr("font-size", `${editFontSize}px`)
+    // .attr("font-size", `${editFontSize}px`)
+    .attr("font-size", "16px")
+    .attr("transform", "scale(0.75)")
+    // .attr("position", "relative")
+    .attr("transform-origin", "center center")
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
     .style("text-align", "center")
@@ -486,9 +490,9 @@ let inputWContentT = "0"
 
 const inputWFieldX = inputWFieldsGroup
     .append("foreignObject")
-    .attr("x", editLabelX-editBoxOffset-5) //60, -60
-    .attr("y", editBoxHeight+47)
-    .attr("width", `${editFieldWidth}px`)
+    .attr("x", editLabelX-editBoxOffset-70) //60, -60
+    .attr("y", editBoxHeight+47-55)
+    .attr("width", `${editFieldWidth+15}px`)
     .attr("height", "20px")
     .append(`xhtml:div`)
     .append(`div`)
@@ -536,9 +540,9 @@ const inputWFieldX = inputWFieldsGroup
 
 const inputWFieldY = inputWFieldsGroup
     .append("foreignObject")
-    .attr("x", editLabelX-editBoxOffset-5) //60, -60
-    .attr("y", editBoxHeight+67)
-    .attr("width", `${editFieldWidth}px`)
+    .attr("x", editLabelX-editBoxOffset-70) //60, -60
+    .attr("y", editBoxHeight+67-47)
+    .attr("width", `${editFieldWidth+15}px`)
     .attr("height", "20px")
     .append(`xhtml:div`)
     .append(`div`)
@@ -586,9 +590,9 @@ const inputWFieldY = inputWFieldsGroup
 
 const inputWFieldL = inputWFieldsGroup
     .append("foreignObject")
-    .attr("x", editLabelX-editBoxOffset-5) //60, -60
-    .attr("y", editBoxHeight+7)
-    .attr("width", `${editFieldWidth}px`)
+    .attr("x", editLabelX-editBoxOffset-70) //60, -60
+    .attr("y", editBoxHeight+7-69)
+    .attr("width", `${editFieldWidth+15}px`)
     .attr("height", "20px")
     .append(`xhtml:div`)
     .append(`div`)
@@ -625,9 +629,9 @@ const inputWFieldL = inputWFieldsGroup
 
 const inputWFieldT = inputWFieldsGroup
     .append("foreignObject")
-    .attr("x", editLabelX-editBoxOffset-5) //60, -60
-    .attr("y", editBoxHeight+27)
-    .attr("width", `${editFieldWidth}px`)
+    .attr("x", editLabelX-editBoxOffset-70) //60, -60
+    .attr("y", editBoxHeight+27-62)
+    .attr("width", `${editFieldWidth+15}px`)
     .attr("height", "20px")
     .append(`xhtml:div`)
     .append(`div`)
