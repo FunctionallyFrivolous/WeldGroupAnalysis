@@ -48,3 +48,15 @@ input[id*="End"] {
     -moz-appearance: textfield;
     appearance: textfield;
 }
+
+svg {
+    width: 100%;
+    height: auto;
+}
+
+@media screen and (max-width: 600px) {
+    svg {
+        width: 80%;
+        height: auto;
+    }
+}
