@@ -473,11 +473,7 @@ const inputWBox = overlayGroup
     .style("display", editShowHide)
 
 const inputWFieldsGroup = overlayGroup.append("g")
-    // .attr("font-size", `${editFontSize}px`)
-    .attr("font-size", "16px")
-    .attr("transform", "scale(0.75)")
-    // .attr("position", "relative")
-    .attr("transform-origin", "center center")
+    .attr("font-size", `${editFontSize}px`)
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
     .style("text-align", "center")
