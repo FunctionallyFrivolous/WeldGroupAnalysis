@@ -1410,6 +1410,9 @@ const settingsMenu = overlayGroup
     .attr("stroke-opacity", 0.25)
     // .style("pointer-events", "none")
     .style("display", "none")
+    .on("mousedown", function(event) {
+        event.stopPropagation();
+    })
 
 const settingsButton = overlayGroup
     .append("rect")
@@ -1427,12 +1430,13 @@ const settingsButton = overlayGroup
     .on("click", function() {showHideSettings()})
 const settingsIcon = overlayGroup
     .append("text")
-    .attr("font-size", "24px")
+    .attr("font-size", "16pt")
     .attr("text-anchor", "middle")
-    .attr("alignment-baseline", "middle")
+    // .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
     .attr("x", windowWidth-20-1)
-    .attr("y", windowHeight-26-yShift-28)
+    .attr("y", windowHeight-26-yShift-30)
+    .attr("dy", "0.35em")
     .attr("opacity", 0.75)
     .text("🛠")
 
@@ -1453,15 +1457,15 @@ const snapButton = overlayGroup
 
 const snapIcon = overlayGroup
     .append("text")
-    .attr("font-size", "40px")
+    .attr("font-size", "28pt")
     .attr("text-anchor", "middle")
-    .attr("alignment-baseline", "middle")
+    // .attr("alignment-baseline", "middle")
     .style("pointer-events", "none")
     .attr("x", windowWidth-20)
-    .attr("y", windowHeight-26-yShift-35-35+8)
+    .attr("y", windowHeight-26-yShift-35-31)
+    .attr("dy", "0.35em")
     .attr("opacity", 0.75)
     .text("⌖")
-    .attr("font-family", "sans-serif")
     .style("display", "none")
 
 const snapSliderMin = windowWidth-140;
