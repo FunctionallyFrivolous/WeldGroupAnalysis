@@ -1427,12 +1427,12 @@ const settingsButton = overlayGroup
     .on("click", function() {showHideSettings()})
 const settingsIcon = overlayGroup
     .append("text")
-    .attr("font-size", "18pt")
+    .attr("font-size", "24px")
     .attr("text-anchor", "middle")
-    .attr("alignment-baseline", "text-before-edge")
+    .attr("alignment-baseline", "middle")
     .style("pointer-events", "none")
     .attr("x", windowWidth-20-1)
-    .attr("y", windowHeight-26-yShift-35-7)
+    .attr("y", windowHeight-26-yShift-28)
     .attr("opacity", 0.75)
     .text("🛠")
 
@@ -1453,7 +1453,7 @@ const snapButton = overlayGroup
 
 const snapIcon = overlayGroup
     .append("text")
-    .attr("font-size", "30pt")
+    .attr("font-size", "40px")
     .attr("text-anchor", "middle")
     .attr("alignment-baseline", "middle")
     .style("pointer-events", "none")
@@ -1461,6 +1461,7 @@ const snapIcon = overlayGroup
     .attr("y", windowHeight-26-yShift-35-35+8)
     .attr("opacity", 0.75)
     .text("⌖")
+    .attr("font-family", "sans-serif")
     .style("display", "none")
 
 const snapSliderMin = windowWidth-140;
@@ -1522,7 +1523,7 @@ const snapSlideVal = overlayGroup
     .attr("x", snapSlidePos)
     .attr("dy", "0.1em")
     .attr("dx", "-0.025em")
-    .text("20")
+    .text("10")
     .style("display", "none")
     
 
