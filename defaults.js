@@ -16,6 +16,8 @@ let dragWeldProps = false;
 let showCentCoords = false;
 // let showAxes = false;
 
+let showSettings = false;
+
 let units = "inches";
 let unitSymbol = `"`;
 let forceSymbol = "lbf"

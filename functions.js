@@ -1341,8 +1341,22 @@ function updateWeldProps() {
     RxMProps
         .text(`Mᵣ: ${(units === "metric" ? rxM/1000 : rxM/12).toFixed(1)} ${momentSymbol}`)
     tMaxProps
-        .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+        .text(`τ`)
+        .attr("font-family", "ariel")
         .style("display", showTMax ? "block" : "none")
+        .append("tspan")
+        .text("max")
+        .attr("font-family", "sans-serif") 
+        .attr("font-size", "5pt")
+        .attr("dy", "1.5em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
+        .append("tspan")
+        .text(`: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+        .attr("font-size", "8pt")
+        .attr("dy", "-0.6em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
 }
 
 function updateLoadProps() {
@@ -1366,8 +1380,21 @@ function updateLoadProps() {
         .text(`Mᵣ: ${(units === "metric" ? rxM/1000 : rxM/12).toFixed(1)} ${momentSymbol}`)
         .style("display", showRx ? "block" : "none")
     tMaxProps
-        .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+        .text(`τ`)
         .style("display", showTMax ? "block" : "none")
+        .append("tspan")
+        .text("max")
+        .attr("font-family", "sans-serif") 
+        .attr("font-size", "5pt")
+        .attr("dy", "1.5em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
+        .append("tspan")
+        .text(`: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+        .attr("font-size", "8pt")
+        .attr("dy", "-0.6em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
 
 }
 
@@ -1525,4 +1552,22 @@ function selectLEditProp() {
         inputLFieldA.text(editLValueA.toFixed(2));
     }
     // updateView();
+}
+
+function showHideSettings() {
+    showSettings = !showSettings;
+    settingsButton
+        .attr("fill-opacity", showSettings ? 0.125 : 0)
+        .attr("stroke-opacity", showSettings ? 0.75 : 0.25)
+    settingsMenu.style("display", showSettings ? "block" : "none")
+
+    snapButton
+        .style("display", showSettings ? "block" : "none")
+        .append("title")
+        .text("Snap Distance")
+    snapIcon.style("display", showSettings ? "block" : "none")
+    snapSlideBar.style("display", showSettings ? "block" : "none")
+    snapSlidePosBar.style("display", showSettings ? "block" : "none")
+    snapSlider.style("display", showSettings ? "block" : "none")
+    snapSlideVal.style("display", showSettings ? "block" : "none")
 }

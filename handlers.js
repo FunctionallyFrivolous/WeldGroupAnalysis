@@ -65,8 +65,21 @@ function showHideTMax() {
     // const button = document.getElementById("toggleTMax");
     // button.style.opacity = showTMax ? 1 : 0.50
     tMaxProps
-        .text(`τₘₐₓ: ${(max_t).toFixed(units === "metric" ? 3 : 1)} ${stressSymbol}`)
+        .text(`τ`)
         .style("display", showTMax ? "block" : "none")
+        .append("tspan")
+        .text("max")
+        .attr("font-family", "sans-serif") 
+        .attr("font-size", "5pt")
+        .attr("dy", "1.5em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
+        .append("tspan")
+        .text(`: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+        .attr("font-size", "8pt")
+        .attr("dy", "-0.6em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
     RxShowHide
         .attr("height", showTMax ? 80 : 65)
     tMaxButton
