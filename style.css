@@ -37,7 +37,7 @@ svg {
     height: auto;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
     svg {
         width: 100%;
         height: auto;
