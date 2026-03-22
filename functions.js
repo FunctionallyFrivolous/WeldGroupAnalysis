@@ -1561,13 +1561,34 @@ function showHideSettings() {
         .attr("stroke-opacity", showSettings ? 0.75 : 0.25)
     settingsMenu.style("display", showSettings ? "block" : "none")
 
-    snapButton
+    slideLabBox
         .style("display", showSettings ? "block" : "none")
         .append("title")
-        .text("Snap Distance")
-    snapIcon.style("display", showSettings ? "block" : "none")
-    snapSlideBar.style("display", showSettings ? "block" : "none")
-    snapSlidePosBar.style("display", showSettings ? "block" : "none")
-    snapSlider.style("display", showSettings ? "block" : "none")
-    snapSlideVal.style("display", showSettings ? "block" : "none")
+        .text(d => d.lab)
+    slideIcon.style("display", showSettings ? "block" : "none")
+    slideBar.style("display", showSettings ? "block" : "none")
+    slidePosBar.style("display", showSettings ? "block" : "none")
+    sliderDot.style("display", showSettings ? "block" : "none")
+    slideVal.style("display", showSettings ? "block" : "none")
+}
+
+function updateSliderVals(id, val) {
+    if (id === "axes") {
+        axisLength = val * 5;
+        coordAxes.style("display", axisLength <= 1 ? "none" : "block")
+        xAxisLab.style("display", axisLength <= 1 ? "none" : "block")
+        yAxisLab.style("display", axisLength <= 1 ? "none" : "block")
+        originDot.style("display", axisLength <= 1 ? "none" : "block")
+    }
+    else if (id === "snap") {
+        snapDist = val/2;
+    }
+    else if (id === "loads") {
+        loadScale = val/20
+
+    }
+    else if (id === "stresses") {
+        stressScale = val/10
+    }
+    updateView();
 }

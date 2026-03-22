@@ -9,59 +9,20 @@
     </head>
     <body style="margin-left: 20px; margin-right: 20px;">
         <h2>Weld Group Analysis</h2>
-        <!-- <b style="margin-top: 4px; font-size: 9pt; font-family: sans-serif;"> -->
-        <!-- <label style="margin-left: 0px;">Show/Hide:</label> -->
-        <!-- <button id="toggleRx">Rx<sub></sub></button> -->
-        <!-- <button id="toggleStress" style="opacity: 0.5; font-family: serif">τ<sub>tot</sub></button>
-        <button id="toggleTDir" style="opacity: 0.5; font-family: serif">τ'<sub></sub></button>
-        <button id="toggleTTor" style="opacity: 0.5; font-family: serif">τ''<sub></sub></button>
-        <button id="toggleTMax" style="opacity: 0.5; font-family: serif">τ<sub>max</sub></button> -->
-        <!-- </b> -->
-        <!-- <br> -->
         <svg id="topView" 
                 width="600" height="600"
-                
                 style="border:1px solid black;"
                 viewBox="0 0 500 500"
                 >
         </svg>
-        <br>
+        <!-- <br>
         <b style="margin-top: 4px; font-size: 9pt; font-family: sans-serif;">
-        <!-- <br> -->
-        <!-- <span>
-        <br>
-        <label id="loadLab">Load 1: </label>
-        <br>
-        <input type="number" id="loadMag" placeholder="Mag" min="1" step="1">
-        <span id="fUnits">lbf</span>
-        @
-        <input type="number" id="loadAng" placeholder="Angle" min="0" max="360" value="0" step="1">° 
-        <br>
-         (
-        <input type="number" id="loadStartX" placeholder="x" min="0.1" value="0" step="0.1">
-        ,
-        <input type="number" id="loadStartY" placeholder="y" min="0.1" value="0" step="0.1">
-        )
-        </span> -->
-        <!-- <br> -->
-        <label>Coordinate Axes:</label>
-        <input  style="margin-bottom: 5px; margin-top: 12px" type="range" id="axisScaleSlider" orient="horizontal" value="50" min="1" max="500" step="1">
-        <br>
-        <label>Snap Threshold:</label>
-        <input  style="margin-bottom: 5px; margin-top: 5px" type="range" id="snapDistSlider" orient="horizontal" value="10" min="0" max="50" step="1">
-        <br>
-        <label>Load Scale:</label>
-        <input type="range" style="margin-bottom: 5px; margin-top: 5px;" id="loadScaleSlider" orient="horizontal" value="0.5" min="0.05" max="5" step="0.05">
-        <br>
-        <label>Stress Scale:</label>
-        <input  style="margin-bottom: 5px; margin-top: 5px" type="range" id="stressScaleSlider" orient="horizontal" value="10" min="1" max="100" step="1">
-        <br>
-        </b>
-        <p id="debugOutputs"></p>
+        </b> -->
         <script src="conversions.js"></script>
         <script src="handlers.js"></script>
         <script src="functions.js"></script>
         <script src="defaults.js"></script>
         <script src="main.js"></script>
+        <script src="menuItems.js"></script>
     </body>
 </html>

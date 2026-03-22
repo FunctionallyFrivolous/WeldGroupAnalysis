@@ -6,45 +6,13 @@
         // Snap to 45deg?
         // Snap/lock weld angle
         // Snap to weld line (slide along weld)
-    // Move to SVG
-        // Show/Hide stresses?
-            // Multiple buttons?
-            // Expanding menu?
-        // Axes
-            // Button
-            // Single click turns on/off
-            // Double click expands slider to adjust length 
-        // Settings
-            // Snap Threshold
-            // Load Scale
-            // Stress Scale
-            // These ^ should be buttons in SVG window that, when clicked, expand into a slider to change values
-                // Static line/polyline
-                // Dragable circle (lock in x axis)
-                // Update variables in the background based on drag y value
-                // Maybe also a dynamic line who's length increases with drag y value
-        // Fit View Button
-            // Implement html button first
-    // Scale axes to fill/remain in window. But it must pan in order to remain at the true origin
-        // This is end goal for sure...
-        // Overlay it and then update x,y vals to match pan
+    // Better slider icons...
+    // Make show/hide stresses an expanding menu?
+    // Fit View Button
     // Drag-able weld inspection node
         // Gives stress value(s) at current location
         // Colored relative to min/max stress scale
-        // Only when geometry is locked
-    // Add legend?
-        // Click Button to show/hide
-        // Design Elements
-            // Welds
-            // Centroid
-            // Applied Loads
-            // Reaction V & M
-            // Stresses (direct, torsion, total)
-            // Max Stress locations
-        // Buttons
-            // Geom Lock
-            // Units
-            // Add/Remove Weld/Load
+        // Only when geometry is locked?
     // Add bending?!?
         // There's lots here, so this should be held until all pre-bending functionality is squared away
     // Add applied moments?
@@ -1395,143 +1363,9 @@ const removeLIcon = overlayGroup.append("g")
     .text("-")
     // .style("display", "none")
 
-const settingsMenu = overlayGroup
-    .append("rect")
-    .attr("x", windowWidth-36-2-110)
-    .attr("y", windowHeight-34-yShift-35-35*4)
-    .attr("width", 150)
-    .attr("height", 30+35*3+2)
-    .attr("rx", 5)
-    .attr("ry", 5)
-    .attr("fill", "black")
-    .attr("fill-opacity", 0.125)
-    .attr("stroke", "black")
-    .attr("stroke-width", 0.5)
-    .attr("stroke-opacity", 0.25)
-    // .style("pointer-events", "none")
-    .style("display", "none")
-    .on("mousedown", function(event) {
-        event.stopPropagation();
-    })
-
-const settingsButton = overlayGroup
-    .append("rect")
-    .attr("x", windowWidth-36)
-    .attr("y", windowHeight-34-yShift-35)
-    .attr("width", 32)
-    .attr("height", 30)
-    .attr("rx", 5)
-    .attr("ry", 5)
-    .attr("fill", "black")
-    .attr("fill-opacity", 0)
-    .attr("stroke", "black")
-    .attr("stroke-width", 0.5)
-    .attr("stroke-opacity", 0.25)
-    .on("click", function() {showHideSettings()})
-const settingsIcon = overlayGroup
-    .append("text")
-    .attr("font-size", "16pt")
-    .attr("text-anchor", "middle")
-    // .attr("alignment-baseline", "text-before-edge")
-    .style("pointer-events", "none")
-    .attr("x", windowWidth-20-1)
-    .attr("y", windowHeight-26-yShift-30)
-    .attr("dy", "0.35em")
-    .attr("opacity", 0.75)
-    .text("🛠")
-
-const snapButton = overlayGroup
-    .append("rect")
-    .attr("x", windowWidth-36)
-    .attr("y", windowHeight-34-yShift-35-35)
-    .attr("width", 32)
-    .attr("height", 30)
-    .attr("rx", 5)
-    .attr("ry", 5)
-    .attr("fill", "white")
-    .attr("fill-opacity", 1)
-    .attr("stroke", "black")
-    .attr("stroke-width", 0.5)
-    .attr("stroke-opacity", 0.25)
-    .style("display", "none")
-
-const snapIcon = overlayGroup
-    .append("text")
-    .attr("font-size", "28pt")
-    .attr("text-anchor", "middle")
-    // .attr("alignment-baseline", "middle")
-    .style("pointer-events", "none")
-    .attr("x", windowWidth-20)
-    .attr("y", windowHeight-26-yShift-35-31)
-    .attr("dy", "0.35em")
-    .attr("opacity", 0.75)
-    .text("⌖")
-    .style("display", "none")
-
-const snapSliderMin = windowWidth-140;
-const snapSliderMax = windowWidth-40;
-let snapSlidePos = snapSliderMax - 10*2
-
-const snapSlideBar = overlayGroup
-    .append("line")
-    .attr("x1", snapSliderMax)
-    .attr("x2", snapSliderMin)
-    .attr("y1", windowHeight-34-yShift-35-35+15)
-    .attr("y2", windowHeight-34-yShift-35-35+15)
-    .attr("stroke", "black")
-    .attr("stroke-width", 5)
-    .attr("fill", "none")
-    .style("stroke-linecap", "round")
-    .style("display", "none")
-const snapSlidePosBar = overlayGroup
-    .append("line")
-    .attr("x1", snapSliderMin)
-    .attr("x2", snapSlidePos)
-    .attr("y1", windowHeight-34-yShift-35-35+15)
-    .attr("y2", windowHeight-34-yShift-35-35+15)
-    .attr("stroke", "white")
-    .attr("stroke-width", 5)
-    .attr("stroke-opacity", 0.5)
-    .attr("fill", "none")
-    .style("stroke-linecap", "round")
-    .style("display", "none")
-const snapSlider = overlayGroup
-    .append("circle")
-    .attr("r", 8)
-    .attr("cy", windowHeight-34-yShift-35-35+15)
-    .attr("cx", snapSlidePos)
-    .attr("fill", "white")
-    .attr("stroke", "black")
-    .call(d3.drag()
-        .on("drag", function(event, d) {
-            if (event.x < snapSliderMin || event.x > snapSliderMax) return;
-            snapSlidePos = event.x
-            snapSlider.attr("cx", snapSlidePos)
-            snapSlidePosBar.attr("x2", snapSlidePos)
-            snapDist = (snapSliderMax - snapSlidePos)/2;
-            snapSlideVal
-                .text(`${(snapDist).toFixed(0)}`)
-                .attr("x", snapSlidePos)
-            updateView();
-        })    
-    )
-    .style("display", "none")
-const snapSlideVal = overlayGroup
-    .append("text")
-    .attr("fill", "black")
-    .attr("font-size", "7pt")
-    .attr("text-anchor", "middle")
-    .attr("alignment-baseline", "middle")
-    .style("pointer-events", "none")
-    .attr("y", windowHeight-34-yShift-35-35+15)
-    .attr("x", snapSlidePos)
-    .attr("dy", "0.1em")
-    .attr("dx", "-0.025em")
-    .text("10")
-    .style("display", "none")
     
 
-setupScaleSliders();
+// setupScaleSliders();
 updateView();
 updateWeldProps();
 updateLoadProps();

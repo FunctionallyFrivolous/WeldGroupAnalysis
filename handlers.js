@@ -1,59 +1,27 @@
-// document.getElementById("toggleRx").addEventListener("click", () => {
-//     showRx = !showRx
-//     rxVector
-//         .style("display", showRx ? "block" : "none")
-//     rxMGroup
-//         .style("display", showRx ? "block" : "none")
-//     // centroidProps
-//     //     .style("display", showRx ? "block" : "none")
-//     // RxVProps
-//     //     .style("display", showRx ? "block" : "none")
-//     // RxMProps
-//     //     .style("display", showRx ? "block" : "none")
-//     const button = document.getElementById("toggleRx");
-//     button.style.opacity = showRx ? 1 : 0.50 
-// })
 
 function showHideStress() {
     showStress = !showStress
-    // const button = document.getElementById("toggleStress");
-    // button.style.opacity = showStress ? 1 : 0.50
     stressButton
         .attr("fill-opacity", showStress ? 0.125 : 0)
         .attr("stroke-opacity", showStress ? 0 : 0.25)
     updateView();
 }
-// document.getElementById("toggleStress").addEventListener("click", () => {
-//     showHideStress();
-// })
 
 function showHideTDir() {
     showTDir = !showTDir
-    // const button = document.getElementById("toggleTDir");
-    // button.style.opacity = showTDir ? 1 : 0.50
     tDirButton
         .attr("fill-opacity", showTDir ? 0.125 : 0)
         .attr("stroke-opacity", showTDir ? 0 : 0.25)
     updateView();
 }
 
-// document.getElementById("toggleTDir").addEventListener("click", () => {
-//     showHideTDir();
-// })
-
 function showHideTTor() {
     showTTor = !showTTor
-    // const button = document.getElementById("toggleTTor");
-    // button.style.opacity = showTTor ? 1 : 0.50
     tTorButton
         .attr("fill-opacity", showTTor ? 0.125 : 0)
         .attr("stroke-opacity", showTTor ? 0 : 0.25)
     updateView();
 }
-
-// document.getElementById("toggleTTor").addEventListener("click", () => {
-//     showHideTTor();
-// })
 
 function showHideTMax() {
     showTMax = !showTMax
@@ -62,8 +30,6 @@ function showHideTMax() {
             nodes[i].display = "none"
         }
     }
-    // const button = document.getElementById("toggleTMax");
-    // button.style.opacity = showTMax ? 1 : 0.50
     tMaxProps
         .text(`τ`)
         .style("display", showTMax ? "block" : "none")
@@ -87,10 +53,6 @@ function showHideTMax() {
         .attr("stroke-opacity", showTMax ? 0 : 0.25)
     updateView();
 }
-
-// document.getElementById("toggleTMax").addEventListener("click", () => {
-//     showHideTMax();
-// })
 
 function unitSwap() {
     if (units === "metric") {
@@ -162,65 +124,32 @@ function lockUnlock() {
 //     // showTMax = !showTMax;
 // }
 
-function setupScaleSliders() {
-    const LoadScaleSlider = document.getElementById("loadScaleSlider");
-    LoadScaleSlider.addEventListener("input", () => {
-        loadScale = parseFloat(LoadScaleSlider.value);
-        updateView();
-    })
+// function setupScaleSliders() {
+    // const LoadScaleSlider = document.getElementById("loadScaleSlider");
+    // LoadScaleSlider.addEventListener("input", () => {
+    //     loadScale = parseFloat(LoadScaleSlider.value);
+    //     updateView();
+    // })
 
-    const StressScaleSlider = document.getElementById("stressScaleSlider");
-    StressScaleSlider.addEventListener("input", () => {
-        stressScale = parseFloat(StressScaleSlider.value);
-        updateView();
-    })
+    // const StressScaleSlider = document.getElementById("stressScaleSlider");
+    // StressScaleSlider.addEventListener("input", () => {
+    //     stressScale = parseFloat(StressScaleSlider.value);
+    //     updateView();
+    // })
 
-    const snapSlider = document.getElementById("snapDistSlider");
-    snapSlider.addEventListener("input", () => {
-        snapDist = parseFloat(snapSlider.value);
-        updateView();
-    })
+    // const snapSlider = document.getElementById("snapDistSlider");
+    // snapSlider.addEventListener("input", () => {
+    //     snapDist = parseFloat(snapSlider.value);
+    //     updateView();
+    // })
 
-    const axisSlider = document.getElementById("axisScaleSlider");
-    axisSlider.addEventListener("input", () => {
-        axisLength = parseFloat(axisSlider.value);
-        coordAxes.style("display", axisLength <= 1 ? "none" : "block")
-        xAxisLab.style("display", axisLength <= 1 ? "none" : "block")
-        yAxisLab.style("display", axisLength <= 1 ? "none" : "block")
-        originDot.style("display", axisLength <= 1 ? "none" : "block")
-        updateView();
-    })
-}
-
-// document.getElementById("weldSize").addEventListener("input", function(event) {
-//     const wSelect = weldCoords.find(j => j.id === selectedWeld)
-//     wSelect.thk = event.target.valueAsNumber;
-//     updateView();
-// })
-// document.getElementById("weldLen").addEventListener("input", function(event) {
-//     const wSelect = weldCoords.find(j => j.id === selectedWeld)
-//     wSelect.len = event.target.valueAsNumber;
-//     updateView();
-// })
-
-// document.getElementById("weldStartX").addEventListener("input", function(event) {
-//     const wSelect = weldCoords.find(j => j.id === selectedWeld)
-//     wSelect.points[0].x = distToCoord(event.target.valueAsNumber, "x");
-//     updateView();
-// })
-// document.getElementById("weldStartY").addEventListener("input", function(event) {
-//     const wSelect = weldCoords.find(j => j.id === selectedWeld)
-//     wSelect.points[0].y = distToCoord(event.target.valueAsNumber, "y");
-//     updateView();
-// })
-
-// document.getElementById("weldEndX").addEventListener("input", function(event) {
-//     const wSelect = weldCoords.find(j => j.id === selectedWeld)
-//     wSelect.points[1].x = distToCoord(event.target.valueAsNumber, "x");
-//     updateView();
-// })
-// document.getElementById("weldEndY").addEventListener("input", function(event) {
-//     const wSelect = weldCoords.find(j => j.id === selectedWeld)
-//     wSelect.points[1].y = distToCoord(event.target.valueAsNumber, "y");
-//     updateView();
-// })
+    // const axisSlider = document.getElementById("axisScaleSlider");
+    // axisSlider.addEventListener("input", () => {
+    //     axisLength = parseFloat(axisSlider.value);
+    //     coordAxes.style("display", axisLength <= 1 ? "none" : "block")
+    //     xAxisLab.style("display", axisLength <= 1 ? "none" : "block")
+    //     yAxisLab.style("display", axisLength <= 1 ? "none" : "block")
+    //     originDot.style("display", axisLength <= 1 ? "none" : "block")
+    //     updateView();
+    // })
+// }
