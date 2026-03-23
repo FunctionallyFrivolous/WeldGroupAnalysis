@@ -99,9 +99,9 @@ function unitSwap() {
 
 function lockUnlock() {
     geomLock = !geomLock;
-    document.getElementById("loadScaleSlider").disabled = geomLock ? true : false;
-    document.getElementById("stressScaleSlider").disabled = geomLock ? true : false;
-    document.getElementById("snapDistSlider").disabled = geomLock ? true : false;
+    // document.getElementById("loadScaleSlider").disabled = geomLock ? true : false;
+    // document.getElementById("stressScaleSlider").disabled = geomLock ? true : false;
+    // document.getElementById("snapDistSlider").disabled = geomLock ? true : false;
     addWIcon.attr("fill", geomLock || weldCount >= maxWelds ? "white" : "green")
     removeWIcon.attr("fill", geomLock || weldCount <= 1 ? "white" : "red")
     addLIcon.attr("fill", geomLock || loadCount >= maxLoads ? "white" : "green")

@@ -1574,6 +1574,9 @@ function showHideSettings() {
     sliderDot.style("display", showSettings ? "block" : "none")
     // sliderVal.style("display", showSettings ? "block" : "none")
     snapIcon.style("display", showSettings ? "block" : "none")
+    loadScaleIcon.style("display", showSettings ? "block" : "none")
+    stressScaleIcon.style("display", showSettings ? "block" : "none")
+    axesIcon.style("display", showSettings ? "block" : "none")
 }
 
 function updateSliderVals(id, val) {

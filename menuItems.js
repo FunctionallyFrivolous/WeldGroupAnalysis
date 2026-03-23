@@ -27,11 +27,11 @@ function drawSnapIcon(x, y) {
 const settingsMenuData = [
     {id: "snap", text: "", fontColor: "black", lab: "Snap Distance", slideVal: 20, slideScale: 1,
         x: sliderMax-20, y: settingsButtonProps.y-settingsButtonProps.yinc}, 
-    {id: "axes", text: "x,y", fontColor: "black", lab: "Coord Axes Length", slideVal: 10, slideScale: 1,
+    {id: "axes", text: "", fontColor: "black", lab: "Coord Axes Length", slideVal: 10, slideScale: 1,
         x: sliderMax-10, y: settingsButtonProps.y-settingsButtonProps.yinc*2}, 
-    {id: "loads", text: "↗", fontColor: "darkred", lab: "Loads Scale", slideVal: 10, slideScale: 1,
+    {id: "loads", text: "", fontColor: "darkred", lab: "Loads Scale", slideVal: 10, slideScale: 1,
         x: sliderMax-10, y: settingsButtonProps.y-settingsButtonProps.yinc*3}, 
-    {id: "stresses", text: "↖", fontColor: "indigo", lab: "Stresses Scale", slidePos: sliderMax-30, slideVal: 30, slideScale: 1,
+    {id: "stresses", text: "", fontColor: "indigo", lab: "Stresses Scale", slidePos: sliderMax-30, slideVal: 30, slideScale: 1,
         x: sliderMax-30, y: settingsButtonProps.y-settingsButtonProps.yinc*4}
 ]
 
@@ -202,3 +202,43 @@ const snapIcon = overlayGroup
     ))
     .style("display", "none")
 
+const loadScaleIcon = overlayGroup
+    .append("line")
+    .attr("x1", settingsButtonProps.x + settingsButtonProps.width/2-7)
+    .attr("x2", settingsButtonProps.x + settingsButtonProps.width/2+5)
+    .attr("y1", settingsButtonProps.y-settingsButtonProps.yinc*3+settingsButtonProps.height/2+6)
+    .attr("y2", settingsButtonProps.y-settingsButtonProps.yinc*3+settingsButtonProps.height/2-5)
+    .attr("stroke", "darkred")
+    .attr("stroke-width", 2)
+    .attr("opacity", 0.75)
+    .attr("marker-end", "url(#R_arrowhead")
+    .attr("marker-start", "url(#dots")
+    .style("display", "none")
+
+const stressScaleIcon = overlayGroup
+    .append("line")
+    .attr("x2", settingsButtonProps.x + settingsButtonProps.width/2-5)
+    .attr("x1", settingsButtonProps.x + settingsButtonProps.width/2+8)
+    .attr("y1", settingsButtonProps.y-settingsButtonProps.yinc*4+settingsButtonProps.height/2+7)
+    .attr("y2", settingsButtonProps.y-settingsButtonProps.yinc*4+settingsButtonProps.height/2-4)
+    .attr("stroke", "indigo")
+    .attr("stroke-width", 2)
+    .attr("opacity", 0.75)
+    .attr("marker-end", "url(#P_arrowhead")
+    .style("display", "none")
+
+const axIconPoints = {
+    x1: settingsButtonProps.x + settingsButtonProps.width/2-5, 
+    y1: settingsButtonProps.y-settingsButtonProps.yinc*2+settingsButtonProps.height/2+5, 
+    l: 10
+}
+const axesIcon = overlayGroup
+    .append("polyline")
+    .attr("points", `${axIconPoints.x1},${axIconPoints.y1-axIconPoints.l} ${axIconPoints.x1},${axIconPoints.y1} ${axIconPoints.x1+axIconPoints.l},${axIconPoints.y1}`)
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .attr("stroke-width", 1.5)
+    .attr("marker-end", "url(#arrowhead")
+    .attr("marker-start", "url(#arrowhead")
+    // .attr("stroke-dasharray", "2,2")
+    .style("display", "none")
