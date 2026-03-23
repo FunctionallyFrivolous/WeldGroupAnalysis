@@ -142,7 +142,8 @@ const sliderDot = sliderDotGroup.selectAll("circle")
     .call(d3.drag()
         .on("drag", function(event, d) {
             // const [ex, ey] = d3.pointer(event, svg.node())
-            const ex = event.x
+            const [ex, ey] = d3.pointer(event, this.parentNode)
+            // const ex = event.x
             if (ex < sliderMin || ex > sliderMax) return;
             d.slideVal = ((sliderMax - ex) * d.slideScale).toFixed(0)
             sliderDot
