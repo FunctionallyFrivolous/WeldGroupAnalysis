@@ -19,9 +19,9 @@ const settingsMenuData = [
 
 const settingsMenu = overlayGroup
     .append("rect")
-    .attr("x", windowWidth-36-2-110-5)
-    .attr("y", windowHeight-37-yShift-35-35*4)
-    .attr("width", 155)
+    .attr("x", windowWidth-155)
+    .attr("y", windowHeight-36.5-yShift-35-35*4)
+    .attr("width", 160)
     .attr("height", 30+35*3+2+3)
     .attr("rx", 5)
     .attr("ry", 5)
@@ -77,7 +77,7 @@ const slideLabBox = slideLabBoxGroup.selectAll("rect")
     .attr("fill-opacity", 1)
     .attr("stroke", "black")
     .attr("stroke-width", 0.5)
-    .attr("stroke-opacity", 0.25)
+    .attr("stroke-opacity", 0.5)
     .style("display", "none")
 
 const slideIconsGroup = overlayGroup.append("g")
@@ -90,7 +90,7 @@ const slideIcon = slideIconsGroup.selectAll("text")
     // .attr("alignment-baseline", "middle")
     .style("pointer-events", "none")
     .attr("x", settingsButtonProps.x+settingsButtonProps.width/2)
-    .attr("y", d => d.y+settingsButtonProps.height/2-3)
+    .attr("y", d => d.y+settingsButtonProps.height/2-1)
     .attr("dy", "0.35em")
     .attr("opacity", 0.75)
     .text(d => d.text)
@@ -140,11 +140,11 @@ const sliderDot = sliderDotGroup.selectAll("circle")
     .attr("stroke", "black")
     .call(d3.drag()
         .on("drag", function(event, d) {
-            d.x = event.x;
+            // if (event.x < sliderMin-50 || event.x > sliderMax+50) return;
+            d.x = Math.floor(event.x);
             if(d.x < sliderMin) d.x = sliderMin;
             if(d.x > sliderMax) d.x = sliderMax;
             d.slideVal = (sliderMax - d.x) * d.slideScale
-            if (event.x < sliderMin || event.x > sliderMax) return;
             sliderDot
                 .attr("cx", d => d.x)
             sliderVal

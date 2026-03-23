@@ -1587,10 +1587,12 @@ function updateSliderVals(id, val) {
         snapDist = val/2;
     }
     else if (id === "loads") {
+        if (val < 0.1) val = 0.1
         loadScale = val/20
 
     }
     else if (id === "stresses") {
+        if (val < 0.1) val = 0.1
         stressScale = val/10
     }
     updateView();
