@@ -56,6 +56,9 @@ function updateSVGs(){
     //     .append("title")
     //     .text(`units (${units})`)
 
+    // sliderDot
+    //     .attr("cx", d => d.slidePos)
+
 }
 
 function updateView() {
@@ -1569,7 +1572,7 @@ function showHideSettings() {
     slideBar.style("display", showSettings ? "block" : "none")
     slidePosBar.style("display", showSettings ? "block" : "none")
     sliderDot.style("display", showSettings ? "block" : "none")
-    slideVal.style("display", showSettings ? "block" : "none")
+    sliderVal.style("display", showSettings ? "block" : "none")
 }
 
 function updateSliderVals(id, val) {

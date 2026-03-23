@@ -1,15 +1,20 @@
+const sliderMax = windowWidth-45;
+const sliderLength = 100
+const sliderMin = sliderMax-sliderLength;
+// let slidePos = sliderMax - 10*2
+
 const settingsButtonProps = {width: 32, height: 30, r: 5, 
     x: windowWidth-36, y: windowHeight-yShift-69, yinc: 35}
 
 const settingsMenuData = [
     {id: "snap", text: "⌖", fontColor: "black", lab: "Snap Distance", slideVal: 20, slideScale: 1,
-        x: settingsButtonProps.x, y: settingsButtonProps.y-settingsButtonProps.yinc}, 
+        x: sliderMax-20, y: settingsButtonProps.y-settingsButtonProps.yinc}, 
     {id: "axes", text: "x,y", fontColor: "black", lab: "Coord Axes Length", slideVal: 10, slideScale: 1,
-        x: settingsButtonProps.x, y: settingsButtonProps.y-settingsButtonProps.yinc*2}, 
+        x: sliderMax-10, y: settingsButtonProps.y-settingsButtonProps.yinc*2}, 
     {id: "loads", text: "↗", fontColor: "darkred", lab: "Loads Scale", slideVal: 10, slideScale: 1,
-        x: settingsButtonProps.x, y: settingsButtonProps.y-settingsButtonProps.yinc*3}, 
-    {id: "stresses", text: "↖", fontColor: "indigo", lab: "Stresses Scale", slideVal: 30, slideScale: 1,
-        x: settingsButtonProps.x, y: settingsButtonProps.y-settingsButtonProps.yinc*4}
+        x: sliderMax-10, y: settingsButtonProps.y-settingsButtonProps.yinc*3}, 
+    {id: "stresses", text: "↖", fontColor: "indigo", lab: "Stresses Scale", slidePos: sliderMax-30, slideVal: 30, slideScale: 1,
+        x: sliderMax-30, y: settingsButtonProps.y-settingsButtonProps.yinc*4}
 ]
 
 const settingsMenu = overlayGroup
@@ -58,12 +63,11 @@ const settingsIcon = overlayGroup
     .text("🛠")
 
 const slideLabBoxGroup = overlayGroup.append("g")
-const slideLabBox = slideLabBoxGroup
-    .selectAll("rect")
+const slideLabBox = slideLabBoxGroup.selectAll("rect")
     .data(settingsMenuData)
     .enter()
     .append("rect")
-    .attr("x", d => d.x)
+    .attr("x", settingsButtonProps.x)
     .attr("y", d => d.y)
     .attr("width", 32)
     .attr("height", 30)
@@ -85,18 +89,13 @@ const slideIcon = slideIconsGroup.selectAll("text")
     .attr("text-anchor", "middle")
     // .attr("alignment-baseline", "middle")
     .style("pointer-events", "none")
-    .attr("x", d => d.x+settingsButtonProps.width/2)
+    .attr("x", settingsButtonProps.x+settingsButtonProps.width/2)
     .attr("y", d => d.y+settingsButtonProps.height/2-3)
     .attr("dy", "0.35em")
     .attr("opacity", 0.75)
     .text(d => d.text)
     .attr("fill", d => d.fontColor)
     .style("display", "none")
-
-const sliderMax = windowWidth-45;
-const sliderLength = 100
-const sliderMin = sliderMax-sliderLength;
-let slidePos = sliderMax - 10*2
 
 const sliderBarGroup = overlayGroup.append("g")
 const slideBar = sliderBarGroup.selectAll("line")
@@ -136,30 +135,30 @@ const sliderDot = sliderDotGroup.selectAll("circle")
     .append("circle")
     .attr("r", 8)
     .attr("cy", d => d.y+settingsButtonProps.height/2)
-    .attr("cx", d => sliderMax - d.slideVal / d.slideScale)
+    .attr("cx", d => d.x)
     .attr("fill", "white")
     .attr("stroke", "black")
     .call(d3.drag()
         .on("drag", function(event, d) {
-            // const [ex, ey] = d3.pointer(event, svg.node())
-            const [ex, ey] = d3.pointer(event, this.parentNode)
-            // const ex = event.x
-            if (ex < sliderMin || ex > sliderMax) return;
-            d.slideVal = ((sliderMax - ex) * d.slideScale).toFixed(0)
+            d.x = event.x;
+            if(d.x < sliderMin) d.x = sliderMin;
+            if(d.x > sliderMax) d.x = sliderMax;
+            d.slideVal = (sliderMax - d.x) * d.slideScale
+            if (event.x < sliderMin || event.x > sliderMax) return;
             sliderDot
-                .attr("cx", d => sliderMax - d.slideVal / d.slideScale)
-            slideVal
-                .attr("x", d => sliderMax - d.slideVal / d.slideScale)
-                .text(d => d.slideVal)
+                .attr("cx", d => d.x)
+            sliderVal
+                .attr("x", d => d.x)
+                .text(d => d.slideVal.toFixed(0))
             slidePosBar
-                .attr("x2", d => sliderMax - d.slideVal / d.slideScale)
+                .attr("x2", d => d.x)
             updateSliderVals(d.id, d.slideVal);
         }) 
     )
     .style("display", "none")
 
-const slideValGroup = overlayGroup.append("g")
-const slideVal = slideValGroup.selectAll("text")
+const sliderValGroup = overlayGroup.append("g")
+const sliderVal = sliderValGroup.selectAll("text")
     .data(settingsMenuData)
     .enter()
     .append("text")
