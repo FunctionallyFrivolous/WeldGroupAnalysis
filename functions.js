@@ -1572,7 +1572,8 @@ function showHideSettings() {
     slideBar.style("display", showSettings ? "block" : "none")
     slidePosBar.style("display", showSettings ? "block" : "none")
     sliderDot.style("display", showSettings ? "block" : "none")
-    sliderVal.style("display", showSettings ? "block" : "none")
+    // sliderVal.style("display", showSettings ? "block" : "none")
+    snapIcon.style("display", showSettings ? "block" : "none")
 }
 
 function updateSliderVals(id, val) {

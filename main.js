@@ -199,13 +199,6 @@ const cMark = centroidGroup.selectAll("circle")
     .style("pointer-events", "none")
     .attr("cx", d => d.x)
     .attr("cy", d => d.y)
-    // .on("dblclick", function() {
-    //     showRx = !showRx
-    //     rxVector
-    //         .style("display", showRx ? "block" : "none")
-    //     rxMGroup
-    //         .style("display", showRx ? "block" : "none")
-    // })
 
 // Reaction force vector (at centroid)
 const rxVGroup = zoomGroup.append("g")
@@ -223,7 +216,7 @@ const rxVector = rxVGroup.selectAll("polyline")
     .style("stroke-linecap", "round")
     .style("pointer-events", "none")
 
-const rxMGroup = zoomGroup.append("g")
+const rxMGroup = zoomGroup//.append("g")
 // const rxMoment = rxMGroup.selectAll("path")
     .append("path")
     .attr("d", dM)

@@ -6,8 +6,26 @@ const sliderMin = sliderMax-sliderLength;
 const settingsButtonProps = {width: 32, height: 30, r: 5, 
     x: windowWidth-36, y: windowHeight-yShift-69, yinc: 35}
 
+function drawSnapIcon(x, y) {
+    const snapPath = `
+    M ${0+x} ${-5+y}
+    A 5 5 ${0+x} 1 1 ${0+x} ${5+y}
+    A 5 5 ${0+x} 1 1 ${0+x} ${-5+y}
+
+    M ${0+x} ${-10+y}
+    L  ${0+x} ${-10+y}
+    L  ${0+x} ${10+y}
+    Z
+
+    M ${-10+x} ${0+y}
+    L  ${10+x} ${0+y}
+    Z
+    `
+    return snapPath
+}
+
 const settingsMenuData = [
-    {id: "snap", text: "⌖", fontColor: "black", lab: "Snap Distance", slideVal: 20, slideScale: 1,
+    {id: "snap", text: "", fontColor: "black", lab: "Snap Distance", slideVal: 20, slideScale: 1,
         x: sliderMax-20, y: settingsButtonProps.y-settingsButtonProps.yinc}, 
     {id: "axes", text: "x,y", fontColor: "black", lab: "Coord Axes Length", slideVal: 10, slideScale: 1,
         x: sliderMax-10, y: settingsButtonProps.y-settingsButtonProps.yinc*2}, 
@@ -173,3 +191,14 @@ const sliderVal = sliderValGroup.selectAll("text")
     .attr("dx", "-0.025em")
     .text(d => d.slideVal)
     .style("display", "none")
+
+const snapIcon = overlayGroup
+    .append("path")
+    .attr("stroke", "black")
+    .attr("stroke-width", 1)
+    .attr("fill", "none")
+    .attr("d", drawSnapIcon(settingsButtonProps.x + settingsButtonProps.width/2, 
+        settingsButtonProps.y-settingsButtonProps.yinc + settingsButtonProps.height/2
+    ))
+    .style("display", "none")
+
