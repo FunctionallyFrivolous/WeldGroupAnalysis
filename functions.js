@@ -178,8 +178,8 @@ function updateWeldLength(newLen) {
 
             const oldLen = Math.sqrt((oldDy)*(oldDy)+(oldDx)*(oldDx));
 
-            const newDx = oldDx/oldLen * distToCoord(newLen/2, "L");
-            const newDy = oldDy/oldLen * distToCoord(newLen/2, "L");
+            const newDx = oldDx/oldLen * distToCoord(lenNew/2, "L");
+            const newDy = oldDy/oldLen * distToCoord(lenNew/2, "L");
 
             const newX1 = x0 + newDx;
             const newY1 = y0 + newDy;
