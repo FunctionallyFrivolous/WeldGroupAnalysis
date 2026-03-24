@@ -32,7 +32,7 @@ function showHideTMax() {
     }
     tMaxProps
         .text(`τ`)
-        .style("display", showTMax ? "block" : "none")
+        // .style("display", showTMax ? "block" : "none")
         .append("tspan")
         .text("max")
         .attr("font-family", "sans-serif") 
@@ -47,7 +47,8 @@ function showHideTMax() {
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "text-before-edge")
     RxShowHide
-        .attr("height", showTMax ? 80 : 65)
+        // .attr("height", showTMax ? 80 : 65)
+        .attr("height", 80)
     tMaxButton
         .attr("fill-opacity", showTMax ? 0.125 : 0)
         .attr("stroke-opacity", showTMax ? 0 : 0.25)
@@ -95,6 +96,8 @@ function unitSwap() {
     // unitsButton
     //     .attr("opacity", units === "metric" ? 0.25 : 0)
     showHideWProps.attr("width", units === "metric" ? 180 : 160)
+
+    // ftiView();
 }
 
 function lockUnlock() {
@@ -112,6 +115,7 @@ function lockUnlock() {
     lockButton
         .attr("fill-opacity", geomLock ? 0.125 : 0)
         .attr("stroke-opacity", geomLock ? 0 : 0.25)
+
 }
 
 // function inspect() {

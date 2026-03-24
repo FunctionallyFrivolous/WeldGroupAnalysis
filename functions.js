@@ -12,6 +12,7 @@ function updateStuff(){
     updateDirectShear();
     updateTorsionShear();
     updateTotalShear();
+    // updateMinMaxView();
 }
 
 function updateSVGs(){
@@ -76,6 +77,8 @@ function updateView() {
         // + "thing: " + `${editWValueY}` + "\n<br>"
 
     // document.getElementById("debugOutputs").innerHTML = dbugTxt;
+
+    // document.getElementById("debugOutputs").innerHTML = `${getMinMaxView()}`
 }
 
 // This function updates the weldCoords array with latest nodes data
@@ -151,41 +154,40 @@ function updateWeldLength(newLen) {
         mNode.x = newX1;
         mNode.y = newY1;
     } 
-    // else {
-    //     const x0 = (wSelect.points[0].x + wSelect.points[1].x)/2;
-    //     const y0 = (wSelect.points[0].y + wSelect.points[1].y)/2;
-    //     const x1 = wSelect.points[0].x;
-    //     const y1 = wSelect.points[0].y;
-    //     const x2 = wSelect.points[1].x;
-    //     const y2 = wSelect.points[1].y;
+    else {
+        const x0 = (wSelect.points[0].x + wSelect.points[1].x)/2;
+        const y0 = (wSelect.points[0].y + wSelect.points[1].y)/2;
+        const x1 = wSelect.points[0].x;
+        const y1 = wSelect.points[0].y;
+        const x2 = wSelect.points[1].x;
+        const y2 = wSelect.points[1].y;
 
-    //     const oldPoints = [{x: x1, y: y1},{x: x2, y: y2}]
+        const oldPoints = [{x: x1, y: y1},{x: x2, y: y2}]
 
-    //     const mSNode = nodes.find(n => n.id.includes(`${selectedWeld}_start`));
-    //     const mENode = nodes.find(n => n.id.includes(`${selectedWeld}_end`));
+        const mSNode = nodes.find(n => n.id.includes(`${selectedWeld}_start`));
+        const mENode = nodes.find(n => n.id.includes(`${selectedWeld}_end`));
 
-    //     const movePoints = [mSNode,mENode];
+        document.getElementById("debugOutputs").innerHTML = `${oldPoints[0].x}`
 
-    //     for (i = 0; i < oldPoints.length-1; i++) {
+        const movePoints = [mSNode,mENode];
 
-    //         const oldDx = oldPoints[i].x-x0;
-    //         const oldDy = oldPoints[i].x-y0;
+        for (i = 0; i < oldPoints.length; i++) {
 
-    //         const oldLen = Math.sqrt((oldDy)*(oldDy)+(oldDx)*(oldDx));
+            const oldDx = oldPoints[i].x-x0;
+            const oldDy = oldPoints[i].y-y0;
 
-    //         const newDx = oldDx/oldLen * distToCoord(newLen, "L");
-    //         const newDy = oldDy/oldLen * distToCoord(newLen, "L");
+            const oldLen = Math.sqrt((oldDy)*(oldDy)+(oldDx)*(oldDx));
 
-    //         const newX1 = x0 + newDx;
-    //         const newY1 = y0 + newDy;
+            const newDx = oldDx/oldLen * distToCoord(newLen/2, "L");
+            const newDy = oldDy/oldLen * distToCoord(newLen/2, "L");
 
-    //         document.getElementById("debugOutputs").innerHTML = 
-    //             `${selectedWeld}, ${selectedWProp}, ${mSNode.x}`
+            const newX1 = x0 + newDx;
+            const newY1 = y0 + newDy;
 
-    //         movePoints[i].x = newX1;
-    //         movePoints[i].y = newY1;
-    //     }
-    // }
+            movePoints[i].x = newX1;
+            movePoints[i].y = newY1;
+        }
+    }
 
     updateWelds();
 }
@@ -385,6 +387,28 @@ function updateDirectShear() {
 
         directShear[i].points = [{x: xa, y: ya}, {x: xt, y: yt}];
     }
+}
+
+function calcShear(x,y){
+    const dirMag = Math.abs(rxV.mag) / areaTot;
+    const dirTh = rxV.th;
+
+    let mArm = Math.sqrt((x-centroidTot[0].x)*(x-centroidTot[0].x)+(y-centroidTot[0].y)*(y-centroidTot[0].y))
+    mArm = coordToDist(mArm, "L");
+
+    const torMag = rxM * mArm / J_tot;
+    const torTh = radToDeg(Math.atan((centroidTot[0].y-y)/(x-centroidTot[0].x))) + 90
+
+    const dirX = dirMag * Math.cos(degToRad(dirTh));
+    const dirY = dirMag * Math.sin(degToRad(dirTh));
+    const torX = torMag * Math.cos(degToRad(torTh));
+    const torY = torMag * Math.sin(degToRad(torTh));
+
+    const TotX = dirX+torX;
+    const TotY = dirY+torY;
+    const TotMag = Math.sqrt(TotY*TotY+TotX*TotX);
+
+    return TotMag
 }
 
 function updateTorsionShear() {
@@ -1346,7 +1370,7 @@ function updateWeldProps() {
     tMaxProps
         .text(`τ`)
         .attr("font-family", "ariel")
-        .style("display", showTMax ? "block" : "none")
+        // .style("display", showTMax ? "block" : "none")
         .append("tspan")
         .text("max")
         .attr("font-family", "sans-serif") 
@@ -1384,7 +1408,7 @@ function updateLoadProps() {
         .style("display", showRx ? "block" : "none")
     tMaxProps
         .text(`τ`)
-        .style("display", showTMax ? "block" : "none")
+        // .style("display", showTMax ? "block" : "none")
         .append("tspan")
         .text("max")
         .attr("font-family", "sans-serif") 
@@ -1600,4 +1624,47 @@ function updateSliderVals(id, val) {
         stressScale = val/10
     }
     updateView();
+}
+
+function updateMinMaxView() {
+    xMin = nodes[0].x;
+    xMax = nodes[0].x;
+    yMin = nodes[0].y;
+    yMax = nodes[0].y;
+
+    for (i = 0; i < nodes.length; i++) {
+        xMin = Math.min(xMin, nodes[i].x);
+        xMax = Math.max(xMax, nodes[i].x);
+        yMin = Math.min(yMin, nodes[i].y);
+        yMax = Math.max(yMax, nodes[i].y);
+    }
+
+    for (i = 0; i < loadPoints.length; i++) {
+        xMin = Math.min(xMin, loadPoints[i].points[0].x, loadPoints[i].points[1].x);
+        xMax = Math.max(xMax, loadPoints[i].points[0].x, loadPoints[i].points[1].x);
+        yMin = Math.min(yMin, loadPoints[i].points[0].y, loadPoints[i].points[1].y);
+        yMax = Math.max(yMax, loadPoints[i].points[0].y, loadPoints[i].points[1].y);
+    }
+}
+
+function ftiView() {
+
+    updateMinMaxView();
+
+    // xMax = 10
+    // xMin = 10
+
+    const centerX = (xMax + xMin)/2;
+    const centerY = (yMax + yMin)/2;
+
+    const dur = 500;
+
+    const centerScale = Math.min(windowWidth/(xMax-xMin),windowHeight/(yMax-yMin))*0.56
+
+    svg.transition().duration(dur).call(zoom.transform, d3.zoomIdentity
+        // .translate(0, 0)
+        .translate(windowWidth/2-centerX, windowHeight/2-centerY)
+        // .scale(0.5)
+        .scale(centerScale)
+    );
 }

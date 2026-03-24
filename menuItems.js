@@ -31,14 +31,14 @@ const settingsMenuData = [
         x: sliderMax-10, y: settingsButtonProps.y-settingsButtonProps.yinc*2}, 
     {id: "loads", text: "", fontColor: "darkred", lab: "Loads Scale", slideVal: 10, slideScale: 1,
         x: sliderMax-10, y: settingsButtonProps.y-settingsButtonProps.yinc*3}, 
-    {id: "stresses", text: "", fontColor: "indigo", lab: "Stresses Scale", slidePos: sliderMax-30, slideVal: 30, slideScale: 1,
+    {id: "stresses", text: "", fontColor: "indigo", lab: "Stresses Scale", slideVal: 30, slideScale: 1,
         x: sliderMax-30, y: settingsButtonProps.y-settingsButtonProps.yinc*4}
 ]
 
 const settingsMenu = overlayGroup
     .append("rect")
     .attr("x", windowWidth-155)
-    .attr("y", windowHeight-36.5-yShift-35-35*4)
+    .attr("y", settingsButtonProps.y-settingsButtonProps.yinc*4-2.5)
     .attr("width", 160)
     .attr("height", 30+35*3+2+3)
     .attr("rx", 5)
@@ -75,7 +75,7 @@ const settingsIcon = overlayGroup
     // .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
     .attr("x", windowWidth-20-1)
-    .attr("y", windowHeight-26-yShift-30)
+    .attr("y", settingsButtonProps.y+settingsButtonProps.height/2-1.5)
     .attr("dy", "0.35em")
     .attr("opacity", 0.75)
     .text("🛠")
@@ -200,6 +200,7 @@ const snapIcon = overlayGroup
     .attr("d", drawSnapIcon(settingsButtonProps.x + settingsButtonProps.width/2, 
         settingsButtonProps.y-settingsButtonProps.yinc + settingsButtonProps.height/2
     ))
+    .style("pointer-events", "none")
     .style("display", "none")
 
 const loadScaleIcon = overlayGroup
@@ -213,6 +214,7 @@ const loadScaleIcon = overlayGroup
     .attr("opacity", 0.75)
     .attr("marker-end", "url(#R_arrowhead")
     .attr("marker-start", "url(#dots")
+    .style("pointer-events", "none")
     .style("display", "none")
 
 const stressScaleIcon = overlayGroup
@@ -225,6 +227,7 @@ const stressScaleIcon = overlayGroup
     .attr("stroke-width", 2)
     .attr("opacity", 0.75)
     .attr("marker-end", "url(#P_arrowhead")
+    .style("pointer-events", "none")
     .style("display", "none")
 
 const axIconPoints = {
@@ -241,4 +244,25 @@ const axesIcon = overlayGroup
     .attr("marker-end", "url(#arrowhead")
     .attr("marker-start", "url(#arrowhead")
     // .attr("stroke-dasharray", "2,2")
+    .style("pointer-events", "none")
     .style("display", "none")
+
+
+// const inspectDot = zoomGroup
+//     .append("circle")
+//     .attr("r", 8)
+//     .attr("cy", 250)
+//     .attr("cx", 150)
+//     .attr("fill", "white")
+//     .attr("stroke", "black")
+//     .call(d3.drag()
+//         .on("drag", function(event, d) {
+//             inspectDot.attr("cy", event.y)
+//             const inspX = coordToDist(event.x, "x")
+//             const inspY = coordToDist(event.y, "y")
+
+//             const inspStress = calcShear(inspX, inspY)
+//             document.getElementById("debugOutputs").innerHTML = `${inspStress.toFixed(1)}`
+//         }) 
+//     )
+    // .style("display", "none")

@@ -38,10 +38,10 @@ let axisLength = 50;
 let xtemp = 0;
 let ytemp = 0;
 
-let xMin = 0;
-let xMax = 0;
-let yMin = 0;
-let yMax = 0;
+let xMin = 250;
+let xMax = 250;
+let yMin = 250;
+let yMax = 250;
 
 const defaultThk = 0.25; // Default weld thickness value
 let weldThkScale = 40;

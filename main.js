@@ -1,12 +1,9 @@
 // Do Next:
-    // User Inputs
-        // Mid node version, push both nodes outward
     // Snap Upgrades
         // Snap when dragging weld (mid node)?
         // Snap to 45deg?
         // Snap/lock weld angle
         // Snap to weld line (slide along weld)
-    // Better slider icons...
     // Make show/hide stresses an expanding menu?
     // Fit View Button
     // Drag-able weld inspection node
@@ -478,9 +475,9 @@ const inputWFieldX = inputWFieldsGroup
             editWObject.points[1].x = editWObject.points[1].x + distToCoord(editDeltaX, "d")
             editTempX = inputWContentX;
         }
+        updateView();
         updateWeldProps();
         updateLoadProps();
-        updateView();
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
@@ -528,9 +525,9 @@ const inputWFieldY = inputWFieldsGroup
             editWObject.points[1].y = editWObject.points[1].y - distToCoord(editDeltaY, "d")
             editTempY = inputWContentY;
         }
+        updateView();
         updateWeldProps();
         updateLoadProps();
-        updateView();
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
@@ -567,9 +564,9 @@ const inputWFieldL = inputWFieldsGroup
         inputWContentL = d3.select(this).text();
         if (!isFinite(inputWContentL)) return;
         updateWeldLength(inputWContentL);
+        updateView();
         updateWeldProps();
         updateLoadProps();
-        updateView();
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
@@ -606,9 +603,10 @@ const inputWFieldT = inputWFieldsGroup
         inputWContentT = d3.select(this).text();
         if (!isFinite(inputWContentT)) return;
         editWObject.thk = inputWContentT / unitConvert
-        updateWeldProps();
-        updateLoadProps();
         updateView();
+        updateLoadProps();
+        updateWeldProps();
+        
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
@@ -819,9 +817,10 @@ const inputLFieldX = inputLFieldsGroup
         inputLContentX = d3.select(this).text();
         if (!isFinite(inputLContentX)) return;
         editLObject.x = distToCoord(inputLContentX, "x")
+        updateView();
         updateWeldProps();
         updateLoadProps();
-        updateView();
+        
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
@@ -858,9 +857,9 @@ const inputLFieldY = inputLFieldsGroup
         inputLContentY = d3.select(this).text();
         if (!isFinite(inputLContentY)) return;
         editLObject.y = distToCoord(inputLContentY, "y")
+        updateView();
         updateWeldProps();
         updateLoadProps();
-        updateView();
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
@@ -897,9 +896,9 @@ const inputLFieldF = inputLFieldsGroup
         inputLContentF = d3.select(this).text();
         if (!isFinite(inputLContentF)) return;
         editLObject.mag = inputLContentF /forceConvert;
+        updateView();
         updateWeldProps();
         updateLoadProps();
-        updateView();
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
@@ -936,9 +935,9 @@ const inputLFieldA = inputLFieldsGroup
         inputLContentA = d3.select(this).text();
         if (!isFinite(inputWContentT)) return;
         editLObject.th = inputLContentA * 1;
+        updateView();
         updateWeldProps();
         updateLoadProps();
-        updateView();
     })
     .on("keydown", function(event) {
         if (event.key === "Enter") {
@@ -1010,7 +1009,7 @@ const RxShowHide = overlayGroup
     .attr("rx", 5)
     .attr("ry", 5)
     .attr("width", 110)
-    .attr("height", 65)
+    .attr("height", 80) // 65
     .attr("opacity", 0.1)
     .on("click", function() {
         showRx = !showRx
