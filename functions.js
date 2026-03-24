@@ -854,8 +854,8 @@ function updateDrags(){
                 selectedWProp = d.id
                 selectWEditProp()
                 selectedWeld = d.id;
-                xtemp = event.x;
-                ytemp = event.y;
+                xtemp = (d.points[1].x + d.points[0].x)/2 //event.x;
+                ytemp = (d.points[1].y + d.points[0].y)/2 //event.y;
                 weldDrag.attr("opacity", 0.1);
                 showCentCoords = true;
                 updateWeldProps();
@@ -866,19 +866,25 @@ function updateDrags(){
             })
             .on("drag", function(event, d) {
                 if (geomLock) return
-                const x_delta = event.x - xtemp;
-                const y_delta = event.y - ytemp;
-                for (i = 0; i < 2; i++) {
-                    d.points[i].x = d.points[i].x + x_delta;
-                    d.points[i].y = d.points[i].y + y_delta;
-                }
                 selectWEditProp()
                 updateWeldProps();
                 updateStuff();
                 updateSVGs();
                 updateData();
-                xtemp = event.x;
-                ytemp = event.y;
+                const [newMidX, newMidY] = snapDrag(d.id, event.x, event.y)
+                let x_delta = newMidX - xtemp;
+                let y_delta = newMidY - ytemp;
+                for (i = 0; i < 2; i++) {
+                    d.points[i].x = d.points[i].x + x_delta;
+                    d.points[i].y = d.points[i].y + y_delta;
+                }
+                xtemp = newMidX;
+                ytemp = newMidY;
+                selectWEditProp()
+                updateWeldProps();
+                updateStuff();
+                updateSVGs();
+                updateData();
             })
             .on("end", (event, d) => {
                 weldDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
@@ -1468,8 +1474,10 @@ function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
 
     if (id.includes("weld")) { // When dragging welds...
         // Snap to other weld nodes
+        let nid = ""
+        if (id.length !== 5) nid = id.slice(0,5);
         for (i = 0; i < nodes.length; i++) {
-            if (id.slice(0,5) !== nodes[i].id.slice(0,5) && Math.abs(drx - nodes[i].x) < snapDist && Math.abs(dry - nodes[i].y) < snapDist) {
+            if (nid !== nodes[i].id.slice(0,5) && Math.abs(drx - nodes[i].x) < snapDist && Math.abs(dry - nodes[i].y) < snapDist) {
                 dxf = nodes[i].x;
                 dyf = nodes[i].y;
             }
@@ -1481,6 +1489,23 @@ function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
                 dyf = loadProps[i].y;
             }
         }
+        
+        // else {
+        //     for (i = 0; i < weldCoords.length; i++) {
+        //         if (id !== weldCoords[i].id && Math.abs(drx - weldCoords[i].x) < snapDist && Math.abs(dry - weldCoords[i].y) < snapDist) {
+        //             dxf = weldCoords[i].x;
+        //             dyf = weldCoords[i].y;
+        //         }
+        //     }
+        //     // Snap to loads
+        //     for (i = 0; i < loadProps.length; i++) {
+        //         if (Math.abs(drx - loadProps[i].x) < snapDist && Math.abs(dry - loadProps[i].y) < snapDist) {
+        //             dxf = loadProps[i].x;
+        //             dyf = loadProps[i].y;
+        //         }
+        //     }
+        // }
+        
     } else { // When dragging loads
         // Snap to weld nodes
         for (i = 0; i < nodes.length; i++) {

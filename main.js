@@ -1,9 +1,7 @@
 // Do Next:
     // Snap Upgrades
-        // Snap when dragging weld (mid node)?
-        // Snap to 45deg?
-        // Snap/lock weld angle
-        // Snap to weld line (slide along weld)
+        // Snap/lock weld angle? Yeah
+        // Snap to weld line (slide along weld)? Kinda nice?
     // Make show/hide stresses an expanding menu?
     // Fit View Button
     // Drag-able weld inspection node
