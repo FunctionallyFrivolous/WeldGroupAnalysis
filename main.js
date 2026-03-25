@@ -4,22 +4,25 @@
         // Snap to weld line (slide along weld)? Kinda nice?
     // Make show/hide stresses an expanding menu?
     // Fit View Button
-    // Drag-able weld inspection node
-        // Gives stress value(s) at current location
-        // Colored relative to min/max stress scale
-        // Only when geometry is locked?
-    // Add bending?!?
-        // There's lots here, so this should be held until all pre-bending functionality is squared away
+    // Save & Share?
+        // Generate url with current state parameters
+        // Upon opening page, always attempt to load from url parameters
+    // Undo/Redo?
+        // Update save/share url with every action
+        // Remember one (or X) previous url
+        // Button with action to apply/navigate to previous url
     // Add applied moments?
         // Doesnt seem super essential (can achieve via forces)
         // Probably not too hard to implement though?
             // Moment applied directly to centroid (unlikely) adds to torsional
             // Moment applied elsewhere resolves to simple force at centroid (?) so direct shear only?
+    // Add bending?!?
+        // There's lots here...
     //Stress color gradient (fringe plot)?
         // In theory should only need 3 points/values for this?
             // Max val will always be one of the ends of the weld
             // Min val will always be the point closest to the centroid
-    // Undo/Redo?
+
 
 // Initialize high level SVG stuff
 
@@ -149,6 +152,26 @@ radialGradient.append("stop")
     .attr("stop-color", "indigo")
     .attr("stop-opacity", 0);
 
+const defsCirc = svg.append("defs")
+const circGradient = defsCirc.append("radialGradient")
+    .attr("id", "circGradient")
+    .attr("cx", "50%")
+    .attr("cy", "50%")
+    .attr("r", "50%")
+    .attr("spreadMethod", "pad")
+circGradient.append("stop")
+    .attr("offset", "0%")
+    .attr("stop-color", "indigo")
+    .attr("stop-opacity", 0);
+circGradient.append("stop")
+    .attr("offset", "50%")
+    .attr("stop-color", "indigo")
+    .attr("stop-opacity", 0.75);
+circGradient.append("stop")
+    .attr("offset", "100%")
+    .attr("stop-color", "indigo")
+    .attr("stop-opacity", 0);
+
 // SVG Groups for the elements that require add/removal of data
     // I.e. elements associated with welds and loads, as these can be added/removed by user
     // Specific element definitions can be found in the "updateDrags()" & "updateData()" functions
@@ -236,6 +259,86 @@ const centroidCoords = centroidCoordsGroup.selectAll("text")
     .attr("x", d => d.x)
     .attr("y", d => d.y)
     .style("display", "block");
+
+function inspectDrag(x, y) {
+    const wSelect = weldCoords.find(j => j.id === selectedWeld)
+    const xStart = wSelect.points[0].x;
+    const yStart = wSelect.points[0].y;
+    const xEnd = wSelect.points[1].x;
+    const yEnd = wSelect.points[1].y;
+
+    const xDelta = xEnd - xStart
+    const yDelta = yEnd - yStart
+
+    const fullDist = Math.sqrt((xEnd-xStart)*(xEnd-xStart)+(yEnd-yStart)*(yEnd-yStart))
+
+    let inspDist = Math.sqrt((x-xStart)*(x-xStart)+(y-yStart)*(y-yStart))
+    inspDist = Math.min(fullDist, inspDist)
+
+    inspectDist = inspDist
+
+    const xNew = xDelta/fullDist * inspDist + xStart
+    const yNew = yDelta/fullDist * inspDist + yStart
+
+    calcShear(xNew, yNew)
+
+    inspectDot
+        .attr("cx", xNew)
+        .attr("cy", yNew)
+        // .attr("stroke-opacity", Math.max(inspectStress/max_t, 0.5))
+
+    // return [xNew, yNew]
+    inspectX = xNew
+    inspectY = yNew
+}
+
+function inspectFollow(dist=inspectDist) {
+    const wSelect = weldCoords.find(j => j.id === selectedWeld)
+    const xStart = wSelect.points[0].x;
+    const yStart = wSelect.points[0].y;
+    const xEnd = wSelect.points[1].x;
+    const yEnd = wSelect.points[1].y;
+
+    const xDelta = xEnd - xStart
+    const yDelta = yEnd - yStart
+
+    const fullDist = Math.sqrt((xEnd-xStart)*(xEnd-xStart)+(yEnd-yStart)*(yEnd-yStart))
+
+    const inspDist = Math.min(fullDist, dist)
+
+    const xNew = xDelta/fullDist * inspDist + xStart
+    const yNew = yDelta/fullDist * inspDist + yStart
+
+    calcShear(xNew, yNew)
+
+    inspectDist = inspDist
+
+    inspectDot
+        .attr("cx", xNew)
+        .attr("cy", yNew)
+        // .attr("stroke-opacity", Math.max(inspectStress/max_t, 0.5))
+
+    inspectX = xNew
+    inspectY = yNew
+}
+
+const inspectDot = zoomGroup
+    .append("circle")
+    .attr("r", 18)
+    .attr("cy", 250)
+    .attr("cx", 150)
+    .attr("fill-opacity", 0)
+    // .attr("stroke", "black")
+    .attr("stroke-width", 20)
+    .style("stroke", "url(#circGradient)")
+    .call(d3.drag()
+        .on("drag", function(event, d) {
+            inspectDrag(event.x, event.y)
+            updateWeldProps();
+            // updateView()
+        }) 
+    )
+    .style("display", showInspect ? "display" : "none")
 
 
 // Zoom & Pan stuff
@@ -1185,28 +1288,6 @@ const unitsButton = overlayGroup
     // .append("title")
     // .text(`Toggle Units`)
 
-// const inspectIcon = overlayGroup.append("g")
-//     .append("text")
-//     .attr("font-size", "20px")
-//     .attr("text-anchor", "middle")
-//     .attr("alignment-baseline", "text-before-edge")
-//     .style("pointer-events", "none")
-//     .attr("x", 55)
-//     .attr("y", windowHeight-31)
-//     .attr("opacity", 0.75)
-//     .text("🔎")
-// const inspectButton = overlayGroup.append("g")
-//     .append("rect")
-//     .attr("x", 40)
-//     .attr("y", windowHeight-34)
-//     .attr("width", 29)
-//     .attr("height", 30)
-//     .attr("rx", 5)
-//     .attr("ry", 5)
-//     .attr("fill", "black")
-//     .attr("opacity", 0)
-//     .on("click", function() {inspect()});
-
 const weldZone = overlayGroup.append("g")
     .append("text")
     .attr("font-size", "9pt")
@@ -1353,9 +1434,29 @@ const removeLIcon = overlayGroup.append("g")
     .text("-")
     // .style("display", "none")
 
-    
+const inspBoxWidth = 100;
+const inspBoxHeight = 40
+const inspPropsBox = overlayGroup
+    .append("rect")
+    .attr("x", windowWidth/2-inspBoxWidth/2)
+    .attr("y", windowHeight-inspBoxHeight)
+    .attr("width", inspBoxWidth)
+    .attr("height", inspBoxHeight+10)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", "black")
+    .attr("opacity", 0.25)
+    .style("display", "none")
+    // .attr("stroke", "url(#circGradient)")
+    // .attr("stroke-width", 20)
 
-// setupScaleSliders();
-updateView();
-updateWeldProps();
-updateLoadProps();
+const inspPropsText = overlayGroup
+    .append("text")
+    .attr("font-family", "ariel")
+    .attr("font-size", "10pt")
+    .attr("fill", "indigo")
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", windowWidth/2)
+    .attr("y", windowHeight-inspBoxHeight+2.5)

@@ -247,22 +247,37 @@ const axesIcon = overlayGroup
     .style("pointer-events", "none")
     .style("display", "none")
 
+const inspectIcon = overlayGroup.append("g")
+    .append("text")
+    .attr("font-size", "20px")
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .attr("x", 36-settingsButtonProps.width/2-1)
+    .attr("y", settingsButtonProps.y - settingsButtonProps.yinc*3 - yShift -2)
+    .attr("opacity", 0.75)
+    .text("🔎")
+const inspectButton = overlayGroup.append("g")
+    .append("rect")
+    .attr("x", 36-settingsButtonProps.width)
+    .attr("y", settingsButtonProps.y - settingsButtonProps.yinc*4)
+    .attr("width", 29)
+    .attr("height", 30)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", "black")
+    .attr("fill-opacity", 0)
+    .attr("stroke-opacity", 0.25)
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5)
+    .on("click", function() {inspect()})
+inspectButton
+        .attr("fill-opacity", showInspect ? 0.125 : 0)
+        .attr("stroke-opacity", showInspect ? 0.5 : 0.5)
+        .append("title")
+        .text("Inspect Weld Stress")
 
-// const inspectDot = zoomGroup
-//     .append("circle")
-//     .attr("r", 8)
-//     .attr("cy", 250)
-//     .attr("cx", 150)
-//     .attr("fill", "white")
-//     .attr("stroke", "black")
-//     .call(d3.drag()
-//         .on("drag", function(event, d) {
-//             inspectDot.attr("cy", event.y)
-//             const inspX = coordToDist(event.x, "x")
-//             const inspY = coordToDist(event.y, "y")
-
-//             const inspStress = calcShear(inspX, inspY)
-//             document.getElementById("debugOutputs").innerHTML = `${inspStress.toFixed(1)}`
-//         }) 
-//     )
-    // .style("display", "none")
+// setupScaleSliders();
+updateView();
+updateWeldProps();
+updateLoadProps();

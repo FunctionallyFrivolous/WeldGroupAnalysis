@@ -25,23 +25,27 @@ function showHideTTor() {
 
 function showHideTMax() {
     showTMax = !showTMax
+
     if (!showTMax) {
         for (i = 0; i < nodes.length; i++) {
             nodes[i].display = "none"
         }
     }
+
+    updateWeldProps();
+
     tMaxProps
         .text(`τ`)
         // .style("display", showTMax ? "block" : "none")
         .append("tspan")
-        .text("max")
+        .text(showInspect ? "insp" : "max")
         .attr("font-family", "sans-serif") 
         .attr("font-size", "5pt")
         .attr("dy", "1.5em")
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "text-before-edge")
         .append("tspan")
-        .text(`: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+        .text(`: ${max_t.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
         .attr("font-size", "8pt")
         .attr("dy", "-0.6em")
         .attr("text-anchor", "middle")
@@ -52,6 +56,7 @@ function showHideTMax() {
     tMaxButton
         .attr("fill-opacity", showTMax ? 0.125 : 0)
         .attr("stroke-opacity", showTMax ? 0 : 0.25)
+
     updateView();
 }
 
@@ -118,15 +123,41 @@ function lockUnlock() {
 
 }
 
-// function inspect() {
-//     inspection = !inspection;
-//     inspectIcon
-//         .text(inspection ? "🔍" : "🔎")
-//         .attr("opacity", inspection ? 1 : 0.75)
-//     inspectButton
-//         .attr("opacity", inspection ? 0.125 : 0)
-//     // showTMax = !showTMax;
-// }
+function inspect() {
+    showInspect = !showInspect
+    inspectIcon
+        .text(showInspect ? "🔍" : "🔎")
+        .attr("opacity", showInspect ? 1 : 0.75)
+    inspectButton
+        .attr("fill-opacity", showInspect ? 0.125 : 0)
+        .attr("stroke-opacity", showInspect ? 0.5 : 0.5)
+        .append("title")
+        .text("Inspect Weld Stress")
+    
+    inspPropsBox.style("display", showInspect ? "block" : "none")
+    inspPropsText
+        .text(`τ`)
+        .style("display", showInspect ? "block" : "none")
+        .append("tspan")
+        .text("insp")
+        .attr("font-family", "sans-serif") 
+        .attr("font-size", "5pt")
+        .attr("dy", "1.5em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
+        .append("tspan")
+        .text(`: ${inspectStress.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+        .attr("font-size", "8pt")
+        .attr("dy", "-0.6em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
+        .append("tspan")
+        .text(`(${coordToDist(inspectX,"x").toFixed(1)}, ${coordToDist(inspectY,"y").toFixed(1)})`)
+        .attr("x", 250)
+        .attr("dy", "2.5em")
+    inspectDot.style("display", showInspect ? "block" : "none")
+    // showTMax = !showTMax;
+}
 
 // function setupScaleSliders() {
     // const LoadScaleSlider = document.getElementById("loadScaleSlider");

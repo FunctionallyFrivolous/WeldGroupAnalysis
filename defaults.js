@@ -15,6 +15,7 @@ let showLoadEdit = false;
 let dragWeldProps = false;
 let showCentCoords = false;
 // let showAxes = false;
+let showInspect = false;
 
 let showSettings = false;
 
@@ -30,6 +31,8 @@ let unitConvert = 1; // conversion from current units to inches (1 if current un
 let forceConvert = 1;
 let geomLock = false;
 let inspection = false;
+
+let inspectStress = 0;
 
 let windowWidth = 500;
 let windowHeight = 500
@@ -73,6 +76,10 @@ let selectedLoad = "load1";
 let selectedWeld = "weld1";
 let selectedWProp = "weld1_start";
 let selectedLProp = "load1";
+
+let inspectX = 150;
+let inspectY = 250;
+let inspectDist = 390/2
 
 // A default set of nodes for 4 initial welds...
 const defaultCoords = [

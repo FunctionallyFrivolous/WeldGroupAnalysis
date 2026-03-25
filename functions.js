@@ -60,6 +60,8 @@ function updateSVGs(){
     // sliderDot
     //     .attr("cx", d => d.slidePos)
 
+    inspectFollow(inspectDist)
+
 }
 
 function updateView() {
@@ -166,8 +168,6 @@ function updateWeldLength(newLen) {
 
         const mSNode = nodes.find(n => n.id.includes(`${selectedWeld}_start`));
         const mENode = nodes.find(n => n.id.includes(`${selectedWeld}_end`));
-
-        document.getElementById("debugOutputs").innerHTML = `${oldPoints[0].x}`
 
         const movePoints = [mSNode,mENode];
 
@@ -397,7 +397,17 @@ function calcShear(x,y){
     mArm = coordToDist(mArm, "L");
 
     const torMag = rxM * mArm / J_tot;
-    const torTh = radToDeg(Math.atan((centroidTot[0].y-y)/(x-centroidTot[0].x))) + 90
+
+    let nQuad = 0;
+        if (x < centroidTot[0].x) {
+            if (y <= centroidTot[0].y) nQuad = 0
+            else nQuad = 0
+        }
+        else nQuad = 180
+
+    let torTh = radToDeg(Math.atan((centroidTot[0].y-y)/(x-centroidTot[0].x))) + 90 + nQuad
+    if (rxM > 0) torTh = torTh + 180
+        if (torTh < 0) torTh = torTh + 360
 
     const dirX = dirMag * Math.cos(degToRad(dirTh));
     const dirY = dirMag * Math.sin(degToRad(dirTh));
@@ -407,6 +417,8 @@ function calcShear(x,y){
     const TotX = dirX+torX;
     const TotY = dirY+torY;
     const TotMag = Math.sqrt(TotY*TotY+TotX*TotX);
+
+    inspectStress = TotMag
 
     return TotMag
 }
@@ -1088,7 +1100,17 @@ function updateData() {
         .attr("fill", "none")
     enter.merge(weldLines)
         .attr("stroke-width", d => d.thk*weldThkScale)
-        .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "));
+        .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
+        .on("click", function(event,d) {
+            selectedWeld = d.id.slice(0,5)
+            inspectFollow()
+            // inspectFollow(distToCoord(weldCoords.find(j => j.id === selectedWeld).len/2,"L"))
+            // inspectDrag(event.x, event.y)
+            updateStuff();
+            updateSVGs();
+            updateData();
+            updateWeldProps();
+        })
     weldLines.exit().remove();
 
     // Max Stress Indicators
@@ -1097,10 +1119,10 @@ function updateData() {
     enter = tmax_circle.enter()
         .append("circle")
         .attr("r", 15)
-        .attr("fill", "orange")
+        // .attr("fill", "orange")
         // .attr("fill-opacity", 0.5)
         // .attr("stroke", "orange")
-        .attr("stroke-width", 2)
+        .attr("stroke-width", 10)
         .attr("stroke-opacity", 0.75)
         .style("fill", "url(#circleGradient)")
     enter.merge(tmax_circle)
@@ -1355,6 +1377,8 @@ function updateLabels() {
 function updateWeldProps() {
     const wSelect = weldCoords.find(j => j.id === selectedWeld)
 
+    // inspectFollow(inspectDist)
+
     dragWCoords
         .text(
             `(${coordToDist(wSelect.points[0].x,"x").toFixed(unitPrecision)}, 
@@ -1385,11 +1409,34 @@ function updateWeldProps() {
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "text-before-edge")
         .append("tspan")
-        .text(`: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+        .text(`: ${max_t.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
         .attr("font-size", "8pt")
         .attr("dy", "-0.6em")
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "text-before-edge")
+    inspPropsText
+        .text(`τ`)
+        .style("display", showInspect ? "block" : "none")
+        .append("tspan")
+        .text("insp")
+        .attr("font-family", "sans-serif") 
+        .attr("font-size", "5pt")
+        .attr("dy", "1.5em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
+        .append("tspan")
+        .text(`: ${inspectStress.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+        .attr("font-size", "8pt")
+        .attr("dy", "-0.6em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
+        .append("tspan")
+        .text(`(${coordToDist(inspectX,"x").toFixed(1)}, ${coordToDist(inspectY,"y").toFixed(1)})`)
+        .attr("x", 250)
+        .attr("dy", "2.5em")
+    inspectButton
+        .append("title")
+        .text("Inspect Weld Stress")
 }
 
 function updateLoadProps() {
@@ -1423,11 +1470,34 @@ function updateLoadProps() {
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "text-before-edge")
         .append("tspan")
-        .text(`: ${(max_t).toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+        .text(`: ${max_t.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
         .attr("font-size", "8pt")
         .attr("dy", "-0.6em")
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "text-before-edge")
+    inspPropsText
+        .text(`τ`)
+        .style("display", showInspect ? "block" : "none")
+        .append("tspan")
+        .text("insp")
+        .attr("font-family", "sans-serif") 
+        .attr("font-size", "5pt")
+        .attr("dy", "1.5em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
+        .append("tspan")
+        .text(`: ${inspectStress.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+        .attr("font-size", "8pt")
+        .attr("dy", "-0.6em")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "text-before-edge")
+        .append("tspan")
+        .text(`(${coordToDist(inspectX,"x").toFixed(1)}, ${coordToDist(inspectY,"y").toFixed(1)})`)
+        .attr("x", 250)
+        .attr("dy", "2.5em")
+    inspectButton
+        .append("title")
+        .text("Inspect Weld Stress")
 
 }
 
@@ -1672,24 +1742,24 @@ function updateMinMaxView() {
     }
 }
 
-function ftiView() {
+// function ftiView() {
 
-    updateMinMaxView();
+//     updateMinMaxView();
 
-    // xMax = 10
-    // xMin = 10
+//     // xMax = 10
+//     // xMin = 10
 
-    const centerX = (xMax + xMin)/2;
-    const centerY = (yMax + yMin)/2;
+//     const centerX = (xMax + xMin)/2;
+//     const centerY = (yMax + yMin)/2;
 
-    const dur = 500;
+//     const dur = 500;
 
-    const centerScale = Math.min(windowWidth/(xMax-xMin),windowHeight/(yMax-yMin))*0.56
+//     const centerScale = Math.min(windowWidth/(xMax-xMin),windowHeight/(yMax-yMin))*0.56
 
-    svg.transition().duration(dur).call(zoom.transform, d3.zoomIdentity
-        // .translate(0, 0)
-        .translate(windowWidth/2-centerX, windowHeight/2-centerY)
-        // .scale(0.5)
-        .scale(centerScale)
-    );
-}
+//     svg.transition().duration(dur).call(zoom.transform, d3.zoomIdentity
+//         // .translate(0, 0)
+//         .translate(windowWidth/2-centerX, windowHeight/2-centerY)
+//         // .scale(0.5)
+//         .scale(centerScale)
+//     );
+// }
