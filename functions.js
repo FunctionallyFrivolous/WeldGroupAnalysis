@@ -1546,15 +1546,22 @@ function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
         dyf = opy;
     } 
     // Hold original angle
-    else if (Math.abs(xNew - drx) < snapDist && Math.abs(yNew - dry) < snapDist) {
-        dxf = xNew
-        dyf = yNew
-    }
+    // else if (Math.abs(xNew - drx) < snapDist && Math.abs(yNew - dry) < snapDist) {
+    //     dxf = xNew
+    //     dyf = yNew
+    // }
 
     if (id.includes("weld")) { // When dragging welds...
         // Snap to other weld nodes
-        let nid = ""
-        if (id.length !== 5) nid = id.slice(0,5);
+        // let nid = ""
+        nid = id.slice(0,5);
+        if (id.length !== 5) {
+            // Hold original angle
+            if (Math.abs(xNew - drx) < snapDist && Math.abs(yNew - dry) < snapDist) {
+                dxf = xNew
+                dyf = yNew
+            }
+        }
         for (i = 0; i < nodes.length; i++) {
             if (nid !== nodes[i].id.slice(0,5) && Math.abs(drx - nodes[i].x) < snapDist && Math.abs(dry - nodes[i].y) < snapDist) {
                 dxf = nodes[i].x;
