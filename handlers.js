@@ -1,9 +1,45 @@
 
-function showHideStress() {
-    showStress = !showStress
-    stressButton
-        .attr("fill-opacity", showStress ? 0.125 : 0)
-        .attr("stroke-opacity", showStress ? 0 : 0.25)
+function showHideStress(id) {
+    // showStress = !showStress
+    // stressButton
+    //     .attr("fill-opacity", showStress ? 0.125 : 0)
+    //     .attr("stroke-opacity", showStress ? 0 : 0.25)
+    if (id === "max") {
+        showHideTMax()
+        stressButtons
+            .filter(d => d.id === id)
+            .attr("fill-opacity", d => showTMax ? 0.125 : 1)
+            .attr("stroke-opacity", d => showTMax ? 0.75 : 0.5)
+    }
+    else if(id === "inspect") {
+        inspect()
+        stressButtons
+            .filter(d => d.id === id)
+            .attr("fill-opacity", d => showInspect ? 0.125 : 1)
+            .attr("stroke-opacity", d => showInspect ? 0.75 : 0.5)
+    }
+    else if(id === "direct") {
+        showTDir = !showTDir
+        stressButtons
+            .filter(d => d.id === id)
+            .attr("fill-opacity", d => showTDir ? 0.125 : 1)
+            .attr("stroke-opacity", d => showTDir ? 0.75 : 0.5)
+    }
+    else if(id === "torsional") {
+        showTTor = !showTTor
+        stressButtons
+            .filter(d => d.id === id)
+            .attr("fill-opacity", d => showTTor ? 0.125 : 1)
+            .attr("stroke-opacity", d => showTTor ? 0.75 : 0.5)
+    }
+    else if(id === "total") {
+        showStress = !showStress
+        stressButtons
+            .filter(d => d.id === id)
+            .attr("fill-opacity", d => showStress ? 0.125 : 1)
+            .attr("stroke-opacity", d => showStress ? 0.75 : 0.5)
+    }
+
     updateView();
 }
 

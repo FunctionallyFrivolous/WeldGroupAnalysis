@@ -18,6 +18,7 @@ let showCentCoords = false;
 let showInspect = false;
 
 let showSettings = false;
+let showStressMenu = false;
 
 let units = "inches";
 let unitSymbol = `"`;
