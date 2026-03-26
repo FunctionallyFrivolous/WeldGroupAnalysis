@@ -52,13 +52,6 @@ function updateSVGs(){
     yAxisLab
         .attr("x", origin[0])
         .attr("y", origin[1]-axisLength)
-    
-    // unitsButton
-    //     .append("title")
-    //     .text(`units (${units})`)
-
-    // sliderDot
-    //     .attr("cx", d => d.slidePos)
 
     inspectFollow(inspectDist)
 
@@ -69,16 +62,6 @@ function updateView() {
     updateData();
     updateDrags();
     updateSVGs();
-
-    let dbugTxt = ""
-        // + "fShear: " + `${totalShear[weldCount*2-1].points[1].x.toFixed(2)}` + ", " + `${totalShear[weldCount*2-1].points[1].y.toFixed(2)}` + "\n<br>"
-        // + "tShear: " + `${torsionShear[weldCount*2-1].points[1].x.toFixed(2)}` + ", " + `${torsionShear[weldCount*2-1].points[1].y.toFixed(2)}` + "\n<br>"
-    // //     + "Wx0: " + `${weldCoords[0].points[0].x*distConvert*unitConvert}` + "\n<br>"
-    // //     + "rxV: " + `${rxV.mag.toFixed(1)}` + "\n<br>"
-        // + "rxM: " + `${rxM.toFixed(1)}` + "\n<br>"
-        // + "thing: " + `${editWValueY}` + "\n<br>"
-
-    // document.getElementById("debugOutputs").innerHTML = dbugTxt;
 
     // document.getElementById("debugOutputs").innerHTML = `${getMinMaxView()}`
 }
@@ -462,8 +445,6 @@ function updateTorsionShear() {
 function updateTotalShear() {
     max_t = 0;
     for (i = 0; i < nodes.length; i++) {
-        // const cent_x = centroidTot.x;
-        // const cent_y = centroidTot.y;
     
         totalShear[i].id = nodes[i].id;
 
@@ -696,7 +677,6 @@ function removeWeld(id) {
     }
 
     weldCount = weldCoords.length;
-    // weldDrag.attr("opacity", 0)
 
     selectedWeld = `weld${weldCount}`
 
@@ -705,11 +685,6 @@ function removeWeld(id) {
     updateLoadProps();
 
     selectWEditProp();
-    
-    // dragWCoords
-    //     .style("display", "none");
-    // dragWProps
-    //     .style("display", "none");
 }
 
 function removeLoad(id) { // test function to remove one weld
@@ -757,11 +732,6 @@ function removeLoad(id) { // test function to remove one weld
     updateLoadProps();
 
     selectLEditProp();
-
-    // dragLCoords
-    //     .style("display", "none");
-    // dragLProps
-    //     .style("display", "none");
 }
 
 function updateDrags(){
@@ -910,12 +880,6 @@ function updateDrags(){
                 updateSVGs();
             })
         )
-        // .on("mouseover", function(event, d) {
-        //     weldDrag.attr("opacity", n => n.id = d.id ? 0.1 : 0)
-        // })
-        // .on("mouseout", function(event, d) {
-        //     weldDrag.attr("opacity", 0)
-        // })
     weldDrag.exit()
         .attr("opacity",0)
         .remove();
@@ -959,7 +923,6 @@ function updateDrags(){
                 updateAngles();
             })
             .on("end", (event, d) => {
-                // loadDrag.attr("opacity", 0);
                 loadDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
                 loadProps.find(j => j.id === d.id).show = false;
                 selectLEditProp()
@@ -1051,7 +1014,6 @@ function updateDrags(){
                 d.x = event.x;
                 d.y = event.y;
                 const dragLoad = loadProps.find(j => j.id === d.id);
-                // Snaps
                 const x_opp = dragLoad.x;
                 const y_opp = dragLoad.y;
                 // Snap
@@ -1106,8 +1068,6 @@ function updateData() {
         .on("click", function(event,d) {
             selectedWeld = d.id.slice(0,5)
             inspectFollow()
-            // inspectFollow(distToCoord(weldCoords.find(j => j.id === selectedWeld).len/2,"L"))
-            // inspectDrag(event.x, event.y)
             updateStuff();
             updateSVGs();
             updateData();
@@ -1379,8 +1339,6 @@ function updateLabels() {
 function updateWeldProps() {
     const wSelect = weldCoords.find(j => j.id === selectedWeld)
 
-    // inspectFollow(inspectDist)
-
     dragWCoords
         .text(
             `(${coordToDist(wSelect.points[0].x,"x").toFixed(unitPrecision)}, 
@@ -1390,7 +1348,7 @@ function updateWeldProps() {
         )
     dragWProps
         .text(`Weld ${wSelect.id.slice(4,5)}: ${wSelect.len.toFixed(unitPrecision)}${unitSymbol} L x 
-            ${(wSelect.thk*unitConvert).toFixed(3)}${unitSymbol} thk`)
+            ${(wSelect.thk*unitConvert).toFixed(3)}${unitSymbol}`)
 
     centroidProps
         .text(`Centroid: (${coordToDist(centroidTot[0].x, "x").toFixed(unitPrecision)}, 
@@ -1439,6 +1397,18 @@ function updateWeldProps() {
     stressButtons
         .append("title")
         .text(d => d.lab)
+    lockButton
+        .append("title")
+        .text("Lock Geometry")
+    settingsButton
+        .append("title")
+        .text("User Preferences")
+    unitsButton
+        .append("title")
+        .text("Units")
+    fitViewButton
+        .append("title")
+        .text("Fit View")
 }
 
 function updateLoadProps() {
@@ -1506,7 +1476,7 @@ function updateLoadProps() {
 
 }
 
-function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
+function snapDrag(id, drx, dry, opx=0, opy=0) {
     let dxf = drx;
     let dyf = dry;
 
@@ -1545,11 +1515,6 @@ function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
     else if (Math.abs(dry - opy) < snapDist) {
         dyf = opy;
     } 
-    // Hold original angle
-    // else if (Math.abs(xNew - drx) < snapDist && Math.abs(yNew - dry) < snapDist) {
-    //     dxf = xNew
-    //     dyf = yNew
-    // }
 
     if (id.includes("weld")) { // When dragging welds...
         // Snap to other weld nodes
@@ -1575,22 +1540,6 @@ function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
                 dyf = loadProps[i].y;
             }
         }
-        
-        // else {
-        //     for (i = 0; i < weldCoords.length; i++) {
-        //         if (id !== weldCoords[i].id && Math.abs(drx - weldCoords[i].x) < snapDist && Math.abs(dry - weldCoords[i].y) < snapDist) {
-        //             dxf = weldCoords[i].x;
-        //             dyf = weldCoords[i].y;
-        //         }
-        //     }
-        //     // Snap to loads
-        //     for (i = 0; i < loadProps.length; i++) {
-        //         if (Math.abs(drx - loadProps[i].x) < snapDist && Math.abs(dry - loadProps[i].y) < snapDist) {
-        //             dxf = loadProps[i].x;
-        //             dyf = loadProps[i].y;
-        //         }
-        //     }
-        // }
         
     } else { // When dragging loads
         // Snap to weld nodes
@@ -1659,7 +1608,6 @@ function selectWEditProp() {
         inputWFieldL.text(editWValueL.toFixed(2));
         inputWFieldT.text(editWValueT);
     }
-    // updateView();
 }
 
 function selectLEditProp() {
@@ -1689,7 +1637,6 @@ function selectLEditProp() {
         inputLFieldF.text(editLValueF.toFixed(2));
         inputLFieldA.text(editLValueA.toFixed(2));
     }
-    // updateView();
 }
 
 function showHideSettings() {
@@ -1758,24 +1705,22 @@ function updateMinMaxView() {
     }
 }
 
-// function ftiView() {
+function fitView() {
 
-//     updateMinMaxView();
+    updateMinMaxView();
 
-//     // xMax = 10
-//     // xMin = 10
+    const centerX = (xMax + xMin)/2;
+    const centerY = (yMax + yMin)/2;
 
-//     const centerX = (xMax + xMin)/2;
-//     const centerY = (yMax + yMin)/2;
+    // document.getElementById("debugOutputs").innerHTML = ""
+    //     + `${xMin.toFixed(1)}, ${xMax.toFixed(1)}, ${centerX.toFixed(1)}` + `\n<br>`
+    //     + `${(centerX-windowWidth/2).toFixed(1)}`
 
-//     const dur = 500;
+    const centerScale = Math.min(windowWidth/(xMax-xMin)*0.75,windowHeight/(yMax-yMin)*0.56)
 
-//     const centerScale = Math.min(windowWidth/(xMax-xMin),windowHeight/(yMax-yMin))*0.56
-
-//     svg.transition().duration(dur).call(zoom.transform, d3.zoomIdentity
-//         // .translate(0, 0)
-//         .translate(windowWidth/2-centerX, windowHeight/2-centerY)
-//         // .scale(0.5)
-//         .scale(centerScale)
-//     );
-// }
+    svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity
+        .translate(windowWidth/2, windowHeight/2)
+        .scale(centerScale)
+        .translate(-centerX, -centerY+10)
+    );
+}

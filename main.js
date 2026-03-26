@@ -1,5 +1,4 @@
 // Do Next:
-    // Fit View Button
     // Add weld properties settings/menu
         // Select weld material or input strength allowable?
         // Select universal weld size or toggle ability to set welds individually
@@ -211,7 +210,6 @@ const cMark = centroidGroup.selectAll("circle")
     .append("circle")
     .attr("r", 4)
     .attr("fill", "white")
-    // .attr("opacity", 0.5)
     .attr("stroke", "black")
     .attr("stroke-width", 2)
     .attr("stroke-opacity", 0.68)
@@ -230,7 +228,6 @@ const rxVector = rxVGroup.selectAll("polyline")
     .attr("stroke-width", 3)
     .attr("stroke-dasharray", "2,5")
     .attr("opacity", 0.5)
-    // .attr("fill", "none")
     .attr("marker-end", "url(#R_arrowhead")
     .style("stroke-linecap", "round")
     .style("pointer-events", "none")
@@ -271,7 +268,7 @@ function inspectDrag(x, y) {
     const xDelta = xEnd - xStart
     const yDelta = yEnd - yStart
 
-    const fullDist = distToCoord(wSelect.len, "L")//Math.sqrt((xEnd-xStart)*(xEnd-xStart)+(yEnd-yStart)*(yEnd-yStart))
+    const fullDist = distToCoord(wSelect.len, "L")
 
     const startDist = Math.sqrt((x-xStart)*(x-xStart)+(y-yStart)*(y-yStart));
     const endDist = Math.sqrt((x-xEnd)*(x-xEnd)+(y-yEnd)*(y-yEnd));
@@ -279,22 +276,18 @@ function inspectDrag(x, y) {
     let inspDist = Math.max(startDist, endDist)
     inspDist = Math.min(fullDist, inspDist)
 
-    inspectDist = inspDist
+    inspectDist = Math.min(startDist, fullDist) //inspDist
 
     let xNew = 0;
     let yNew = 0;
 
     if (startDist > endDist) {
-        // xInit = xEnd; 
-        // yInit = yEnd;
         xNew = xDelta/fullDist * inspDist + xStart
         yNew = yDelta/fullDist * inspDist + yStart
     } else {
         xNew = -xDelta/fullDist * inspDist + xEnd
         yNew = -yDelta/fullDist * inspDist + yEnd
     }
-
-    
 
     calcShear(xNew, yNew)
 
@@ -322,18 +315,16 @@ function inspectFollow(dist=inspectDist) {
     const fullDist = Math.sqrt((xEnd-xStart)*(xEnd-xStart)+(yEnd-yStart)*(yEnd-yStart))
 
     const inspDist = Math.min(fullDist, dist)
+    inspectDist = inspDist
 
     const xNew = xDelta/fullDist * inspDist + xStart
     const yNew = yDelta/fullDist * inspDist + yStart
 
     calcShear(xNew, yNew)
 
-    inspectDist = inspDist
-
     inspectDot
         .attr("cx", xNew)
         .attr("cy", yNew)
-        // .attr("stroke-opacity", Math.max(inspectStress/max_t, 0.5))
 
     inspectX = xNew
     inspectY = yNew
@@ -1140,6 +1131,11 @@ const RxShowHide = overlayGroup
 // On-Display Buttons
 const yShift = 30;
 
+const firstButtonY = windowHeight-64;
+const buttonHeight = 30;
+const buttonWidth = 30;
+const buttonPitch = buttonHeight + 5
+
 const lockIcon = overlayGroup
     .append("text")
     .attr("font-size", "20px")
@@ -1147,13 +1143,13 @@ const lockIcon = overlayGroup
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
     .attr("x", 19)
-    .attr("y", windowHeight-31-yShift)
+    .attr("y", firstButtonY+3)
     .attr("opacity", 0.75)
     .text("🔓")
 const lockButton = overlayGroup
     .append("rect")
     .attr("x", 5)
-    .attr("y", windowHeight-34-yShift)
+    .attr("y", firstButtonY)
     .attr("width", 29)
     .attr("height", 30)
     .attr("rx", 5)
@@ -1174,19 +1170,22 @@ const unitsIcon = overlayGroup
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
     .attr("x", windowWidth-20)
-    .attr("y", windowHeight-26-yShift)
+    .attr("y", firstButtonY+8-buttonPitch)
     .attr("opacity", 0.75)
     .text("IN")
 const unitsButton = overlayGroup
     .append("rect")
     .attr("x", windowWidth-36)
-    .attr("y", windowHeight-34-yShift)
+    .attr("y", firstButtonY-buttonPitch)
     .attr("width", 32)
     .attr("height", 30)
     .attr("rx", 5)
     .attr("ry", 5)
     .attr("fill", "black")
-    .attr("opacity", 0.125)
+    .attr("fill-opacity", 0)
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5)
+    .attr("stroke-opacity", 0.25)
     .on("click", function() {unitSwap()})
     // .append("title")
     // .text(`Toggle Units`)
@@ -1363,3 +1362,67 @@ const inspPropsText = overlayGroup
     .style("pointer-events", "none")
     .attr("x", windowWidth/2)
     .attr("y", windowHeight-inspBoxHeight+2.5)
+   
+//     M ${0+x} ${-5+y}
+//     A 5 5 ${0+x} 1 1 ${0+x} ${5+y}
+//     A 5 5 ${0+x} 1 1 ${0+x} ${-5+y}
+
+function drawFitIcon(x, y) {
+    const boxSize = 14;
+    const snapPath = `
+
+    M ${x-boxSize/2} ${y-boxSize/4}
+    L  ${x-boxSize/2} ${y-boxSize/2}
+    L  ${x-boxSize/4} ${y-boxSize/2}
+
+    M ${x+boxSize/2} ${y-boxSize/4}
+    L  ${x+boxSize/2} ${y-boxSize/2}
+    L  ${x+boxSize/4} ${y-boxSize/2}
+
+    M ${x-boxSize/2} ${y+boxSize/4}
+    L  ${x-boxSize/2} ${y+boxSize/2}
+    L  ${x-boxSize/4} ${y+boxSize/2}
+    
+    M ${x+boxSize/2} ${y+boxSize/4}
+    L  ${x+boxSize/2} ${y+boxSize/2}
+    L  ${x+boxSize/4} ${y+boxSize/2}
+
+    `
+    return snapPath
+}
+
+const fitViewIcon = overlayGroup
+    .append("path")
+    .attr("stroke", "black")
+    .attr("stroke-width", 1)
+    .attr("fill", "none")
+    .attr("d", drawFitIcon(windowWidth-16-4, 
+        windowHeight-buttonPitch-14
+    ))
+    .style("pointer-events", "none")
+    // .style("display", "none")
+
+// const fitViewIcon = overlayGroup
+//     .append("text")
+//     .attr("font-size", "9pt")
+//     .attr("text-anchor", "middle")
+//     .attr("alignment-baseline", "text-before-edge")
+//     .style("pointer-events", "none")
+//     .attr("x", windowWidth-20)
+//     .attr("y", firstButtonY+8)
+//     .attr("opacity", 0.75)
+//     .text("Fit")
+const fitViewButton = overlayGroup
+    .append("rect")
+    .attr("x", windowWidth-36)
+    .attr("y", firstButtonY)
+    .attr("width", 32)
+    .attr("height", 30)
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("fill", "black")
+    .attr("fill-opacity", 0)
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5)
+    .attr("stroke-opacity", 0.25)
+    .on("click", function() {fitView()})

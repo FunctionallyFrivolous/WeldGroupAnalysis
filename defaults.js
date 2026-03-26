@@ -1,7 +1,7 @@
 let currentZoomTransform = d3.zoomIdentity;
 let showRx = true;
 let showStress = false;
-let showTComps = false;
+// let showTComps = false;
 let showTDir = false;
 let showTTor = false;
 let showTMax = false;

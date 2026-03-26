@@ -135,8 +135,8 @@ function unitSwap() {
 
     unitsIcon
         .text(units === "metric" ? "MM" : "IN")
-    // unitsButton
-    //     .attr("opacity", units === "metric" ? 0.25 : 0)
+    unitsButton
+        .attr("fill-opacity", units === "metric" ? 0.125 : 0)
     showHideWProps.attr("width", units === "metric" ? 180 : 160)
 
     // ftiView();
