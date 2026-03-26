@@ -1,4 +1,7 @@
 // Do Next:
+    // Improve inspection dragging
+        // Stop when dragging past start node (current distance based method is awkward here)
+        // Consider dist from mid, or min of dist from start vs dist from end
     // Snap Upgrades
         // Snap/lock weld angle? Yeah
         // Snap to weld line (slide along weld)? Kinda nice?
@@ -272,19 +275,38 @@ function inspectDrag(x, y) {
 
     const fullDist = Math.sqrt((xEnd-xStart)*(xEnd-xStart)+(yEnd-yStart)*(yEnd-yStart))
 
-    let inspDist = Math.sqrt((x-xStart)*(x-xStart)+(y-yStart)*(y-yStart))
+    const startDist = Math.sqrt((x-xStart)*(x-xStart)+(y-yStart)*(y-yStart));
+    const endDist = Math.sqrt((x-xEnd)*(x-xEnd)+(y-yEnd)*(y-yEnd));
+
+    let xInit = xStart;
+    let yInit = yStart;
+
+    let inspDist = Math.max(startDist, endDist)
     inspDist = Math.min(fullDist, inspDist)
 
     inspectDist = inspDist
 
-    const xNew = xDelta/fullDist * inspDist + xStart
-    const yNew = yDelta/fullDist * inspDist + yStart
+    let xNew = 0;
+    let yNew = 0;
+
+    if (startDist > endDist) {
+        // xInit = xEnd; 
+        // yInit = yEnd;
+        xNew = xDelta/fullDist * inspDist + xStart
+        yNew = yDelta/fullDist * inspDist + yStart
+    } else {
+        xNew = -xDelta/fullDist * inspDist + xEnd
+        yNew = -yDelta/fullDist * inspDist + yEnd
+    }
+
+    
 
     calcShear(xNew, yNew)
 
     inspectDot
         .attr("cx", xNew)
         .attr("cy", yNew)
+        // .attr("r", inspectStress/max_t*8+12)
         // .attr("stroke-opacity", Math.max(inspectStress/max_t, 0.5))
 
     // return [xNew, yNew]
@@ -1445,7 +1467,7 @@ const inspPropsBox = overlayGroup
     .attr("rx", 5)
     .attr("ry", 5)
     .attr("fill", "black")
-    .attr("opacity", 0.25)
+    .attr("opacity", 0.125)
     .style("display", "none")
     // .attr("stroke", "url(#circGradient)")
     // .attr("stroke-width", 20)
