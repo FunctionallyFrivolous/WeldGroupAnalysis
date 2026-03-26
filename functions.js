@@ -792,8 +792,8 @@ function updateDrags(){
         .attr("cy", d => d.y)
         .call(d3.drag()
             .on("start", (event, d) => {
-                // xtemp = event.x;
-                // ytemp = event.y;
+                xtemp = d.x;
+                ytemp = d.y;
                 selectedWeld = d.id.slice(0,5)
                 NodeDrag.attr("opacity",0.1);
                 const strIndex = d.id.indexOf("_");
@@ -846,6 +846,8 @@ function updateDrags(){
                 updateStuff();
                 updateData();
                 updateSVGs();
+                xtemp = d.x;
+                ytemp = d.y;
             })
         )
     NodeDrag.exit().remove();
@@ -1505,6 +1507,16 @@ function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
     let dxf = drx;
     let dyf = dry;
 
+    const xDelta = xtemp - opx
+    const yDelta = ytemp - opy
+    const fullDist = Math.sqrt((xDelta)*(xDelta)+(yDelta)*(yDelta))
+
+    const newDist = Math.sqrt((drx-opx)*(drx-opx)+(dry-opy)*(dry-opy))
+
+    const xNew = xDelta/fullDist * newDist + opx
+    const yNew = yDelta/fullDist * newDist + opy
+
+
     // // Snap to axes / origin
     // if (Math.abs(drx - origin[0]) < snapDist) {
     //     dxf = origin[0];
@@ -1522,7 +1534,6 @@ function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
             dyf = midy;
         }
     }
-    
     // Snap to Vertical
     if (Math.abs(drx - opx) < snapDist) {
         dxf = opx;
@@ -1531,16 +1542,11 @@ function snapDrag(id, drx, dry, opx=0, opy=0) { //, orx=0, ory=0) {
     else if (Math.abs(dry - opy) < snapDist) {
         dyf = opy;
     } 
-    // Hold original angle (?)
-    // else if (sdist < snapDist) {
-    //     const edist = Math.sqrt((dry-opy)*(dry-opy)+(drx-opx)*(drx-opx))
-    //     const odist = Math.sqrt((ory-opy)*(ory-opy)+(orx-opx)*(orx-opx))
-    //     const angx = edist/odist*(orx-opx)+opx
-    //     const angy = edist/odist*(ory-opy)+opy
-    //     const sdist = Math.sqrt((dry-angy)*(dry-angy)+(drx-angx)*(drx-angx))
-    //     dxf = angx;
-    //     dfy = angy;
-    // }
+    // Hold original angle
+    else if (Math.abs(xNew - drx) < snapDist && Math.abs(yNew - dry) < snapDist) {
+        dxf = xNew
+        dyf = yNew
+    }
 
     if (id.includes("weld")) { // When dragging welds...
         // Snap to other weld nodes

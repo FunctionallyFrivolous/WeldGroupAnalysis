@@ -1,12 +1,11 @@
 // Do Next:
-    // Improve inspection dragging
-        // Stop when dragging past start node (current distance based method is awkward here)
-        // Consider dist from mid, or min of dist from start vs dist from end
-    // Snap Upgrades
-        // Snap/lock weld angle? Yeah
-        // Snap to weld line (slide along weld)? Kinda nice?
-    // Make show/hide stresses an expanding menu?
+    // Make expanding menu for stresses buttons
     // Fit View Button
+    // Add weld properties settings/menu
+        // Select weld material or input strength allowable?
+        // Select universal weld size or toggle ability to set welds individually
+        // Select a min safety factor
+        // Provide a min weld size based on above
     // Save & Share?
         // Generate url with current state parameters
         // Upon opening page, always attempt to load from url parameters
@@ -273,14 +272,11 @@ function inspectDrag(x, y) {
     const xDelta = xEnd - xStart
     const yDelta = yEnd - yStart
 
-    const fullDist = Math.sqrt((xEnd-xStart)*(xEnd-xStart)+(yEnd-yStart)*(yEnd-yStart))
+    const fullDist = distToCoord(wSelect.len, "L")//Math.sqrt((xEnd-xStart)*(xEnd-xStart)+(yEnd-yStart)*(yEnd-yStart))
 
     const startDist = Math.sqrt((x-xStart)*(x-xStart)+(y-yStart)*(y-yStart));
     const endDist = Math.sqrt((x-xEnd)*(x-xEnd)+(y-yEnd)*(y-yEnd));
-
-    let xInit = xStart;
-    let yInit = yStart;
-
+    
     let inspDist = Math.max(startDist, endDist)
     inspDist = Math.min(fullDist, inspDist)
 
