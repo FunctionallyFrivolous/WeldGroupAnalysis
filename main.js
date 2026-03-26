@@ -1,5 +1,4 @@
 // Do Next:
-    // Make expanding menu for stresses buttons
     // Fit View Button
     // Add weld properties settings/menu
         // Select weld material or input strength allowable?

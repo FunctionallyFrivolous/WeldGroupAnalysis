@@ -1436,9 +1436,9 @@ function updateWeldProps() {
         .text(`(${coordToDist(inspectX,"x").toFixed(1)}, ${coordToDist(inspectY,"y").toFixed(1)})`)
         .attr("x", 250)
         .attr("dy", "2.5em")
-    inspectButton
+    stressButtons
         .append("title")
-        .text("Inspect Weld Stress")
+        .text(d => d.lab)
 }
 
 function updateLoadProps() {
@@ -1497,9 +1497,12 @@ function updateLoadProps() {
         .text(`(${coordToDist(inspectX,"x").toFixed(1)}, ${coordToDist(inspectY,"y").toFixed(1)})`)
         .attr("x", 250)
         .attr("dy", "2.5em")
-    inspectButton
+    stressButtons
         .append("title")
-        .text("Inspect Weld Stress")
+        .text(d => d.lab)
+    stressMenuButton
+        .append("title")
+        .text("Shear Stresses")
 
 }
 

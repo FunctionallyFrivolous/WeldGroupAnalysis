@@ -43,21 +43,21 @@ function showHideStress(id) {
     updateView();
 }
 
-function showHideTDir() {
-    showTDir = !showTDir
-    tDirButton
-        .attr("fill-opacity", showTDir ? 0.125 : 0)
-        .attr("stroke-opacity", showTDir ? 0 : 0.25)
-    updateView();
-}
+// function showHideTDir() {
+//     showTDir = !showTDir
+//     tDirButton
+//         .attr("fill-opacity", showTDir ? 0.125 : 0)
+//         .attr("stroke-opacity", showTDir ? 0 : 0.25)
+//     updateView();
+// }
 
-function showHideTTor() {
-    showTTor = !showTTor
-    tTorButton
-        .attr("fill-opacity", showTTor ? 0.125 : 0)
-        .attr("stroke-opacity", showTTor ? 0 : 0.25)
-    updateView();
-}
+// function showHideTTor() {
+//     showTTor = !showTTor
+//     tTorButton
+//         .attr("fill-opacity", showTTor ? 0.125 : 0)
+//         .attr("stroke-opacity", showTTor ? 0 : 0.25)
+//     updateView();
+// }
 
 function showHideTMax() {
     showTMax = !showTMax
@@ -89,9 +89,10 @@ function showHideTMax() {
     RxShowHide
         // .attr("height", showTMax ? 80 : 65)
         .attr("height", 80)
-    tMaxButton
-        .attr("fill-opacity", showTMax ? 0.125 : 0)
-        .attr("stroke-opacity", showTMax ? 0 : 0.25)
+    // stressButtons
+    //     .filter(d => d.id === "max")
+    //     .attr("fill-opacity", showTMax ? 0.125 : 0)
+    //     .attr("stroke-opacity", showTMax ? 0 : 0.25)
 
     updateView();
 }
@@ -161,10 +162,12 @@ function lockUnlock() {
 
 function inspect() {
     showInspect = !showInspect
-    inspectIcon
+    stressIcons
+        .filter(d => d.id === "inspect")
         .text(showInspect ? "🔍" : "🔎")
         .attr("opacity", showInspect ? 1 : 0.75)
-    inspectButton
+    stressButtons
+        .filter(d => d.id === "inspect")
         .attr("fill-opacity", showInspect ? 0.125 : 0)
         .attr("stroke-opacity", showInspect ? 0.5 : 0.5)
         .append("title")
