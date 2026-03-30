@@ -148,6 +148,88 @@ const stressFringeIcon = overlayGroup
     .style("display", "none")
     .style("pointer-events", "none")
 
+const fringeKeyX = 15
+const fringeKeyY = 160
+const fringeKeyHeight = 150
+const fringeKeyWidth = 20
+const fringeKeyGrad = defs.append("linearGradient")
+    .attr("id", "fringeKeyGrad")
+    // .attr("gradientUnits", "userSpaceOnUse")
+    .attr("x1", "0%")
+    .attr("x2", "0%")
+    .attr("y1", "0%")
+    .attr("y2", "100%")
+fringeKeyGrad.append("stop")
+    .attr("offset", "0%")
+    .attr("stop-color", "red")
+fringeKeyGrad.append("stop")
+    .attr("offset", "25%")
+    .attr("stop-color", "yellow")
+fringeKeyGrad.append("stop")
+    .attr("offset", "50%")
+    .attr("stop-color", d3.color("green").brighter(2))
+fringeKeyGrad.append("stop")
+    .attr("offset", "75%")
+    .attr("stop-color", "cyan")
+fringeKeyGrad.append("stop")
+    .attr("offset", "100%")
+    .attr("stop-color", "darkblue")
+
+const fringeKeyLine = overlayGroup
+    .append("line")
+    .attr("x1", fringeKeyX+0.0001)
+    .attr("y1", fringeKeyY)
+    .attr("x2", fringeKeyX)
+    .attr("y2", fringeKeyY + fringeKeyHeight)
+    .attr("fill", "none")
+    .attr("stroke", "url(#fringeKeyGrad)")
+    .attr("stroke-width", `${fringeKeyWidth}px`)
+    .attr("stroke-opacity", 0.90)
+    .style("pointer-events", "none")
+    .style("display", "none")
+
+const fringeKeyMin = overlayGroup
+    .append("text")
+    .attr("x", fringeKeyX-10)
+    .attr("y", fringeKeyY-2.5)
+    .attr("font-size", "8pt")
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "text-after-edge")
+    .style("pointer-events", "none")
+    .text(`${min_t.toFixed(1)} ${stressSymbol}`)
+    .style("display", "none")
+const fringeKeyMax = overlayGroup
+    .append("text")
+    .attr("x", fringeKeyX-10)
+    .attr("y", fringeKeyY+fringeKeyHeight+2.5)
+    .attr("font-size", "8pt")
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "text-before-edge")
+    .style("pointer-events", "none")
+    .text(`${max_t.toFixed(1)} ${stressSymbol}`)
+    .style("display", "none")
+
+const fringeInspectLine = overlayGroup
+    .append("line")
+    .attr("x1", fringeKeyX-fringeKeyWidth/2)
+    .attr("x2", fringeKeyX + fringeKeyWidth/2)
+    .attr("y1", fringeKeyHeight*0.5 + fringeKeyY)
+    .attr("y2", fringeKeyHeight*0.5 + fringeKeyY)
+    .attr("stroke", "black")
+    .attr("stroke-width", 1)
+    .style("pointer-events", "none")
+    .style("display", "none")
+const fringeInspectLab = overlayGroup
+    .append("text")
+    .attr("x", fringeKeyX+fringeKeyWidth/2+2.5)
+    .attr("y", fringeKeyHeight*0.5 + fringeKeyY)
+    .attr("font-size", "8pt")
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "middle")
+    .style("pointer-events", "none")
+    .text(`${inspectStress.toFixed(1)} ${stressSymbol}`)
+    .style("display", "none")
+
 updateView();
 updateWeldProps();
 updateLoadProps();

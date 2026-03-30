@@ -1,11 +1,7 @@
 // Do Next:
     // Fringe plot
-        // Add scale legend
-        // Add user adjustable scale limits?
-            // Input field as min/max labels on legend
-            // Revert to min/max values by typing "min" or "max" into field
-        // Set color scale to highlight negative margin areas (per strength and FOS inputs)
-    // Resize inspection dot relative to weld size
+        // Turn scale min/max labels into user inputs
+        // Set color scale to highlight negative margin areas (per strength and FOS inputs)?
     // Add weld properties settings/menu
         // Select weld material or input strength allowable?
         // Select universal weld size or toggle ability to set welds individually
@@ -300,11 +296,22 @@ function inspectDrag(x, y) {
     inspectDot
         .attr("cx", xNew)
         .attr("cy", yNew)
+        .attr("r", (3/0.25) * wSelect.thk + 15)
         // .attr("r", inspectStress/max_t*8+12)
         // .attr("stroke-opacity", Math.max(inspectStress/max_t, 0.5))
     
     inspectX = xNew
     inspectY = yNew
+
+    const inspPct = 1-((inspectStress-min_t) / (max_t-min_t))
+
+    fringeInspectLine
+        .attr("y1", fringeKeyHeight*inspPct + fringeKeyY)
+        .attr("y2", fringeKeyHeight*inspPct + fringeKeyY)
+
+    fringeInspectLab
+        .attr("y", fringeKeyHeight*inspPct + fringeKeyY)
+        .text(`${inspectStress.toFixed(1)} ${stressSymbol}`)
 
     // return [xNew, yNew]
 }

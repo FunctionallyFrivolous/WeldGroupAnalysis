@@ -55,6 +55,7 @@ function updateSVGs(){
         .attr("y", origin[1]-axisLength)
 
     inspectFollow(inspectDist)
+    inspectDrag(inspectX, inspectY)
 
 }
 
@@ -1277,7 +1278,13 @@ function updateFringe() {
         if (dotStress < min_t) min_t = dotStress;
     }
 
-    document.getElementById("debugOutputs").innerHTML = `${min_t.toFixed(1)}`
+
+    fringeKeyMin
+        .text(`${min_t.toFixed(1)} ${stressSymbol}`)
+    fringeKeyMax
+        .text(`${max_t.toFixed(1)} ${stressSymbol}`)
+
+    // document.getElementById("debugOutputs").innerHTML = `${min_t.toFixed(1)}`
 
     // updateData()
 }

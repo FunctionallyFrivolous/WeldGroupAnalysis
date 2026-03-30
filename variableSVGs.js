@@ -527,10 +527,29 @@ function updateData() {
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
         .attr("r", d => d.dot)
+        // .attr("fill", d => d.stress > 30 ? "lightgray" : fringeScale(d.stress))
+        // .attr("fill", d => min_t === max_t ? "blue" : fringeScale(d.stress))
         .attr("fill", d => fringeScale(d.stress))
-        // .attr("fill", d => fringeScaleC(d.stress))
         .style("display", showTFringe ? "block" : "none")
     fringeDots.exit().remove()
+
+    const fringeKeyWidth = 15
+    const fringeKeyHeight = fringeKeyWidth*2
+    const fringeKeyGroup = overlayGroup.append("g")
+    const fringeKey = fringeKeyGroup.selectAll("rect")
+        .data(fringeColors)
+    enter = fringeKey.enter()
+        .append("rect")
+        .attr("x", 5)
+        .attr("width", fringeKeyWidth)
+        .attr("height", fringeKeyHeight)
+        .style("display", "none")
+    enter.merge(fringeKey)
+        .attr("y", function(d, i) {return i*fringeKeyHeight+175})
+        // .attr("y", 200)
+        .attr("fill", d => d)
+    fringeKey.exit().remove()
+
 
     updateLabels();
 }

@@ -17,6 +17,11 @@ function showHideStress(id) {
             .filter(d => d.id === id)
             .attr("fill-opacity", d => showInspect ? 0.125 : 1)
             .attr("stroke-opacity", d => showInspect ? 0.75 : 0.5)
+        inspectDrag(inspectX, inspectY)
+        fringeInspectLine
+            .style("display", showInspect && showTFringe ? "block" : "none")
+        fringeInspectLab
+            .style("display", showInspect && showTFringe ? "block" : "none")
     }
     else if(id === "direct") {
         showTDir = !showTDir
@@ -47,6 +52,16 @@ function showHideStress(id) {
             .attr("stroke-opacity", d => showTFringe ? 0.75 : 0.5)
         stressFringeIcon
             .attr("stroke-opacity", showTFringe ? 1 : 0.75)
+        fringeKeyLine
+            .style("display", showTFringe ? "block" : "none")
+        fringeKeyMin
+            .style("display", showTFringe ? "block" : "none")
+        fringeKeyMax
+            .style("display", showTFringe ? "block" : "none")
+        fringeInspectLine
+            .style("display", showInspect && showTFringe ? "block" : "none")
+        fringeInspectLab
+            .style("display", showInspect && showTFringe ? "block" : "none")
     }
 
     updateView();
