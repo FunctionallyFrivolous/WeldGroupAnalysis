@@ -45,6 +45,8 @@ function showHideStress(id) {
             .filter(d => d.id === id)
             .attr("fill-opacity", d => showTFringe ? 0.125 : 1)
             .attr("stroke-opacity", d => showTFringe ? 0.75 : 0.5)
+        stressFringeIcon
+            .attr("stroke-opacity", showTFringe ? 1 : 0.75)
     }
 
     updateView();

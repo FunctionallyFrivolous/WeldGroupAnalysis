@@ -500,9 +500,21 @@ function updateData() {
         .attr("cy", d => d.y);
     angleDrag.exit().remove();
 
+    const fringeColors = ["darkblue", "cyan", d3.color("green").brighter(2), "yellow", "red"]
+
+    const fringeStops = [min_t];
+    for (i=1; i<fringeColors.length-1; i++) {
+        fringeStops.push((max_t-min_t)/fringeColors.length*i+min_t)
+    }
+    fringeStops.push(max_t)
+
     const fringeScale = d3.scaleLinear()
-        .domain([min_t, max_t])
-        .range(["blue", "red"])
+        .domain(fringeStops)
+        .range(fringeColors)
+
+    // const fringeScaleC = d3.scaleSequential()
+    //     .domain([min_t, max_t])
+    //     .interpolator(d3.inerpolateBlues)
 
     const fringeDots = fringeGroup.selectAll("circle")
         .data(fringeData)
@@ -516,6 +528,7 @@ function updateData() {
         .attr("cy", d => d.y)
         .attr("r", d => d.dot)
         .attr("fill", d => fringeScale(d.stress))
+        // .attr("fill", d => fringeScaleC(d.stress))
         .style("display", showTFringe ? "block" : "none")
     fringeDots.exit().remove()
 

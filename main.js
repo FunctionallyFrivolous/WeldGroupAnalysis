@@ -4,6 +4,8 @@
         // Add user adjustable scale limits?
             // Input field as min/max labels on legend
             // Revert to min/max values by typing "min" or "max" into field
+        // Set color scale to highlight negative margin areas (per strength and FOS inputs)
+    // Resize inspection dot relative to weld size
     // Add weld properties settings/menu
         // Select weld material or input strength allowable?
         // Select universal weld size or toggle ability to set welds individually
@@ -78,19 +80,6 @@ const arrowPrp = zoomGroup.append("g")
     .attr("d", arrowPath)
     .attr("fill", "indigo")
 
-const coordAxes = zoomGroup.append("g")
-    .append("polyline")
-    .attr("points", `${origin[0]},${origin[1]-axisLength} ${origin} ${origin[0]+axisLength},${origin[1]}`)
-    .attr("fill", "none")
-    .attr("stroke", "black")
-    .attr("stroke-width", 1.75)
-    // .attr("opacity", 0.75)
-    .attr("marker-end", "url(#arrowhead")
-    .attr("marker-start", "url(#arrowhead")
-    .attr("stroke-dasharray", "2,3")
-    .style("stroke-linecap", "round")
-    .style("pointer-events", "none")
-    // .style("display", "none")
 const xAxisLab = zoomGroup.append("g")
     .append("text")
     .attr("font-size", "14px")
@@ -114,13 +103,6 @@ const yAxisLab = zoomGroup.append("g")
     .attr("y", origin[1]-axisLength)
     .text("y")
     .attr("dy", -8)
-    // .style("display", "none")
-const originDot = zoomGroup.append("g")
-    .append("circle")
-    // .attr("opacity", 0.75)
-    .attr("cx", origin[0])
-    .attr("cy", origin[1])
-    .attr("r", 3)
     // .style("display", "none")
 
 // Define dot marker for use at origin of force vectors
@@ -162,15 +144,15 @@ const circGradient = defsCirc.append("radialGradient")
     .attr("spreadMethod", "pad")
 circGradient.append("stop")
     .attr("offset", "0%")
-    .attr("stop-color", "indigo")
+    // .attr("stop-color", "indigo")
     .attr("stop-opacity", 0);
 circGradient.append("stop")
     .attr("offset", "50%")
-    .attr("stop-color", "indigo")
+    // .attr("stop-color", "indigo")
     .attr("stop-opacity", 0.75);
 circGradient.append("stop")
     .attr("offset", "100%")
-    .attr("stop-color", "indigo")
+    // .attr("stop-color", "indigo")
     .attr("stop-opacity", 0);
 
 // SVG Groups for the elements that require add/removal of data
@@ -203,6 +185,28 @@ const WeldPropLabsGroup = zoomGroup.append("g") // Labels for the length and thi
 // Initialize elements for the above groups ("updateLabels()" is called within "updateData()"")
 updateData()
 updateDrags();
+
+const coordAxes = zoomGroup.append("g")
+    .append("polyline")
+    .attr("points", `${origin[0]},${origin[1]-axisLength} ${origin} ${origin[0]+axisLength},${origin[1]}`)
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .attr("stroke-width", 1.75)
+    // .attr("opacity", 0.75)
+    .attr("marker-end", "url(#arrowhead")
+    .attr("marker-start", "url(#arrowhead")
+    .attr("stroke-dasharray", "2,3")
+    .style("stroke-linecap", "round")
+    .style("pointer-events", "none")
+    // .style("display", "none")
+const originDot = zoomGroup.append("g")
+    .append("circle")
+    // .attr("opacity", 0.75)
+    .attr("cx", origin[0])
+    .attr("cy", origin[1])
+    .attr("r", 3)
+    .style("pointer-events", "none")
+    // .style("display", "none")
 
 // Centroid of weld group
 const centroidGroup = zoomGroup.append("g")

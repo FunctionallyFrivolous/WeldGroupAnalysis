@@ -924,13 +924,13 @@ function updateLoadProps() {
     centroidProps
         .text(`Centroid: (${coordToDist(centroidTot[0].x, "x").toFixed(unitPrecision)}, 
         ${coordToDist(centroidTot[0].y, "y").toFixed(unitPrecision)})`)
-        .style("display", showRx ? "block" : "none")
+        // .style("display", showRx ? "block" : "none")
     RxVProps
         .text(`Vᵣ: ${(rxV.mag).toFixed(1)}${forceSymbol} @ ${rxV.th.toFixed(0)}°`)
-        .style("display", showRx ? "block" : "none")
+        // .style("display", showRx ? "block" : "none")
     RxMProps
         .text(`Mᵣ: ${(units === "metric" ? rxM/1000 : rxM/12).toFixed(1)} ${momentSymbol}`)
-        .style("display", showRx ? "block" : "none")
+        // .style("display", showRx ? "block" : "none")
     tMaxProps
         .text(`τ`)
         // .style("display", showTMax ? "block" : "none")
@@ -1276,6 +1276,8 @@ function updateFringe() {
         
         if (dotStress < min_t) min_t = dotStress;
     }
+
+    document.getElementById("debugOutputs").innerHTML = `${min_t.toFixed(1)}`
 
     // updateData()
 }
