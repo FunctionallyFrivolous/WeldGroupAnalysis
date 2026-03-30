@@ -191,22 +191,22 @@ const fringeKeyLine = overlayGroup
 const fringeKeyMin = overlayGroup
     .append("text")
     .attr("x", fringeKeyX-10)
-    .attr("y", fringeKeyY-2.5)
-    .attr("font-size", "8pt")
-    .attr("text-anchor", "start")
-    .attr("alignment-baseline", "text-after-edge")
-    .style("pointer-events", "none")
-    .text(`${min_t.toFixed(1)} ${stressSymbol}`)
-    .style("display", "none")
-const fringeKeyMax = overlayGroup
-    .append("text")
-    .attr("x", fringeKeyX-10)
     .attr("y", fringeKeyY+fringeKeyHeight+2.5)
     .attr("font-size", "8pt")
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
-    .text(`${max_t.toFixed(1)} ${stressSymbol}`)
+    .text(`${min_t.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+    .style("display", "none")
+const fringeKeyMax = overlayGroup
+    .append("text")
+    .attr("x", fringeKeyX-10)
+    .attr("y", fringeKeyY-2.5)
+    .attr("font-size", "8pt")
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "text-after-edge")
+    .style("pointer-events", "none")
+    .text(`${max_t.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
     .style("display", "none")
 
 const fringeInspectLine = overlayGroup
@@ -223,11 +223,12 @@ const fringeInspectLab = overlayGroup
     .append("text")
     .attr("x", fringeKeyX+fringeKeyWidth/2+2.5)
     .attr("y", fringeKeyHeight*0.5 + fringeKeyY)
+    .attr("dy", "0.15em")
     .attr("font-size", "8pt")
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
     .style("pointer-events", "none")
-    .text(`${inspectStress.toFixed(1)} ${stressSymbol}`)
+    .text(`${inspectStress.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
     .style("display", "none")
 
 updateView();

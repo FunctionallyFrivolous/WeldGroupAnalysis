@@ -311,7 +311,7 @@ function inspectDrag(x, y) {
 
     fringeInspectLab
         .attr("y", fringeKeyHeight*inspPct + fringeKeyY)
-        .text(`${inspectStress.toFixed(1)} ${stressSymbol}`)
+        .text(`${inspectStress.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
 
     // return [xNew, yNew]
 }

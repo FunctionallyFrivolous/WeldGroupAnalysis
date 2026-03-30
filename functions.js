@@ -1280,11 +1280,11 @@ function updateFringe() {
 
 
     fringeKeyMin
-        .text(`${min_t.toFixed(1)} ${stressSymbol}`)
+        .text(`${min_t.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
     fringeKeyMax
-        .text(`${max_t.toFixed(1)} ${stressSymbol}`)
+        .text(`${max_t.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
 
-    // document.getElementById("debugOutputs").innerHTML = `${min_t.toFixed(1)}`
+    document.getElementById("debugOutputs").innerHTML = `${min_t.toFixed(1)}`
 
     // updateData()
 }
