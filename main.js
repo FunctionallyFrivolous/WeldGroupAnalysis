@@ -1,4 +1,9 @@
 // Do Next:
+    // Fringe plot
+        // Add scale legend
+        // Add user adjustable scale limits?
+            // Input field as min/max labels on legend
+            // Revert to min/max values by typing "min" or "max" into field
     // Add weld properties settings/menu
         // Select weld material or input strength allowable?
         // Select universal weld size or toggle ability to set welds individually
@@ -18,10 +23,6 @@
             // Moment applied elsewhere resolves to simple force at centroid (?) so direct shear only?
     // Add bending?!?
         // There's lots here...
-    //Stress color gradient (fringe plot)?
-        // In theory should only need 3 points/values for this?
-            // Max val will always be one of the ends of the weld
-            // Min val will always be the point closest to the centroid
 
 
 // Initialize high level SVG stuff
@@ -176,6 +177,7 @@ circGradient.append("stop")
     // I.e. elements associated with welds and loads, as these can be added/removed by user
     // Specific element definitions can be found in the "updateDrags()" & "updateData()" functions
 const lineGroup = zoomGroup.append("g") // Weld lines
+const fringeGroup = zoomGroup.append("g")
 const wDragGroup = zoomGroup.append("g")
 const tmaxGroup = zoomGroup.append("g") // Circles highlighting location(s) of max stress
 const dShearGroup = zoomGroup.append("g") // Direct shear arrows
@@ -289,17 +291,18 @@ function inspectDrag(x, y) {
         yNew = -yDelta/fullDist * inspDist + yEnd
     }
 
-    calcShear(xNew, yNew)
+    inspectStress = calcShear(xNew, yNew)
 
     inspectDot
         .attr("cx", xNew)
         .attr("cy", yNew)
         // .attr("r", inspectStress/max_t*8+12)
         // .attr("stroke-opacity", Math.max(inspectStress/max_t, 0.5))
-
-    // return [xNew, yNew]
+    
     inspectX = xNew
     inspectY = yNew
+
+    // return [xNew, yNew]
 }
 
 function inspectFollow(dist=inspectDist) {
@@ -320,7 +323,7 @@ function inspectFollow(dist=inspectDist) {
     const xNew = xDelta/fullDist * inspDist + xStart
     const yNew = yDelta/fullDist * inspDist + yStart
 
-    calcShear(xNew, yNew)
+    inspectStress = calcShear(xNew, yNew)
 
     inspectDot
         .attr("cx", xNew)
@@ -356,6 +359,9 @@ const zoom = d3.zoom()
         // zoomGroup.attr("transform", event.transform);
         currentZoomTransform = event.transform;
         viewTransform();
+        fitViewButton
+            // .attr("fill-opacity", 0.5)
+            // .attr("stroke-opacity", 0.25)
     });
 svg.call(zoom)
     .on("dblclick.zoom", null);
@@ -1135,6 +1141,7 @@ const firstButtonY = windowHeight-64;
 const buttonHeight = 30;
 const buttonWidth = 30;
 const buttonPitch = buttonHeight + 5
+const buttonCorner = 5;
 
 const lockIcon = overlayGroup
     .append("text")
@@ -1150,10 +1157,10 @@ const lockButton = overlayGroup
     .append("rect")
     .attr("x", 5)
     .attr("y", firstButtonY)
-    .attr("width", 29)
-    .attr("height", 30)
-    .attr("rx", 5)
-    .attr("ry", 5)
+    .attr("width", buttonWidth-1)
+    .attr("height", buttonHeight)
+    .attr("rx", buttonCorner)
+    .attr("ry", buttonCorner)
     .attr("fill", "black")
     .attr("fill-opacity", 0)
     .attr("stroke", "black")
@@ -1175,12 +1182,12 @@ const unitsIcon = overlayGroup
     .text("IN")
 const unitsButton = overlayGroup
     .append("rect")
-    .attr("x", windowWidth-36)
+    .attr("x", windowWidth-5-buttonWidth)
     .attr("y", firstButtonY-buttonPitch)
-    .attr("width", 32)
-    .attr("height", 30)
-    .attr("rx", 5)
-    .attr("ry", 5)
+    .attr("width", buttonWidth)
+    .attr("height", buttonHeight)
+    .attr("rx", buttonCorner)
+    .attr("ry", buttonCorner)
     .attr("fill", "black")
     .attr("fill-opacity", 0)
     .attr("stroke", "black")
@@ -1212,8 +1219,8 @@ const addWButton = overlayGroup.append("g")
     .attr("y", windowHeight-3-18)
     .attr("width", 18)
     .attr("height", 18)
-    .attr("rx", 5)
-    .attr("ry", 5)
+    .attr("rx", buttonCorner)
+    .attr("ry", buttonCorner)
     .attr("fill", "black")
     .attr("opacity", 0.1)
     .on("click", function() {addWeld()})
@@ -1240,8 +1247,8 @@ const removeWButton = overlayGroup.append("g")
     .attr("y", windowHeight-3-18)
     .attr("width", 18)
     .attr("height", 18)
-    .attr("rx", 5)
-    .attr("ry", 5)
+    .attr("rx", buttonCorner)
+    .attr("ry", buttonCorner)
     .attr("fill", "black")
     .attr("opacity", 0.1)
     .on("click", function() {removeWeld(selectedWeld)})
@@ -1285,8 +1292,8 @@ const addLButton = overlayGroup.append("g")
     .attr("y", windowHeight-3-18)
     .attr("width", 18)
     .attr("height", 18)
-    .attr("rx", 5)
-    .attr("ry", 5)
+    .attr("rx", buttonCorner)
+    .attr("ry", buttonCorner)
     .attr("fill", "black")
     .attr("opacity", 0.1)
     .on("click", function() {addLoad()})
@@ -1312,8 +1319,8 @@ const removeLButton = overlayGroup.append("g")
     .attr("y", windowHeight-3-18)
     .attr("width", 18)
     .attr("height", 18)
-    .attr("rx", 5)
-    .attr("ry", 5)
+    .attr("rx", buttonCorner)
+    .attr("ry", buttonCorner)
     .attr("fill", "black")
     .attr("opacity", 0.1)
     .on("click", function() {removeLoad(selectedLoad)})
@@ -1344,8 +1351,8 @@ const inspPropsBox = overlayGroup
     .attr("y", windowHeight-inspBoxHeight)
     .attr("width", inspBoxWidth)
     .attr("height", inspBoxHeight+10)
-    .attr("rx", 5)
-    .attr("ry", 5)
+    .attr("rx", buttonCorner)
+    .attr("ry", buttonCorner)
     .attr("fill", "black")
     .attr("opacity", 0.125)
     .style("display", "none")
@@ -1402,27 +1409,17 @@ const fitViewIcon = overlayGroup
     .style("pointer-events", "none")
     // .style("display", "none")
 
-// const fitViewIcon = overlayGroup
-//     .append("text")
-//     .attr("font-size", "9pt")
-//     .attr("text-anchor", "middle")
-//     .attr("alignment-baseline", "text-before-edge")
-//     .style("pointer-events", "none")
-//     .attr("x", windowWidth-20)
-//     .attr("y", firstButtonY+8)
-//     .attr("opacity", 0.75)
-//     .text("Fit")
 const fitViewButton = overlayGroup
     .append("rect")
-    .attr("x", windowWidth-36)
+    .attr("x", windowWidth-5-buttonWidth)
     .attr("y", firstButtonY)
-    .attr("width", 32)
-    .attr("height", 30)
-    .attr("rx", 5)
-    .attr("ry", 5)
+    .attr("width", buttonWidth)
+    .attr("height", buttonHeight)
+    .attr("rx", buttonCorner)
+    .attr("ry", buttonCorner)
     .attr("fill", "black")
     .attr("fill-opacity", 0)
     .attr("stroke", "black")
     .attr("stroke-width", 0.5)
-    .attr("stroke-opacity", 0.25)
+    .attr("stroke-opacity", 0.5)
     .on("click", function() {fitView()})

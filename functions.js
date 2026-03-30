@@ -13,6 +13,7 @@ function updateStuff(){
     updateTorsionShear();
     updateTotalShear();
     // updateMinMaxView();
+    updateFringe();
 }
 
 function updateSVGs(){
@@ -359,7 +360,7 @@ function updateDirectShear() {
         const xa = nodes[i].x;
         const ya = nodes[i].y;
         const w = Math.floor(i/2);
-        const Ai = weldCoords[w].A;
+        // const Ai = weldCoords[w].A;
         directShear[i].mag = Math.abs(rxV.mag) / areaTot;
         let th = rxV.th;
         if (th < 0) th = th + 360;
@@ -370,40 +371,6 @@ function updateDirectShear() {
 
         directShear[i].points = [{x: xa, y: ya}, {x: xt, y: yt}];
     }
-}
-
-function calcShear(x,y){
-    const dirMag = Math.abs(rxV.mag) / areaTot;
-    const dirTh = rxV.th;
-
-    let mArm = Math.sqrt((x-centroidTot[0].x)*(x-centroidTot[0].x)+(y-centroidTot[0].y)*(y-centroidTot[0].y))
-    mArm = coordToDist(mArm, "L");
-
-    const torMag = rxM * mArm / J_tot;
-
-    let nQuad = 0;
-        if (x < centroidTot[0].x) {
-            if (y <= centroidTot[0].y) nQuad = 0
-            else nQuad = 0
-        }
-        else nQuad = 180
-
-    let torTh = radToDeg(Math.atan((centroidTot[0].y-y)/(x-centroidTot[0].x))) + 90 + nQuad
-    if (rxM > 0) torTh = torTh + 180
-        if (torTh < 0) torTh = torTh + 360
-
-    const dirX = dirMag * Math.cos(degToRad(dirTh));
-    const dirY = dirMag * Math.sin(degToRad(dirTh));
-    const torX = torMag * Math.cos(degToRad(torTh));
-    const torY = torMag * Math.sin(degToRad(torTh));
-
-    const TotX = dirX+torX;
-    const TotY = dirY+torY;
-    const TotMag = Math.sqrt(TotY*TotY+TotX*TotX);
-
-    inspectStress = TotMag
-
-    return TotMag
 }
 
 function updateTorsionShear() {
@@ -442,10 +409,42 @@ function updateTorsionShear() {
     }
 }
 
+function calcShear(x,y){
+    const dirMag = Math.abs(rxV.mag) / areaTot;
+    let dirTh = rxV.th;
+    if (dirTh < 0) dirTh = dirTh + 360;
+
+    let mArm = Math.sqrt((x-centroidTot[0].x)*(x-centroidTot[0].x)+(y-centroidTot[0].y)*(y-centroidTot[0].y))
+    mArm = coordToDist(mArm, "L");
+
+    const torMag = Math.abs(rxM * mArm / J_tot);
+
+    let nQuad = 0;
+        if (x < centroidTot[0].x) {
+            if (y <= centroidTot[0].y) nQuad = 0
+            else nQuad = 0
+        }
+        else nQuad = 180
+
+    let torTh = radToDeg(Math.atan((centroidTot[0].y-y)/(x-centroidTot[0].x))) + 90 + nQuad
+    if (rxM > 0) torTh = torTh + 180
+    if (torTh < 0) torTh = torTh + 360
+
+    const dirX = dirMag * Math.cos(degToRad(dirTh));
+    const dirY = dirMag * Math.sin(degToRad(dirTh));
+    const torX = torMag * Math.cos(degToRad(torTh));
+    const torY = torMag * Math.sin(degToRad(torTh));
+
+    const TotX = dirX+torX;
+    const TotY = dirY+torY;
+    const TotMag = Math.sqrt(TotY*TotY+TotX*TotX);
+
+    return TotMag
+}
+
 function updateTotalShear() {
     max_t = 0;
     for (i = 0; i < nodes.length; i++) {
-    
         totalShear[i].id = nodes[i].id;
 
         const dS_mag = directShear[i].mag; // 150
@@ -495,6 +494,9 @@ function viewTransform() {
         scale(${currentZoomTransform.k})
     `;
     zoomGroup.attr("transform", `${zoom}`);
+    // fitViewButton
+    //     .attr("fill-opacity", 0)
+    //     .attr("stroke-opacity", 0.25)
 }
 
 function InitGeom() {
@@ -593,17 +595,17 @@ function addLoad() {
     let newTh = 0;
     let newMag = 0;
 
-    if (backUpLoads.length > 0) {
-        newX = backUpLoads[0].x;
-        newY = backUpLoads[0].y;
-        newTh = backUpLoads[0].th;
-        newMag = backUpLoads[0].mag;
-    } else {
+    // if (backUpLoads.length > 0) {
+    //     newX = backUpLoads[0].x;
+    //     newY = backUpLoads[0].y;
+    //     newTh = backUpLoads[0].th;
+    //     newMag = backUpLoads[0].mag;
+    // } else {
         newX = Math.floor(Math.random()*(450-50)+50);
         newY = Math.floor(Math.random()*(450-50)+50);
         newTh = Math.floor(Math.random()*(359-0)+0);
         newMag = Math.floor(Math.random()*(250-50)+50);
-    }
+    // }
 
     loadProps.push(
         {id: "load"+`${loadCount+1}`, x: newX, y: newY, th: newTh, mag: newMag, show: false},
@@ -732,510 +734,6 @@ function removeLoad(id) { // test function to remove one weld
     updateLoadProps();
 
     selectLEditProp();
-}
-
-function updateDrags(){
-    svg.selectAll(".weld")
-        // .on("click", function(event, d) {
-        //     selectedWeld = d.id;
-        //     updateWeldProps();
-        // })
-        .on("dblclick", function(event, d) {
-            removeWeld(d.id);
-        })
-
-    svg.selectAll(".load")
-        .on("dblclick", function(event, d) {
-            removeLoad(d.id);
-        });
-
-    // Weld Drag Nodes
-    const NodeDrag = nodeDragGroup.selectAll("circle")
-        .data(nodes, d => d.id);
-    let enter = NodeDrag.enter()
-        .append("circle")
-        .attr("r", 15)
-        .attr("fill", "black")
-        .attr("opacity", 0);
-    enter.merge(NodeDrag)
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-        .call(d3.drag()
-            .on("start", (event, d) => {
-                xtemp = d.x;
-                ytemp = d.y;
-                selectedWeld = d.id.slice(0,5)
-                NodeDrag.attr("opacity",0.1);
-                const strIndex = d.id.indexOf("_");
-                const wID = d.id.substring(0,strIndex);
-                const dragWeld = weldCoords.find(j => j.id === wID);
-                d.show = true;
-                showCentCoords = true;
-                updateWeldProps();
-                dragWCoords.style("display", "block")
-                dragWProps.style("display", "block")
-                selectedWProp = d.id
-                selectWEditProp()
-                updateData();
-                updateSVGs();
-            })
-            .on("drag", function(event, d) {
-                if (geomLock) return
-                d.x = event.x;
-                d.y = event.y;
-                const strIndex = d.id.indexOf("_");
-                const wID = d.id.substring(0,strIndex);
-                const dragWeld = weldCoords.find(j => j.id === wID);
-                updateWeldProps();
-                updateStuff();
-                updateSVGs();
-                updateData();
-                let x_opp = 0;
-                let y_opp = 0;
-                if (d.id.includes("start")) {
-                    x_opp = dragWeld.points[1].x;
-                    y_opp = dragWeld.points[1].y;
-                } else {
-                    x_opp = dragWeld.points[0].x;
-                    y_opp = dragWeld.points[0].y;
-                }
-                // Snap
-                [d.x, d.y] = snapDrag(d.id, d.x, d.y, x_opp, y_opp)
-                selectWEditProp()
-                updateStuff();
-                updateSVGs();
-                updateData();
-            })
-            .on("end", (event, d) => {
-                NodeDrag.attr("opacity", n => n.id === d.id ? 0.1 : 0);
-                weldDrag.attr("opacity", 0)
-                d.show = false;
-                showCentCoords = false;
-                selectWEditProp()
-                updateWeldProps();
-                updateStuff();
-                updateData();
-                updateSVGs();
-                xtemp = d.x;
-                ytemp = d.y;
-            })
-        )
-    NodeDrag.exit().remove();
-
-    const weldDrag = wDragGroup.selectAll("circle")
-        .data(weldCoords);
-    enter = weldDrag.enter()
-        .append("circle")
-        .attr("r", 10)
-        .attr("fill", "black")
-        .attr("opacity", 0)
-        .style("pointer-events", "none")
-    enter.merge(weldDrag)
-        .attr("cx", d => (d.points[1].x + d.points[0].x)/2)
-        .attr("cy", d => (d.points[1].y + d.points[0].y)/2)
-        .call(d3.drag()
-            .on("start", (event, d) => {
-                selectedWProp = d.id
-                selectWEditProp()
-                selectedWeld = d.id;
-                xtemp = (d.points[1].x + d.points[0].x)/2 //event.x;
-                ytemp = (d.points[1].y + d.points[0].y)/2 //event.y;
-                weldDrag.attr("opacity", 0.1);
-                showCentCoords = true;
-                updateWeldProps();
-                dragWCoords.style("display", "block")
-                dragWProps.style("display", "block")
-                updateData();
-                updateSVGs();
-            })
-            .on("drag", function(event, d) {
-                if (geomLock) return
-                selectWEditProp()
-                updateWeldProps();
-                updateStuff();
-                updateSVGs();
-                updateData();
-                const [newMidX, newMidY] = snapDrag(d.id, event.x, event.y)
-                let x_delta = newMidX - xtemp;
-                let y_delta = newMidY - ytemp;
-                for (i = 0; i < 2; i++) {
-                    d.points[i].x = d.points[i].x + x_delta;
-                    d.points[i].y = d.points[i].y + y_delta;
-                }
-                xtemp = newMidX;
-                ytemp = newMidY;
-                selectWEditProp()
-                updateWeldProps();
-                updateStuff();
-                updateSVGs();
-                updateData();
-            })
-            .on("end", (event, d) => {
-                weldDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
-                NodeDrag.attr("opacity", 0);
-                showCentCoords = false;
-                selectWEditProp()
-                updateWeldProps();
-                updateData();
-                updateSVGs();
-            })
-        )
-    weldDrag.exit()
-        .attr("opacity",0)
-        .remove();
-
-    const loadDrag = lDragGroup.selectAll("circle")
-        .data(loadProps)
-    enter = loadDrag.enter()
-        .append("circle")
-        .attr("class", "load")
-        .attr("r", 10)
-        .attr("fill", "darkred")
-        .attr("opacity", 0)
-    enter.merge(loadDrag)
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-        .call(d3.drag()
-            .on("start", (event, d) => {
-                selectedLoad = d.id;
-                loadDrag.attr("opacity",0.1);
-                loadProps.find(j => j.id === d.id).show = true;
-                updateLoadProps();
-                dragLCoords.style("display", "block")
-                dragLProps.style("display", "block")
-                selectedLProp = d.id
-                selectLEditProp()
-                updateData();
-                updateSVGs();
-            })
-            .on("drag", function(event, d) {
-                if (geomLock) return
-                d.x = event.x;
-                d.y = event.y;
-                updateLoadProps();
-                // Snap 
-                [d.x, d.y] = snapDrag(d.id, d.x, d.y)
-                selectLEditProp()
-                updateArrows();
-                updateStuff();
-                updateSVGs();
-                updateData();
-                updateAngles();
-            })
-            .on("end", (event, d) => {
-                loadDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
-                loadProps.find(j => j.id === d.id).show = false;
-                selectLEditProp()
-                updateLoadProps();
-                updateStuff();
-                updateData();
-                updateSVGs();
-            })
-        );
-    loadDrag.exit().remove();
-
-    const magDrag = mDragGroup.selectAll("circle")
-        .data(loadArrows)
-    enter = magDrag.enter()
-        .append("circle")
-        .attr("r", 10)
-        .attr("fill", "darkred")
-        .attr("opacity", 0)
-    enter.merge(magDrag)
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-        .call(d3.drag()
-            .on("start", (event, d) => {
-                selectedLoad = d.id;
-                loadDrag.attr("opacity", 0);
-                magDrag.attr("opacity",0.1);
-                loadProps.find(j => j.id === d.id).show = true;
-                const dragLoad = loadProps.find(j => j.id === d.id);
-                selectedLProp = d.id
-                selectLEditProp()
-                updateLoadProps();
-                dragLCoords.style("display", "block")
-                dragLProps.style("display", "block")
-                updateData();
-            })
-            .on("drag", function(event, d) {
-                if (geomLock) return
-                const drag_x = loadProps.find(j => j.id === d.id).x;
-                const drag_y = loadProps.find(j => j.id === d.id).y;
-                const drag_L = Math.sqrt((drag_x-event.x)*(drag_x-event.x)+(drag_y-event.y)*(drag_y-event.y));
-                if (drag_L < minLength) return
-                loadProps.find(j => j.id === d.id).mag = drag_L / loadScale;
-                const dragLoad = loadProps.find(j => j.id === d.id);
-                selectLEditProp()
-                updateLoadProps();
-                updateAngles();
-                updateStuff();
-                updateSVGs();
-                updateData();
-            })
-            .on("end", (event, d) => {
-                magDrag.attr("opacity", 0);
-                loadDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
-                loadProps.find(j => j.id === d.id).show = false;
-                const dragLoad = loadProps.find(j => j.id === d.id);
-                selectLEditProp()
-                updateLoadProps();
-                updateData();
-            })
-        );
-    magDrag.exit().remove();
-
-    const angleDrag = aDragGroup.selectAll("circle")
-        .data(loadMids)
-    enter = angleDrag.enter()
-        .append("circle")
-        .attr("r", 10)
-        .attr("fill", "darkred")
-        .attr("opacity", 0)
-    enter.merge(angleDrag)
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-        .call(d3.drag()
-            .on("start", (event, d) => {
-                selectedLoad = d.id;
-                loadDrag.attr("opacity", 0);
-                angleDrag.attr("opacity",0.1);
-                loadProps.find(j => j.id === d.id).show = true;
-                const dragLoad = loadProps.find(j => j.id === d.id);
-                selectedLProp = d.id
-                selectLEditProp()
-                updateLoadProps();
-                dragLCoords.style("display", "block")
-                dragLProps.style("display", "block")
-                updateData();
-            })
-            .on("drag", function(event, d) {
-                if (geomLock) return
-                d.x = event.x;
-                d.y = event.y;
-                const dragLoad = loadProps.find(j => j.id === d.id);
-                const x_opp = dragLoad.x;
-                const y_opp = dragLoad.y;
-                // Snap
-                [d.x, d.y] = snapDrag(d.id, d.x, d.y, x_opp, y_opp)
-                selectLEditProp()
-                updateLoadProps();
-                updateAngles();
-                updateStuff();
-                updateSVGs();
-                updateData();
-            })
-            .on("end", (event, d) => {
-                angleDrag.attr("opacity", 0);
-                loadDrag.attr("opacity", n => n.id.includes(d.id) ? 0.1 : 0);
-                loadProps.find(j => j.id === d.id).show = false;
-                const dragLoad = loadProps.find(j => j.id === d.id);
-                selectLEditProp()
-                updateLoadProps();
-                updateData();
-            })
-        );
-    angleDrag.exit().remove();
-
-}
-
-function updateData() {
-    weldCount = weldCoords.length;
-    loadCount = loadProps.length;
-    // Welds //
-    svg.selectAll(".weld")
-        .on("dblclick", function(event, d) {
-            removeWeld(d.id);
-        });
-
-    svg.selectAll(".load")
-        .on("dblclick", function(event, d) {
-            removeLoad(d.id);
-        });
-
-    const weldLines = lineGroup.selectAll("polyline")
-        .data(weldCoords, d => d.id);
-    let enter = weldLines.enter()
-        .append("polyline")
-        .attr("class", "weld")
-        .attr("stroke", "black")
-        .style("stroke-linecap", "round")
-        .attr("opacity", 0.4)
-        .attr("fill", "none")
-    enter.merge(weldLines)
-        .attr("stroke-width", d => d.thk*weldThkScale)
-        .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
-        .on("click", function(event,d) {
-            selectedWeld = d.id.slice(0,5)
-            inspectFollow()
-            updateStuff();
-            updateSVGs();
-            updateData();
-            updateWeldProps();
-        })
-    weldLines.exit().remove();
-
-    // Max Stress Indicators
-    const tmax_circle = tmaxGroup.selectAll("circle")
-        .data(nodes);
-    enter = tmax_circle.enter()
-        .append("circle")
-        .attr("r", 15)
-        // .attr("fill", "orange")
-        // .attr("fill-opacity", 0.5)
-        // .attr("stroke", "orange")
-        .attr("stroke-width", 10)
-        .attr("stroke-opacity", 0.75)
-        .style("fill", "url(#circleGradient)")
-    enter.merge(tmax_circle)
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-        .style("display", d => d.display)
-    tmax_circle.exit().remove();
-
-    // Direc Shear Arrows
-    const dShear = dShearGroup.selectAll("polyline")
-        .data(directShear);
-    enter = dShear.enter()
-        .append("polyline")
-        .attr("fill", "none")
-        .attr("stroke", "darkred")
-        .attr("stroke-width", 2)
-        .style("stroke-linecap", "round")
-        .attr("opacity", 0.5)
-        .attr("marker-end", "url(#R_arrowhead");
-    enter.merge(dShear)
-        .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
-        .style("display", showTDir ? "block" : "none");
-    dShear.exit().remove();
-
-    // Torsional Shear Arrows
-    const tShear = tShearGroup.selectAll("polyline")
-        .data(torsionShear)
-    enter = tShear.enter()
-        .append("polyline")
-        .attr("fill", "none")
-        .attr("stroke", "darkblue")
-        .attr("stroke-width", 2)
-        .style("stroke-linecap", "round")
-        .attr("opacity", 0.5)
-        .attr("marker-end", "url(#B_arrowhead");
-    enter.merge(tShear)
-        .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
-        .style("display", showTTor ? "block" : "none");
-    tShear.exit().remove();
-    
-    // Total Shear Arrows
-    const fShear = fShearGroup.selectAll("polyline")
-        .data(totalShear);
-    enter = fShear.enter()
-        .append("polyline")
-        .attr("fill", "none")
-        .attr("stroke", "indigo")
-        .attr("stroke-width", 2)
-        .style("stroke-linecap", "round")
-        .attr("opacity", 0.75)
-        .attr("marker-end", "url(#P_arrowhead");
-    enter.merge(fShear)
-        .attr("points", d => d.points.map(t => `${t.x},${t.y}`).join(" "))
-        .style("display", showStress ? "block" : "none");
-    fShear.exit().remove();
-
-    const lVectors = loadsGroup.selectAll("polyline")
-        .data(loadPoints)
-    enter = lVectors.enter()
-        .append("polyline")
-        .attr("class", "load")
-        .attr("stroke", "darkred")
-        .attr("stroke-width", 3)
-        .attr("opacity", 0.7)
-        .attr("fill", "none")
-        .attr("points", "350,200 450,200")
-        .attr("marker-end", "url(#R_arrowhead")
-        .attr("marker-start", "url(#dots")
-    enter.merge(lVectors)
-        .attr("points", d => d.points.map(l => `${l.x},${l.y}`).join(" "))
-    lVectors.exit().remove();
-
-
-    const NodeDrag = nodeDragGroup.selectAll("circle")
-        .data(nodes);
-    enter = NodeDrag.enter()
-        .append("circle")
-        .attr("r", 15)
-        .attr("fill", "black")
-        .attr("opacity", 0);
-    enter.merge(NodeDrag)
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-    NodeDrag.exit().remove();
-
-    const weldDrag = wDragGroup.selectAll("circle")
-        .data(weldCoords);
-    enter = weldDrag.enter()
-        .append("circle")
-        .attr("r", 15)
-        .attr("fill", "black")
-        .attr("opacity", 0);
-    enter.merge(weldDrag)
-        .attr("cx", d => (d.points[1].x + d.points[0].x)/2)
-        .attr("cy", d => (d.points[1].y + d.points[0].y)/2)
-    weldDrag.exit().remove();
-
-    const loadDrag = lDragGroup.selectAll("circle")
-        .data(loadProps)
-    enter = loadDrag.enter()
-        .append("circle")
-        .attr("class", "load")
-        .attr("r", 10)
-        .attr("fill", "darkred")
-        .attr("opacity", 0)
-    enter.merge(loadDrag)
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-    loadDrag.exit().remove();
-
-    const magDrag = mDragGroup.selectAll("circle")
-        .data(loadArrows)
-    enter = magDrag.enter()
-        .append("circle")
-        .attr("r", 10)
-        .attr("fill", "darkred")
-        .attr("opacity", 0)
-    enter.merge(magDrag)
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-    magDrag.exit().remove();
-
-    const midMarks = midGroup.selectAll("circle")
-        .data(loadMids);
-    enter = midMarks.enter()
-        .append("circle")
-        .attr("r", 3)
-        .attr("fill", "none")
-        .attr("stroke-width", 1)
-        .attr("stroke", "darkred")
-        .attr("stroke-opacity", 1)
-        .attr("opacity", 0.5)
-        .attr("pointer-events", "none");
-    enter.merge(midMarks)
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-    midMarks.exit().remove();
-
-    const angleDrag = aDragGroup.selectAll("circle")
-        .data(loadMids);
-    enter = angleDrag.enter()
-        .append("circle")
-        .attr("r", 10)
-        .attr("fill", "darkred")
-        .attr("opacity", 0);
-    enter.merge(angleDrag)
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y);
-    angleDrag.exit().remove();
-
-    updateLabels();
 }
 
 function updateLabels() {
@@ -1409,6 +907,8 @@ function updateWeldProps() {
     fitViewButton
         .append("title")
         .text("Fit View")
+
+    
 }
 
 function updateLoadProps() {
@@ -1498,15 +998,6 @@ function snapDrag(id, drx, dry, opx=0, opy=0) {
     //     dyf = origin[1];
     // } 
 
-    // Snap to Weld mid-points
-    for (i = 0; i < weldCoords.length; i++) {
-        const midx = (weldCoords[i].points[1].x + weldCoords[i].points[0].x)/2;
-        const midy = (weldCoords[i].points[1].y + weldCoords[i].points[0].y)/2;
-        if (id !== weldCoords[i].id && Math.abs(drx - midx) < snapDist && Math.abs(dry - midy) < snapDist) {
-            dxf = midx;
-            dyf = midy;
-        }
-    }
     // Snap to Vertical
     if (Math.abs(drx - opx) < snapDist) {
         dxf = opx;
@@ -1516,10 +1007,20 @@ function snapDrag(id, drx, dry, opx=0, opy=0) {
         dyf = opy;
     } 
 
+    // Snap to Weld mid-points
+    for (i = 0; i < weldCoords.length; i++) {
+        const midx = (weldCoords[i].points[1].x + weldCoords[i].points[0].x)/2;
+        const midy = (weldCoords[i].points[1].y + weldCoords[i].points[0].y)/2;
+        if (id !== weldCoords[i].id && Math.abs(drx - midx) < snapDist && Math.abs(dry - midy) < snapDist) {
+            dxf = midx;
+            dyf = midy;
+        }
+    }
+
     if (id.includes("weld")) { // When dragging welds...
         // Snap to other weld nodes
         // let nid = ""
-        nid = id.slice(0,5);
+        const nid = id.slice(0,5);
         if (id.length !== 5) {
             // Hold original angle
             if (Math.abs(xNew - drx) < snapDist && Math.abs(yNew - dry) < snapDist) {
@@ -1531,6 +1032,15 @@ function snapDrag(id, drx, dry, opx=0, opy=0) {
             if (nid !== nodes[i].id.slice(0,5) && Math.abs(drx - nodes[i].x) < snapDist && Math.abs(dry - nodes[i].y) < snapDist) {
                 dxf = nodes[i].x;
                 dyf = nodes[i].y;
+            }
+        }
+        // Snap to Weld mid-points
+        for (i = 0; i < weldCoords.length; i++) {
+            const midx = (weldCoords[i].points[1].x + weldCoords[i].points[0].x)/2;
+            const midy = (weldCoords[i].points[1].y + weldCoords[i].points[0].y)/2;
+            if (id !== weldCoords[i].id && Math.abs(drx - midx) < snapDist && Math.abs(dry - midy) < snapDist) {
+                dxf = midx;
+                dyf = midy;
             }
         }
         // Snap to loads
@@ -1721,6 +1231,51 @@ function fitView() {
     svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity
         .translate(windowWidth/2, windowHeight/2)
         .scale(centerScale)
-        .translate(-centerX, -centerY+10)
+        .translate(-centerX, -centerY+10)//*0.96) 
     );
+
+    updateView()
+
+    // fitViewButton
+    //     .attr("fill-opacity", 0.125)
+    //     .attr("stroke-opacity", 0.75)
+}
+
+
+function updateFringe() {
+
+    updateTotalShear();
+
+    const dotPitch = 1
+
+    fringeData.length = 0;
+
+    min_t = calcShear(weldCoords[0].points[0].x, weldCoords[0].points[0].y)
+
+    for (w = 0; w < weldCoords.length; w++) {
+        const dotCount = Math.ceil(distToCoord(weldCoords[w].len, "L")/dotPitch);
+        let dotStress = calcShear(weldCoords[w].points[0].x, weldCoords[w].points[0].y)
+
+        if (dotStress < min_t) min_t = dotStress;
+
+        fringeData.push({x: weldCoords[w].points[0].x, y: weldCoords[w].points[0].y, stress: dotStress, dot: 5/0.25*weldCoords[w].thk})
+
+        for (i = 0; i < dotCount; i++) {
+            const dotX = (weldCoords[w].points[1].x-weldCoords[w].points[0].x)/(dotCount+1)*(i+1) + weldCoords[w].points[0].x
+            const dotY = (weldCoords[w].points[1].y-weldCoords[w].points[0].y)/(dotCount+1)*(i+1) + weldCoords[w].points[0].y
+
+            dotStress = calcShear(dotX, dotY)
+
+            const addDot = {x: dotX, y: dotY, stress: dotStress, dot: 5/0.25*weldCoords[w].thk}
+            fringeData.push(addDot)
+
+            if (dotStress < min_t) min_t = dotStress;
+        }
+        dotStress = calcShear(weldCoords[w].points[1].x, weldCoords[w].points[1].y)
+        fringeData.push({x: weldCoords[w].points[1].x, y: weldCoords[w].points[1].y, stress: dotStress, dot: 5/0.25*weldCoords[w].thk})
+        
+        if (dotStress < min_t) min_t = dotStress;
+    }
+
+    // updateData()
 }

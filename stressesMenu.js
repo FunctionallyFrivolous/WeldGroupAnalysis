@@ -12,14 +12,16 @@ const stressMenuData = [
     {id: "max", text: "τ", fontColor: "indigo", fontSize: "18px", lab: "Max Shear Stress", sub: "max", 
         x: stressButtonProps.x + buttonPitch*4, y: stressButtonProps.y, dy: "0.1em"}, 
     {id: "total", text: "τ", fontColor: "indigo", fontSize: "20px", lab: "Total Shear Stress", sub: "tot", 
-        x: stressButtonProps.x + buttonPitch, y: stressButtonProps.y, dy: "0em"}
+        x: stressButtonProps.x + buttonPitch, y: stressButtonProps.y, dy: "0em"},
+    {id: "fringe", text: "", fontColor: "indigo", fontSize: "20px", lab: "Fringe Plot", sub: "", 
+        x: stressButtonProps.x + buttonPitch*6, y: stressButtonProps.y, dy: "0em"}
 ]
 
 const stressMenuBox = overlayGroup
     .append("rect")
     .attr("x", -5)
     .attr("y", stressButtonProps.y-2.5)
-    .attr("width", buttonPitch*6+9)
+    .attr("width", buttonPitch*(stressMenuData.length+1) + 9)
     .attr("height", buttonPitch)
     .attr("rx", 5)
     .attr("ry", 5)
@@ -37,10 +39,10 @@ const stressButtons = stressButtonsGroup.selectAll("rect")
     .append("rect")
     .attr("x", d => d.x)
     .attr("y", d => d.y)
-    .attr("width", 30)
-    .attr("height", 30)
-    .attr("rx", 5)
-    .attr("ry", 5)
+    .attr("width", buttonWidth)
+    .attr("height", buttonWidth)
+    .attr("rx", buttonCorner)
+    .attr("ry", buttonCorner)
     .attr("fill", "white")
     .attr("fill-opacity", 1)
     .attr("stroke", "black")
@@ -89,10 +91,10 @@ const stressMenuButton = overlayGroup
     .append("rect")
     .attr("x", 5)
     .attr("y", stressButtonProps.y)
-    .attr("width", 29)
-    .attr("height", 30)
-    .attr("rx", 5)
-    .attr("ry", 5)
+    .attr("width", buttonWidth)
+    .attr("height", buttonHeight)
+    .attr("rx", buttonCorner)
+    .attr("ry", buttonCorner)
     .attr("fill", "black")
     .attr("fill-opacity", 0)
     .attr("stroke", "black")
@@ -103,9 +105,38 @@ const stressMenuButton = overlayGroup
         stressIcons.style("display",showStressMenu ? "block" : "none")
         stressButtons.style("display",showStressMenu ? "block" : "none")
         stressMenuBox.style("display",showStressMenu ? "block" : "none")
+        stressFringeIcon.style("display",showStressMenu ? "block" : "none")
         // stressMenuButton.attr("stroke-opacity", showStressMenu ? 0.75 : 0.25)
-        stressMenuButton.attr("stroke-opacity", showStressMenu ? 0.25 : (showTMax || showStress || showTDir || showTTor || showInspect ? 0.75 : 0.25))
+        stressMenuButton.attr("stroke-opacity", showStressMenu ? 0.25 : (showTMax || showStress || showTDir || showTTor || showInspect || showTFringe ? 0.75 : 0.25))
+        
     })
+
+const iconGrad = defs.append("linearGradient")
+    .attr("id", "fringeIconGrad")
+    .attr("x1", "100%")
+    .attr("x2", "0%")
+    .attr("y1", "0%")
+    .attr("y2", "100%")
+iconGrad.append("stop")
+    .attr("offset", "0%")
+    .attr("stop-color", "red")
+iconGrad.append("stop")
+    .attr("offset", "100%")
+    .attr("stop-color", "blue")
+
+const fringeIconMargin = 8
+const stressFringeIcon = overlayGroup
+    .append("line")
+    .attr("x1", stressMenuData[5].x + fringeIconMargin)
+    .attr("y1", stressButtonProps.y + buttonWidth - fringeIconMargin)
+    .attr("x2", stressMenuData[5].x + buttonWidth - fringeIconMargin)
+    .attr("y2", stressButtonProps.y + fringeIconMargin)
+    .attr("fill", "none")
+    .attr("stroke", "url(#fringeIconGrad)")
+    .attr("stroke-width", 6)
+    .style("stroke-linecap", "round")
+    .style("display", "none")
+    .style("pointer-events", "none")
 
 updateView();
 updateWeldProps();

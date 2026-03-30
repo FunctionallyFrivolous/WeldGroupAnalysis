@@ -5,6 +5,7 @@ let showStress = false;
 let showTDir = false;
 let showTTor = false;
 let showTMax = false;
+let showTFringe = false;
 // let showWeldCoords = false;
 // let showCoords = false;
 let showWeldProps = false;
@@ -60,6 +61,7 @@ let rxV = [{x: 0, y: 0, mag: 0, th: 0, points: [{x: 0, y: 0},{x: 0, y: 0}]}];
 let rxM = 0;
 
 let max_t = 0;
+let min_t = 0;
 
 let dM = "M 0,50 A 50,50 0 0,0 100,50"
 
@@ -164,6 +166,10 @@ const backUpWelds = [
 ]
 const backUpLoads = [
     {x: 100, y: 350, th: 235, mag: 100}
+]
+
+const fringeData = [
+    {id: "dot0", x: 0, y: 0, stress: 0, dot: 5}
 ]
 
 InitGeom();
