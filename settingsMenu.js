@@ -3,7 +3,7 @@ const sliderLength = 100
 const sliderMin = sliderMax-sliderLength;
 // let slidePos = sliderMax - 10*2
 
-const settingsButtonProps = {width: buttonWidth+2, height: buttonHeight, r: 5, 
+const settingsButtonProps = {width: buttonWidth, height: buttonHeight, r: 5, 
     x: windowWidth-36, y: firstButtonY - buttonPitch*2}
 
 function drawSnapIcon(x, y) {
@@ -56,7 +56,7 @@ const settingsMenu = overlayGroup
 
 const settingsButton = overlayGroup
     .append("rect")
-    .attr("x", settingsButtonProps.x)
+    .attr("x", settingsButtonProps.x+1)
     .attr("y", settingsButtonProps.y)
     .attr("width", settingsButtonProps.width)
     .attr("height", settingsButtonProps.height)
@@ -70,15 +70,15 @@ const settingsButton = overlayGroup
     .on("click", function() {showHideSettings()})
 const settingsIcon = overlayGroup
     .append("text")
-    .attr("font-size", "16pt")
+    .attr("font-size", "20pt")
     .attr("text-anchor", "middle")
     // .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
-    .attr("x", windowWidth-20-1)
-    .attr("y", settingsButtonProps.y+settingsButtonProps.height/2-1.5)
+    .attr("x", windowWidth-5-settingsButtonProps.width/2)
+    .attr("y", settingsButtonProps.y+settingsButtonProps.height/2)
     .attr("dy", "0.35em")
     .attr("opacity", 0.75)
-    .text("🛠")
+    .text("⚙") //⚙ 🛠
 
 const slideLabBoxGroup = overlayGroup.append("g")
 const slideLabBox = slideLabBoxGroup.selectAll("rect")

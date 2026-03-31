@@ -1,10 +1,7 @@
 // Do Next:
     // Fringe plot
-        // Turn scale min/max labels into user inputs?
-            // Instead of above (or interim), just indicate zero margin point on fringe plot?
-                // Way simpler while still getting most of the use/value
         // Set color scale to highlight negative margin areas (per strength and FOS inputs)?
-            // Similar option to de-emphasize positive margin (focus on neg)?
+        // Similar option to de-emphasize positive margin (focus on neg)?
     // Add weld properties settings/menu
         // Select weld material or input strength allowable?
         // Select universal weld size or toggle ability to set welds individually
@@ -17,9 +14,6 @@
         // Update save/share url with every action
         // Remember one (or X) previous url
         // Button with action to apply/navigate to previous url
-    // Add applied moments?
-        // Doesnt seem super essential (can achieve via forces)
-        // Probably not too hard to implement though?
 
 
 // Initialize high level SVG stuff

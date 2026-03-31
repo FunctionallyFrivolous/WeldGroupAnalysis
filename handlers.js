@@ -138,6 +138,7 @@ function unitSwap() {
         stressSymbol = "psi"
         unitConvert = 1;
         forceConvert = 1;
+        stressConvert = 1;
         unitPrecision = 1;
         weldThkScale = 40;
         stressScale = 3;
@@ -150,6 +151,7 @@ function unitSwap() {
         stressSymbol = "MPa"
         unitConvert = 25.4;
         forceConvert = 4.448;
+        stressConvert = 1/145.038;
         unitPrecision = 0;
         weldThkScale = 40;
         stressScale = stressScale*145;
@@ -169,7 +171,18 @@ function unitSwap() {
         .text(units === "metric" ? "MM" : "IN")
     unitsButton
         .attr("fill-opacity", units === "metric" ? 0.125 : 0)
-    showHideWProps.attr("width", units === "metric" ? 180 : 160)
+    showHideWProps
+        .attr("width", units === "metric" ? 180 : 160)
+
+    wPropsMenuData[1].units = stressSymbol
+    // wPropsMenuData[1].val = wPropsMenuData[1].val * stressConvert
+
+    wPropsMenuData[2].units = unitSymbol
+
+    wPropsUnits
+        .text(d => d.units)
+    wPropsInputs
+        .text(d => `${d.val.toFixed(d.precision)}`)
 
     // ftiView();
 }

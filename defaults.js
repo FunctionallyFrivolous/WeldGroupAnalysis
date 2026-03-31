@@ -12,6 +12,7 @@ let showWeldProps = false;
 let showLoadProps = false;
 let showWeldEdit = false;
 let showLoadEdit = false;
+let showWPropMenu = false;
 
 let dragWeldProps = false;
 let showCentCoords = false;
@@ -31,6 +32,7 @@ let unitPrecision = 1;
 let distConvert = 0.1; // svg window units to inches (10:1)
 let unitConvert = 1; // conversion from current units to inches (1 if current units are inches; 25.4 if current metric)
 let forceConvert = 1;
+let stressConvert = 1;
 let geomLock = false;
 let inspection = false;
 

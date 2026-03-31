@@ -334,7 +334,7 @@ function updateData() {
             NodeDrag.attr("opacity", 0)
             selectedWeld = d.id.slice(0,5)
             // inspectFollow()
-            inspectDrag(event.x-25, event.y-75)
+            inspectDrag(event.x, event.y)
             selectedWProp = d.id
             selectWEditProp()
             updateWeldProps();
@@ -417,7 +417,7 @@ function updateData() {
         .attr("class", "load")
         .attr("stroke", "darkred")
         .attr("stroke-width", 3)
-        .attr("opacity", 0.7)
+        // .attr("opacity", 0.7)
         .attr("fill", "none")
         .attr("points", "350,200 450,200")
         .attr("marker-end", "url(#R_arrowhead")
@@ -564,6 +564,7 @@ function updateData() {
             loadDrag.attr("opacity", 0);
             if (showSettings) showHideSettings();
             if (showStressMenu) showHideStressMenu();
+            if (showWPropMenu) showHideProps();
         })
 }
 
