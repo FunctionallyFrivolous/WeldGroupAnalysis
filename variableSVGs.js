@@ -33,7 +33,7 @@ function updateDrags(){
                 const strIndex = d.id.indexOf("_");
                 const wID = d.id.substring(0,strIndex);
                 const dragWeld = weldCoords.find(j => j.id === wID);
-                d.show = true;
+                // d.show = true;
                 showCentCoords = true;
                 updateWeldProps();
                 dragWCoords.style("display", "block")
@@ -73,7 +73,7 @@ function updateDrags(){
             .on("end", (event, d) => {
                 NodeDrag.attr("opacity", n => n.id === d.id ? 0.1 : 0);
                 weldDrag.attr("opacity", 0)
-                d.show = false;
+                // d.show = false;
                 showCentCoords = false;
                 selectWEditProp()
                 updateWeldProps();
@@ -330,13 +330,17 @@ function updateData() {
         .attr("stroke-width", d => d.thk*weldThkScale)
         .attr("points", d => d.points.map(j => `${j.x},${j.y}`).join(" "))
         .on("click", function(event,d) {
+            weldDrag.attr("opacity", n => n.id === d.id ? 0.1 : 0);
+            NodeDrag.attr("opacity", 0)
             selectedWeld = d.id.slice(0,5)
-            inspectFollow()
+            // inspectFollow()
+            inspectDrag(event.x-25, event.y-75)
+            selectedWProp = d.id
+            selectWEditProp()
+            updateWeldProps();
             updateStuff();
             updateSVGs();
             updateData();
-            selectWEditProp()
-            updateWeldProps();
         })
     weldLines.exit().remove();
 
@@ -502,11 +506,13 @@ function updateData() {
 
     const fringeColors = ["darkblue", "cyan", d3.color("green").brighter(2), "yellow", "red"]
 
-    const fringeStops = [min_t];
+    fringeScaleMin = min_t;
+    fringeScaleMax = max_t;
+    const fringeStops = [fringeScaleMin];
     for (i=1; i<fringeColors.length-1; i++) {
-        fringeStops.push((max_t-min_t)/fringeColors.length*i+min_t)
+        fringeStops.push((fringeScaleMax-fringeScaleMin)/fringeColors.length*i+fringeScaleMin)
     }
-    fringeStops.push(max_t)
+    fringeStops.push(fringeScaleMax)
 
     const fringeScale = d3.scaleLinear()
         .domain(fringeStops)
@@ -527,9 +533,7 @@ function updateData() {
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
         .attr("r", d => d.dot)
-        // .attr("fill", d => d.stress > 30 ? "lightgray" : fringeScale(d.stress))
-        // .attr("fill", d => min_t === max_t ? "blue" : fringeScale(d.stress))
-        .attr("fill", d => fringeScale(d.stress))
+        .attr("fill", d => d.stress > fringeScaleMax? "fuchsia" : d.stress < fringeScaleMin? "gray" : fringeScale(d.stress))
         .style("display", showTFringe ? "block" : "none")
     fringeDots.exit().remove()
 
@@ -552,4 +556,14 @@ function updateData() {
 
 
     updateLabels();
+
+    background
+        .on("click", function(event) {
+            weldDrag.attr("opacity", 0);
+            NodeDrag.attr("opacity", 0);
+            loadDrag.attr("opacity", 0);
+            if (showSettings) showHideSettings();
+            if (showStressMenu) showHideStressMenu();
+        })
 }
+

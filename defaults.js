@@ -62,6 +62,8 @@ let rxM = 0;
 
 let max_t = 0;
 let min_t = 0;
+let fringeScaleMin = min_t;
+let fringeScaleMax = max_t;
 
 let dM = "M 0,50 A 50,50 0 0,0 100,50"
 

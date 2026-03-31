@@ -19,9 +19,16 @@ function showHideStress(id) {
             .attr("stroke-opacity", d => showInspect ? 0.75 : 0.5)
         inspectDrag(inspectX, inspectY)
         fringeInspectLine
-            .style("display", showInspect && showTFringe ? "block" : "none")
+            .style("display", showInspect ? "block" : "none")
         fringeInspectLab
-            .style("display", showInspect && showTFringe ? "block" : "none")
+            .style("display", showInspect ? "block" : "none")
+        fringeKeyMin
+            .style("display", showTFringe || showInspect ? "block" : "none")
+        fringeKeyMax
+            .style("display", showTFringe || showInspect ? "block" : "none")
+        fringeKeyLine
+            .attr("stroke", showTFringe ? "url(#fringeKeyGrad)" : "lightgray")
+            .style("display", showTFringe || showInspect ? "block" : "none")
     }
     else if(id === "direct") {
         showTDir = !showTDir
@@ -53,15 +60,16 @@ function showHideStress(id) {
         stressFringeIcon
             .attr("stroke-opacity", showTFringe ? 1 : 0.75)
         fringeKeyLine
-            .style("display", showTFringe ? "block" : "none")
+            .attr("stroke", showTFringe ? "url(#fringeKeyGrad)" : "lightgray")
+            .style("display", showTFringe || showInspect ? "block" : "none")
         fringeKeyMin
-            .style("display", showTFringe ? "block" : "none")
+            .style("display", showTFringe || showInspect ? "block" : "none")
         fringeKeyMax
-            .style("display", showTFringe ? "block" : "none")
+            .style("display", showTFringe || showInspect ? "block" : "none")
         fringeInspectLine
-            .style("display", showInspect && showTFringe ? "block" : "none")
+            .style("display", showInspect ? "block" : "none")
         fringeInspectLab
-            .style("display", showInspect && showTFringe ? "block" : "none")
+            .style("display", showInspect ? "block" : "none")
     }
 
     updateView();
@@ -197,27 +205,28 @@ function inspect() {
         .append("title")
         .text("Inspect Weld Stress")
     
-    inspPropsBox.style("display", showInspect ? "block" : "none")
+    // inspPropsBox.style("display", showInspect ? "block" : "none")
     inspPropsText
-        .text(`τ`)
-        .style("display", showInspect ? "block" : "none")
-        .append("tspan")
-        .text("insp")
-        .attr("font-family", "sans-serif") 
-        .attr("font-size", "5pt")
-        .attr("dy", "1.5em")
-        .attr("text-anchor", "middle")
-        .attr("alignment-baseline", "text-before-edge")
-        .append("tspan")
-        .text(`: ${inspectStress.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
-        .attr("font-size", "8pt")
-        .attr("dy", "-0.6em")
-        .attr("text-anchor", "middle")
-        .attr("alignment-baseline", "text-before-edge")
-        .append("tspan")
+        // .text(`τ`)
         .text(`(${coordToDist(inspectX,"x").toFixed(1)}, ${coordToDist(inspectY,"y").toFixed(1)})`)
-        .attr("x", 250)
-        .attr("dy", "2.5em")
+        .style("display", showInspect ? "block" : "none")
+    //     .append("tspan")
+    //     .text("insp")
+    //     .attr("font-family", "sans-serif") 
+    //     .attr("font-size", "5pt")
+    //     .attr("dy", "1.5em")
+    //     .attr("text-anchor", "middle")
+    //     .attr("alignment-baseline", "text-before-edge")
+    //     .append("tspan")
+    //     .text(`: ${inspectStress.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+    //     .attr("font-size", "8pt")
+    //     .attr("dy", "-0.6em")
+    //     .attr("text-anchor", "middle")
+    //     .attr("alignment-baseline", "text-before-edge")
+    //     .append("tspan")
+    //     .text(`(${coordToDist(inspectX,"x").toFixed(1)}, ${coordToDist(inspectY,"y").toFixed(1)})`)
+    //     .attr("x", 250)
+    //     .attr("dy", "2.5em")
     inspectDot.style("display", showInspect ? "block" : "none")
     // showTMax = !showTMax;
 }

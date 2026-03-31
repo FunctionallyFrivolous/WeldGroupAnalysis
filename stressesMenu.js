@@ -87,6 +87,16 @@ const stressMenuIcon = overlayGroup
     .attr("y", stressButtonProps.y)
     .attr("opacity", 0.75)
     .text("τ")
+
+function showHideStressMenu() {
+    showStressMenu = !showStressMenu
+        stressIcons.style("display",showStressMenu ? "block" : "none")
+        stressButtons.style("display",showStressMenu ? "block" : "none")
+        stressMenuBox.style("display",showStressMenu ? "block" : "none")
+        stressFringeIcon.style("display",showStressMenu ? "block" : "none")
+        // stressMenuButton.attr("stroke-opacity", showStressMenu ? 0.75 : 0.25)
+        stressMenuButton.attr("stroke-opacity", showStressMenu ? 0.25 : (showTMax || showStress || showTDir || showTTor || showInspect || showTFringe ? 0.75 : 0.25))
+}
 const stressMenuButton = overlayGroup
     .append("rect")
     .attr("x", 5)
@@ -100,16 +110,7 @@ const stressMenuButton = overlayGroup
     .attr("stroke", "black")
     .attr("stroke-width", 0.5)
     .attr("stroke-opacity", 0.25)
-    .on("click", function() {
-        showStressMenu = !showStressMenu
-        stressIcons.style("display",showStressMenu ? "block" : "none")
-        stressButtons.style("display",showStressMenu ? "block" : "none")
-        stressMenuBox.style("display",showStressMenu ? "block" : "none")
-        stressFringeIcon.style("display",showStressMenu ? "block" : "none")
-        // stressMenuButton.attr("stroke-opacity", showStressMenu ? 0.75 : 0.25)
-        stressMenuButton.attr("stroke-opacity", showStressMenu ? 0.25 : (showTMax || showStress || showTDir || showTTor || showInspect || showTFringe ? 0.75 : 0.25))
-        
-    })
+    .on("click", function() {showHideStressMenu()})
 
 const iconGrad = defs.append("linearGradient")
     .attr("id", "fringeIconGrad")

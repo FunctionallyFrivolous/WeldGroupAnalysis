@@ -1,7 +1,10 @@
 // Do Next:
     // Fringe plot
-        // Turn scale min/max labels into user inputs
+        // Turn scale min/max labels into user inputs?
+            // Instead of above (or interim), just indicate zero margin point on fringe plot?
+                // Way simpler while still getting most of the use/value
         // Set color scale to highlight negative margin areas (per strength and FOS inputs)?
+            // Similar option to de-emphasize positive margin (focus on neg)?
     // Add weld properties settings/menu
         // Select weld material or input strength allowable?
         // Select universal weld size or toggle ability to set welds individually
@@ -17,10 +20,6 @@
     // Add applied moments?
         // Doesnt seem super essential (can achieve via forces)
         // Probably not too hard to implement though?
-            // Moment applied directly to centroid (unlikely) adds to torsional
-            // Moment applied elsewhere resolves to simple force at centroid (?) so direct shear only?
-    // Add bending?!?
-        // There's lots here...
 
 
 // Initialize high level SVG stuff
@@ -76,31 +75,6 @@ const arrowPrp = zoomGroup.append("g")
     .attr("d", arrowPath)
     .attr("fill", "indigo")
 
-const xAxisLab = zoomGroup.append("g")
-    .append("text")
-    .attr("font-size", "14px")
-    .attr("font-weight", "bold")
-    // .attr("opacity", 0.75)
-    .attr("text-anchor", "start")
-    .attr("alignment-baseline", "middle")
-    .attr("x", origin[0]+axisLength)
-    .attr("y", origin[1])
-    .text("x")
-    .attr("dx", 8)
-    // .style("display", "none")
-const yAxisLab = zoomGroup.append("g")
-    .append("text")
-    .attr("font-size", "14px")
-    .attr("font-weight", "bold")
-    // .attr("opacity", 0.75)
-    .attr("text-anchor", "middle")
-    .attr("alignment-baseline", "text-after-edge")
-    .attr("x", origin[0])
-    .attr("y", origin[1]-axisLength)
-    .text("y")
-    .attr("dy", -8)
-    // .style("display", "none")
-
 // Define dot marker for use at origin of force vectors
 const dotGroup = zoomGroup.append("g")
     .append("defs")
@@ -151,6 +125,12 @@ circGradient.append("stop")
     // .attr("stop-color", "indigo")
     .attr("stop-opacity", 0);
 
+const background = zoomGroup.append("rect")
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("fill", "transparent")
+
+
 // SVG Groups for the elements that require add/removal of data
     // I.e. elements associated with welds and loads, as these can be added/removed by user
     // Specific element definitions can be found in the "updateDrags()" & "updateData()" functions
@@ -167,7 +147,6 @@ const lDragGroup = zoomGroup.append("g") // Drag-able circles for modification o
 const mDragGroup = zoomGroup.append("g") // Drag-able circles for modification of applied load magnitudes
 const aDragGroup = zoomGroup.append("g") // Drag-able circles for modification of applied load orientations
 const midGroup = zoomGroup.append("g") // Circle markers for visual indication of there the drag-able nodes are for modifying load orientation
-
 
 
 // SVG Groups for on-diagram labels
@@ -202,6 +181,30 @@ const originDot = zoomGroup.append("g")
     .attr("cy", origin[1])
     .attr("r", 3)
     .style("pointer-events", "none")
+    // .style("display", "none")
+const xAxisLab = zoomGroup.append("g")
+    .append("text")
+    .attr("font-size", "14px")
+    .attr("font-weight", "bold")
+    // .attr("opacity", 0.75)
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "middle")
+    .attr("x", origin[0]+axisLength)
+    .attr("y", origin[1])
+    .text("x")
+    .attr("dx", 8)
+    // .style("display", "none")
+const yAxisLab = zoomGroup.append("g")
+    .append("text")
+    .attr("font-size", "14px")
+    .attr("font-weight", "bold")
+    // .attr("opacity", 0.75)
+    .attr("text-anchor", "middle")
+    .attr("alignment-baseline", "text-after-edge")
+    .attr("x", origin[0])
+    .attr("y", origin[1]-axisLength)
+    .text("y")
+    .attr("dy", -8)
     // .style("display", "none")
 
 // Centroid of weld group
@@ -1354,36 +1357,36 @@ const removeLIcon = overlayGroup.append("g")
     .text("-")
     // .style("display", "none")
 
-const inspBoxWidth = 100;
-const inspBoxHeight = 40
-const inspPropsBox = overlayGroup
-    .append("rect")
-    .attr("x", windowWidth/2-inspBoxWidth/2)
-    .attr("y", windowHeight-inspBoxHeight)
-    .attr("width", inspBoxWidth)
-    .attr("height", inspBoxHeight+10)
-    .attr("rx", buttonCorner)
-    .attr("ry", buttonCorner)
-    .attr("fill", "black")
-    .attr("opacity", 0.125)
-    .style("display", "none")
-    // .attr("stroke", "url(#circGradient)")
-    // .attr("stroke-width", 20)
+// const inspBoxWidth = 100;
+// const inspBoxHeight = 40
+// const inspPropsBox = overlayGroup
+//     .append("rect")
+//     .attr("x", windowWidth/2-inspBoxWidth/2)
+//     .attr("y", windowHeight-inspBoxHeight)
+//     .attr("width", inspBoxWidth)
+//     .attr("height", inspBoxHeight+10)
+//     .attr("rx", buttonCorner)
+//     .attr("ry", buttonCorner)
+//     .attr("fill", "black")
+//     .attr("opacity", 0.125)
+//     .style("display", "none")
+//     // .attr("stroke", "url(#circGradient)")
+//     // .attr("stroke-width", 20)
 
 const inspPropsText = overlayGroup
     .append("text")
-    .attr("font-family", "ariel")
-    .attr("font-size", "10pt")
-    .attr("fill", "indigo")
+    // .attr("font-family", "ariel")
+    .attr("font-size", "8pt")
+    // .attr("fill", "indigo")
+    .attr("fill", "transparent")
     .attr("text-anchor", "middle")
-    .attr("alignment-baseline", "text-before-edge")
+    .attr("alignment-baseline", "text-after-edge")
     .style("pointer-events", "none")
     .attr("x", windowWidth/2)
-    .attr("y", windowHeight-inspBoxHeight+2.5)
-   
-//     M ${0+x} ${-5+y}
-//     A 5 5 ${0+x} 1 1 ${0+x} ${5+y}
-//     A 5 5 ${0+x} 1 1 ${0+x} ${-5+y}
+    // .attr("y", windowHeight-inspBoxHeight+2.5)
+    .attr("y", windowHeight-5)
+    .style("display", "none")
+
 
 function drawFitIcon(x, y) {
     const boxSize = 14;
