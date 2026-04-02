@@ -29,6 +29,12 @@ function showHideStress(id) {
         fringeKeyLine
             .attr("stroke", showTFringe ? "url(#fringeKeyGrad)" : "lightgray")
             .style("display", showTFringe || showInspect ? "block" : "none")
+        fringeHigh
+            .attr("stroke", showTFringe ? "darkred" : "lightgray")
+            .style("display", showTFringe || showInspect ? "block" : "none")
+        fringeLow
+            .attr("stroke", showTFringe ? "gray" : "lightgray")
+            .style("display", showTFringe || showInspect ? "block" : "none")
     }
     else if(id === "direct") {
         showTDir = !showTDir
@@ -71,9 +77,11 @@ function showHideStress(id) {
         fringeInspectLab
             .style("display", showInspect ? "block" : "none")
         fringeHigh
-            .style("display", showTFringe ? "block" : "none")
+            .attr("stroke", showTFringe ? "darkred" : "lightgray")
+            .style("display", showTFringe || showInspect ? "block" : "none")
         fringeLow
-            .style("display", showTFringe ? "block" : "none")
+            .attr("stroke", showTFringe ? "gray" : "lightgray")
+            .style("display", showTFringe || showInspect ? "block" : "none")
         flagMinMaxGroup
             .style("display", showTFringe ? "block" : "none")
         flagValsGroup

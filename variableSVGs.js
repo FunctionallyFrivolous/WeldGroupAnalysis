@@ -506,13 +506,15 @@ function updateData() {
 
     const fringeColors = ["darkblue", "cyan", d3.color("green").brighter(2), "yellow", "red"]
 
+    const newScaleMax = Math.min(fringeScaleMax, max_t)
+    const newScaleMin = Math.max(fringeScaleMin, min_t)
     // fringeScaleMin = min_t;
     // fringeScaleMax = max_t;
-    const fringeStops = [fringeScaleMin];
+    const fringeStops = [newScaleMin];
     for (i=1; i<fringeColors.length-1; i++) {
-        fringeStops.push((fringeScaleMax-fringeScaleMin)/fringeColors.length*i+fringeScaleMin)
+        fringeStops.push((newScaleMax-newScaleMin)/fringeColors.length*i+newScaleMin)
     }
-    fringeStops.push(fringeScaleMax)
+    fringeStops.push(newScaleMax)
 
     const fringeScale = d3.scaleLinear()
         .domain(fringeStops)
@@ -536,24 +538,6 @@ function updateData() {
         .attr("fill", d => d.stress > fringeScaleMax? "darkred" : d.stress < fringeScaleMin? "none" : fringeScale(d.stress)) //d.stress > fringeScaleMax? "fuchsia" : d.stress < fringeScaleMin? "gray" : 
         .style("display", showTFringe ? "block" : "none")
     fringeDots.exit().remove()
-
-    // const fringeKeyWidth = 15
-    // const fringeKeyHeight = fringeKeyWidth*2
-    // const fringeKeyGroup = overlayGroup.append("g")
-    // const fringeKey = fringeKeyGroup.selectAll("rect")
-    //     .data(fringeColors)
-    // enter = fringeKey.enter()
-    //     .append("rect")
-    //     .attr("x", 5)
-    //     .attr("width", fringeKeyWidth)
-    //     .attr("height", fringeKeyHeight)
-    //     .style("display", "none")
-    // enter.merge(fringeKey)
-    //     .attr("y", function(d, i) {return i*fringeKeyHeight+175})
-    //     // .attr("y", 200)
-    //     .attr("fill", d => d)
-    // fringeKey.exit().remove()
-
 
     updateLabels();
 

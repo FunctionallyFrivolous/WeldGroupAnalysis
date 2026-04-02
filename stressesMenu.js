@@ -198,7 +198,7 @@ const fringeKeyMin = overlayGroup
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
-    .text(`${min_t.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+    .text(`${min_t.toFixed(units === "metric" ? 2 : 1)}`) // ${stressSymbol}
     .style("display", "none")
 const fringeKeyMax = overlayGroup
     .append("text")
@@ -208,7 +208,7 @@ const fringeKeyMax = overlayGroup
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "text-after-edge")
     .style("pointer-events", "none")
-    .text(`${max_t.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+    .text(`${max_t.toFixed(units === "metric" ? 2 : 1)}`) // ${stressSymbol}
     .style("display", "none")
 
 const fringeHigh = overlayGroup
@@ -230,7 +230,7 @@ const fringeLow = overlayGroup
     .attr("x2", fringeKeyX)
     .attr("y2", fringeKeyY2)
     .attr("fill", "none")
-    .attr("stroke", "lightgray")
+    .attr("stroke", "gray")
     .attr("stroke-width", `${fringeKeyWidth}px`)
     .attr("stroke-opacity", 0.90)
     .style("pointer-events", "none")
@@ -258,7 +258,7 @@ const fringeInspectLab = overlayGroup
     .text(`${inspectStress.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
     .style("display", "none")
 
-function drawMinMaxFlag(y, side) {
+function drawMinMaxFlag(y) {
 
     const flagX = fringeKeyX+fringeKeyWidth/2+2.5
     const flagY = y
@@ -282,7 +282,7 @@ const flagValsGroup = overlayGroup.append("g")
     .style("display", "none")
 const flagValMax = flagValsGroup
     .append("text")
-    .attr("x", fringeKeyX + 30)
+    .attr("x", fringeKeyX + 25)
     .attr("y", fringeKeyY)
     .attr("dy", "0.1em")
     .attr("text-anchor", "start")
@@ -292,7 +292,7 @@ const flagValMax = flagValsGroup
     .text("")
 const flagValMin = flagValsGroup
     .append("text")
-    .attr("x", fringeKeyX + 30)
+    .attr("x", fringeKeyX + 25)
     .attr("y", fringeKeyY2)
     .attr("dy", "0.1em")
     .attr("text-anchor", "start")
@@ -305,8 +305,10 @@ const flagMinMaxGroup = overlayGroup.append("g")
     .style("display", "none")
 const flagMax = flagMinMaxGroup
     .append("path")
-    .attr("fill", "red")
-    .attr("d", drawMinMaxFlag(fringeKeyY, "max"))
+    .attr("stroke", "darkred")
+    .attr("stroke-width", 1)
+    .attr("fill", "white")
+    .attr("d", drawMinMaxFlag(fringeKeyY))
     .call(d3.drag()
         .on("drag", function(event) {
             let newY = event.y
@@ -315,10 +317,20 @@ const flagMax = flagMinMaxGroup
             fringeKeyY = newY
             fringeKeyHeight = fringeKeyY2 - fringeKeyY
             fringeScaleMax = (310-fringeKeyY) / 150 * (max_t-min_t) + min_t
-            if (fringeScaleMax >= max_t) fringeMaxFixed = true
-            else fringeMaxFixed = false
+            if (fringeScaleMax >= max_t) {
+                fringeMaxFixed = true
+                flagMax
+                    .attr("stroke", "darkred")
+                    .attr("fill", "white")
+            }
+            else {
+                fringeMaxFixed = false
+                flagMax
+                    .attr("stroke", "none")
+                    .attr("fill", "darkred")
+            }
             flagMax
-                .attr("d", drawMinMaxFlag(newY, "max"))
+                .attr("d", drawMinMaxFlag(newY))
             fringeKeyLine
                 .attr("y1", newY)
             fringeHigh
@@ -326,13 +338,17 @@ const flagMax = flagMinMaxGroup
             flagValMax
                 .attr("y", fringeKeyY)
                 .text(fringeScaleMax >= max_t ? "" : `${fringeScaleMax.toFixed(units === "metric" ? 2 : 1)}`)
+            flagMin
+                .style("display", fringeKeyY >= fringeKeyY2 ? "none" : "block")
             updateData()
         })
     )
 const flagMin = flagMinMaxGroup
     .append("path")
-    .attr("fill", "darkblue")
-    .attr("d", drawMinMaxFlag(fringeKeyY2, "min"))
+    .attr("stroke", "darkblue")
+    .attr("stroke-width", 1)
+    .attr("fill", "white")
+    .attr("d", drawMinMaxFlag(fringeKeyY2))
     .call(d3.drag()
         .on("drag", function(event) {
             let newY = event.y
@@ -341,10 +357,20 @@ const flagMin = flagMinMaxGroup
             fringeKeyY2 = newY
             fringeKeyHeight = fringeKeyY2 - fringeKeyY
             fringeScaleMin = (310-fringeKeyY2)/150 * (max_t-min_t) + min_t
-            if (fringeScaleMin <= min_t) fringeMinFixed = true
-            else fringeMinFixed = false
+            if (fringeScaleMin <= min_t) {
+                fringeMinFixed = true
+                flagMin
+                    .attr("stroke", "darkblue")
+                    .attr("fill", "white")
+            }
+            else {
+                fringeMinFixed = false
+                flagMin
+                    .attr("stroke", "none")
+                    .attr("fill", "darkblue")
+            }
             flagMin
-                .attr("d", drawMinMaxFlag(newY, "min"))
+                .attr("d", drawMinMaxFlag(newY))
             fringeKeyLine
                 .attr("y2", newY)
             fringeLow

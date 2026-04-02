@@ -1172,6 +1172,7 @@ function showHideSettings() {
     loadScaleIcon.style("display", showSettings ? "block" : "none")
     stressScaleIcon.style("display", showSettings ? "block" : "none")
     axesIcon.style("display", showSettings ? "block" : "none")
+
 }
 
 function updateSliderVals(id, val) {
@@ -1282,9 +1283,10 @@ function updateFringe() {
 
 
     fringeKeyMin
-        .text(`${min_t.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+        .text(`${min_t.toFixed(units === "metric" ? 2 : 1)}`) // ${stressSymbol}
+
     fringeKeyMax
-        .text(`${max_t.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+        .text(`${max_t.toFixed(units === "metric" ? 2 : 1)}`) // ${stressSymbol}
 
     if (!fringeMaxFixed) {
         const newFKeyY = 310-(fringeScaleMax - min_t)/(max_t-min_t)*150
@@ -1299,13 +1301,24 @@ function updateFringe() {
         else fringeKeyY = newFKeyY
         flagValMax
             .attr("y", fringeKeyY)
-            .text(fringeScaleMax >= max_t ? "" : fringeScaleMax <= min_t ? "" : `${fringeScaleMax.toFixed(units === "metric" ? 2 : 1)}`)
+            // .text(fringeScaleMax >= max_t ? "" : fringeScaleMax <= min_t ? "" : `${fringeScaleMax.toFixed(units === "metric" ? 2 : 1)}`)
+            .attr("fill", fringeScaleMax >= max_t ? "lightgray" : fringeScaleMax <= min_t ? "lightgray" : "black")
         fringeKeyLine
             .attr("y1", fringeKeyY)
         fringeHigh
             .attr("y2", fringeKeyY)
         flagMax
-            .attr("d", drawMinMaxFlag(fringeKeyY, "max"))
+            .attr("d", drawMinMaxFlag(fringeKeyY))
+        // if (fringeScaleMax >= max_t) {
+        //         flagMax
+        //             .attr("stroke", "darkred")
+        //             .attr("fill", "white")
+        //     }
+        //     else {
+        //         flagMax
+        //             .attr("stroke", "none")
+        //             .attr("fill", "darkred")
+        //     }
     } else fringeScaleMax = max_t
 
     if (!fringeMinFixed) {
@@ -1321,13 +1334,14 @@ function updateFringe() {
         else fringeKeyY2 = newFKeyY
         flagValMin
             .attr("y", fringeKeyY2)
-            .text(fringeScaleMin <= min_t ? "" : fringeScaleMin >= max_t ? "" : `${fringeScaleMin.toFixed(units === "metric" ? 2 : 1)}`)
+            // .text(fringeScaleMin <= min_t ? "" : fringeScaleMin >= max_t ? "" : `${fringeScaleMin.toFixed(units === "metric" ? 2 : 1)}`)
+            .attr("fill", fringeScaleMin <= min_t ? "lightgray" : fringeScaleMin >= max_t ? "lightgray" : "black")
         fringeKeyLine
             .attr("y2", fringeKeyY2)
         fringeLow
             .attr("y1", fringeKeyY2)
         flagMin
-            .attr("d", drawMinMaxFlag(fringeKeyY2, "min"))
+            .attr("d", drawMinMaxFlag(fringeKeyY2))
     } else fringeScaleMin = min_t
 
     // updateData()
