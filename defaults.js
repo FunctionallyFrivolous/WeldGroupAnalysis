@@ -62,10 +62,12 @@ let rxV_y = 0;
 let rxV = [{x: 0, y: 0, mag: 0, th: 0, points: [{x: 0, y: 0},{x: 0, y: 0}]}];
 let rxM = 0;
 
-let max_t = 0;
-let min_t = 0;
+let max_t = 100;
+let min_t = 100;
 let fringeScaleMin = min_t;
 let fringeScaleMax = max_t;
+let fringeMinFixed = true;
+let fringeMaxFixed = true;
 
 let dM = "M 0,50 A 50,50 0 0,0 100,50"
 
@@ -87,6 +89,8 @@ let selectedLProp = "load1";
 let inspectX = 150;
 let inspectY = 250;
 let inspectDist = 390/2
+
+let wSizeInput = 0.25;
 
 // A default set of nodes for 4 initial welds...
 const defaultCoords = [

@@ -70,6 +70,14 @@ function showHideStress(id) {
             .style("display", showInspect ? "block" : "none")
         fringeInspectLab
             .style("display", showInspect ? "block" : "none")
+        fringeHigh
+            .style("display", showTFringe ? "block" : "none")
+        fringeLow
+            .style("display", showTFringe ? "block" : "none")
+        flagMinMaxGroup
+            .style("display", showTFringe ? "block" : "none")
+        flagValsGroup
+            .style("display", showTFringe ? "block" : "none")
     }
 
     updateView();
@@ -142,6 +150,9 @@ function unitSwap() {
         unitPrecision = 1;
         weldThkScale = 40;
         stressScale = 3;
+
+        fringeScaleMax = fringeScaleMax * 145.038
+        fringeScaleMin = fringeScaleMin * 145.038
     }
     else {
         units = "metric";
@@ -155,6 +166,9 @@ function unitSwap() {
         unitPrecision = 0;
         weldThkScale = 40;
         stressScale = stressScale*145;
+
+        fringeScaleMax = fringeScaleMax / 145.038
+        fringeScaleMin = fringeScaleMin / 145.038
     }
 
     selectWEditProp()
@@ -182,16 +196,18 @@ function unitSwap() {
     wPropsUnits
         .text(d => d.units)
     wPropsInputs
-        .text(d => `${d.val.toFixed(d.precision)}`)
+        .text(d => d.id === "wSize" ? `${(d.val*unitConvert).toFixed(d.precision)}` : 
+            d.id === "strength" ? `${(d.val*stressConvert).toFixed(d.precision)}` :
+            `${d.val.toFixed(d.precision)}`
+        )
+    
+    // document.getElementById("debugOutputs").innerHTML = `${fringeScaleMax}`
+    updateFringe()
 
-    // ftiView();
 }
 
 function lockUnlock() {
     geomLock = !geomLock;
-    // document.getElementById("loadScaleSlider").disabled = geomLock ? true : false;
-    // document.getElementById("stressScaleSlider").disabled = geomLock ? true : false;
-    // document.getElementById("snapDistSlider").disabled = geomLock ? true : false;
     addWIcon.attr("fill", geomLock || weldCount >= maxWelds ? "white" : "green")
     removeWIcon.attr("fill", geomLock || weldCount <= 1 ? "white" : "red")
     addLIcon.attr("fill", geomLock || loadCount >= maxLoads ? "white" : "green")
@@ -243,33 +259,3 @@ function inspect() {
     inspectDot.style("display", showInspect ? "block" : "none")
     // showTMax = !showTMax;
 }
-
-// function setupScaleSliders() {
-    // const LoadScaleSlider = document.getElementById("loadScaleSlider");
-    // LoadScaleSlider.addEventListener("input", () => {
-    //     loadScale = parseFloat(LoadScaleSlider.value);
-    //     updateView();
-    // })
-
-    // const StressScaleSlider = document.getElementById("stressScaleSlider");
-    // StressScaleSlider.addEventListener("input", () => {
-    //     stressScale = parseFloat(StressScaleSlider.value);
-    //     updateView();
-    // })
-
-    // const snapSlider = document.getElementById("snapDistSlider");
-    // snapSlider.addEventListener("input", () => {
-    //     snapDist = parseFloat(snapSlider.value);
-    //     updateView();
-    // })
-
-    // const axisSlider = document.getElementById("axisScaleSlider");
-    // axisSlider.addEventListener("input", () => {
-    //     axisLength = parseFloat(axisSlider.value);
-    //     coordAxes.style("display", axisLength <= 1 ? "none" : "block")
-    //     xAxisLab.style("display", axisLength <= 1 ? "none" : "block")
-    //     yAxisLab.style("display", axisLength <= 1 ? "none" : "block")
-    //     originDot.style("display", axisLength <= 1 ? "none" : "block")
-    //     updateView();
-    // })
-// }

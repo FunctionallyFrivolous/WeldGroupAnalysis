@@ -70,7 +70,7 @@ const settingsButton = overlayGroup
     .on("click", function() {showHideSettings()})
 const settingsIcon = overlayGroup
     .append("text")
-    .attr("font-size", "20pt")
+    .attr("font-size", "18pt")
     .attr("text-anchor", "middle")
     // .attr("alignment-baseline", "text-before-edge")
     .style("pointer-events", "none")
@@ -246,3 +246,4 @@ const axesIcon = overlayGroup
     // .attr("stroke-dasharray", "2,2")
     .style("pointer-events", "none")
     .style("display", "none")
+

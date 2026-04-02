@@ -150,8 +150,9 @@ const stressFringeIcon = overlayGroup
     .style("pointer-events", "none")
 
 const fringeKeyX = 15
-const fringeKeyY = 160
-const fringeKeyHeight = 150
+let fringeKeyY = 160
+let fringeKeyHeight = 150
+let fringeKeyY2 = fringeKeyY + fringeKeyHeight
 const fringeKeyWidth = 20
 const fringeKeyGrad = defs.append("linearGradient")
     .attr("id", "fringeKeyGrad")
@@ -210,6 +211,31 @@ const fringeKeyMax = overlayGroup
     .text(`${max_t.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
     .style("display", "none")
 
+const fringeHigh = overlayGroup
+    .append("line")
+    .attr("x1", fringeKeyX+0.0001)
+    .attr("y1", 160)
+    .attr("x2", fringeKeyX)
+    .attr("y2", fringeKeyY)
+    .attr("fill", "none")
+    .attr("stroke", "darkred")
+    .attr("stroke-width", `${fringeKeyWidth}px`)
+    .attr("stroke-opacity", 0.90)
+    .style("pointer-events", "none")
+    .style("display", "none")
+const fringeLow = overlayGroup
+    .append("line")
+    .attr("x1", fringeKeyX+0.0001)
+    .attr("y1", 310)
+    .attr("x2", fringeKeyX)
+    .attr("y2", fringeKeyY2)
+    .attr("fill", "none")
+    .attr("stroke", "lightgray")
+    .attr("stroke-width", `${fringeKeyWidth}px`)
+    .attr("stroke-opacity", 0.90)
+    .style("pointer-events", "none")
+    .style("display", "none")
+
 const fringeInspectLine = overlayGroup
     .append("line")
     .attr("x1", fringeKeyX-fringeKeyWidth/2)
@@ -232,6 +258,107 @@ const fringeInspectLab = overlayGroup
     .text(`${inspectStress.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
     .style("display", "none")
 
+function drawMinMaxFlag(y, side) {
+
+    const flagX = fringeKeyX+fringeKeyWidth/2+2.5
+    const flagY = y
+    const flagHeight = 10
+    const flagWidth = 10
+
+    const flag = `
+
+    M ${0+flagX} ${0+flagY}
+    L  ${flagX+flagWidth} ${flagY+flagHeight/2}
+    L  ${flagX+flagWidth} ${flagY-flagHeight/2}
+    Z
+
+    `
+    updateData()
+
+    return flag
+}
+
+const flagValsGroup = overlayGroup.append("g")
+    .style("display", "none")
+const flagValMax = flagValsGroup
+    .append("text")
+    .attr("x", fringeKeyX + 30)
+    .attr("y", fringeKeyY)
+    .attr("dy", "0.1em")
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "middle")
+    .attr("font-size", "8pt")
+    .style("pointer-events", "none")
+    .text("")
+const flagValMin = flagValsGroup
+    .append("text")
+    .attr("x", fringeKeyX + 30)
+    .attr("y", fringeKeyY2)
+    .attr("dy", "0.1em")
+    .attr("text-anchor", "start")
+    .attr("alignment-baseline", "middle")
+    .attr("font-size", "8pt")
+    .style("pointer-events", "none")
+    .text("")
+
+const flagMinMaxGroup = overlayGroup.append("g")
+    .style("display", "none")
+const flagMax = flagMinMaxGroup
+    .append("path")
+    .attr("fill", "red")
+    .attr("d", drawMinMaxFlag(fringeKeyY, "max"))
+    .call(d3.drag()
+        .on("drag", function(event) {
+            let newY = event.y
+            if (newY > fringeKeyY2) newY = fringeKeyY2;
+            if (newY < 160) newY = 160;
+            fringeKeyY = newY
+            fringeKeyHeight = fringeKeyY2 - fringeKeyY
+            fringeScaleMax = (310-fringeKeyY) / 150 * (max_t-min_t) + min_t
+            if (fringeScaleMax >= max_t) fringeMaxFixed = true
+            else fringeMaxFixed = false
+            flagMax
+                .attr("d", drawMinMaxFlag(newY, "max"))
+            fringeKeyLine
+                .attr("y1", newY)
+            fringeHigh
+                .attr("y2", fringeKeyY)
+            flagValMax
+                .attr("y", fringeKeyY)
+                .text(fringeScaleMax >= max_t ? "" : `${fringeScaleMax.toFixed(units === "metric" ? 2 : 1)}`)
+            updateData()
+        })
+    )
+const flagMin = flagMinMaxGroup
+    .append("path")
+    .attr("fill", "darkblue")
+    .attr("d", drawMinMaxFlag(fringeKeyY2, "min"))
+    .call(d3.drag()
+        .on("drag", function(event) {
+            let newY = event.y
+            if (newY < fringeKeyY) newY = fringeKeyY;
+            if (newY > 310) newY = 310;
+            fringeKeyY2 = newY
+            fringeKeyHeight = fringeKeyY2 - fringeKeyY
+            fringeScaleMin = (310-fringeKeyY2)/150 * (max_t-min_t) + min_t
+            if (fringeScaleMin <= min_t) fringeMinFixed = true
+            else fringeMinFixed = false
+            flagMin
+                .attr("d", drawMinMaxFlag(newY, "min"))
+            fringeKeyLine
+                .attr("y2", newY)
+            fringeLow
+                .attr("y1", fringeKeyY2)
+            flagValMin
+                .attr("y", fringeKeyY2)
+                .text(fringeScaleMin <= min_t ? "" : `${fringeScaleMin.toFixed(units === "metric" ? 2 : 1)}`)
+            updateData()
+        })
+    )
+
 updateView();
 updateWeldProps();
 updateLoadProps();
+
+fringeScaleMax = max_t
+fringeScaleMin = min_t

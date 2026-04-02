@@ -1286,5 +1286,49 @@ function updateFringe() {
     fringeKeyMax
         .text(`${max_t.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
 
+    if (!fringeMaxFixed) {
+        const newFKeyY = 310-(fringeScaleMax - min_t)/(max_t-min_t)*150
+        if (fringeScaleMax >= max_t) {
+            // fringeScaleMax = max_t
+            fringeKeyY = 160
+        } 
+        else if (fringeScaleMax <= min_t) {
+            fringeScaleMax = min_t
+            fringeKeyY = 310
+        } 
+        else fringeKeyY = newFKeyY
+        flagValMax
+            .attr("y", fringeKeyY)
+            .text(fringeScaleMax >= max_t ? "" : fringeScaleMax <= min_t ? "" : `${fringeScaleMax.toFixed(units === "metric" ? 2 : 1)}`)
+        fringeKeyLine
+            .attr("y1", fringeKeyY)
+        fringeHigh
+            .attr("y2", fringeKeyY)
+        flagMax
+            .attr("d", drawMinMaxFlag(fringeKeyY, "max"))
+    } else fringeScaleMax = max_t
+
+    if (!fringeMinFixed) {
+        const newFKeyY = 310-(fringeScaleMin - min_t)/(max_t-min_t)*150
+        if (fringeScaleMin <= min_t) {
+            // fringeScaleMin = min_t
+            fringeKeyY2 = 310
+        } 
+        else if (fringeScaleMin >= max_t) {
+            fringeScaleMin = max_t
+            fringeKeyY2 = 160
+        } 
+        else fringeKeyY2 = newFKeyY
+        flagValMin
+            .attr("y", fringeKeyY2)
+            .text(fringeScaleMin <= min_t ? "" : fringeScaleMin >= max_t ? "" : `${fringeScaleMin.toFixed(units === "metric" ? 2 : 1)}`)
+        fringeKeyLine
+            .attr("y2", fringeKeyY2)
+        fringeLow
+            .attr("y1", fringeKeyY2)
+        flagMin
+            .attr("d", drawMinMaxFlag(fringeKeyY2, "min"))
+    } else fringeScaleMin = min_t
+
     // updateData()
 }

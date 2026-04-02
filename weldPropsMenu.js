@@ -15,7 +15,7 @@ const wPropsMenuData = [
         y: wPropsButtonProps.y - buttonPitch, dy: "0.2em"},
     {id: "strength", text: "", lab: "Weld Strength", sub: "", val: 60000, units: stressSymbol, precision: 0, width: 45, 
         y: wPropsButtonProps.y - buttonPitch*2, dy: "0.1em"}, 
-    {id: "wSize", text: "", lab: "Weld Size", sub: "", val: 0.25, units: unitSymbol, precision: 2, width: 30,  
+    {id: "wSize", text: "", lab: "Weld Size", sub: "", val: 0.25, units: unitSymbol, precision: 2, width: 45,  
         y: wPropsButtonProps.y - buttonPitch*3, dy: "0.1em"}, 
 ]
 
@@ -38,6 +38,17 @@ const weldPropsMenuBox = overlayGroup
         event.stopPropagation();
     })
 
+function updateDesignProps(id) {
+    if (id === "wSize") {
+        // wSizeInput = val
+        for (i = 0; i < weldCoords.length; i++) {
+            weldCoords[i].thk = wSizeInput
+        }
+    }
+    updateWelds()
+    updateView()
+}
+
 const wPropsButtonsGroup = overlayGroup.append("g")
     .attr("fill", "white")
     .attr("fill-opacity", 1)
@@ -55,6 +66,9 @@ const wPropsButtons = wPropsButtonsGroup.selectAll("rect")
     .attr("ry", 5)
     .attr("width", buttonWidth)
     .attr("height", buttonHeight)
+    .on("click", function(event, d) {
+        updateDesignProps(d.id, wSizeInput)
+    })
     
 // const wPropsIconsGroup = overlayGroup.append("g")
 // const wPropsIcons = wPropsIconsGroup.selectAll("")
@@ -167,7 +181,7 @@ const wPropsInputsGroup = overlayGroup.append("g")
     .attr("font-size", `${editFontSize}px`)
     .attr("text-anchor", "start")
     .attr("alignment-baseline", "middle")
-    .style("text-align", "center")
+    .style("text-align", "start")
     .style("pointer-events", "none")
     .style("display", "none")
 const wPropsInputs = wPropsInputsGroup.selectAll("foreignObject")
@@ -185,14 +199,11 @@ const wPropsInputs = wPropsInputsGroup.selectAll("foreignObject")
     .on("mousedown", function(event, d) {
         event.stopPropagation();
         editingWProp = true;
-    //     editingWY = false;
-    //     editingWL = false;
-    //     editingWT = false;
-    //     selectWEditProp(); 
         editTempW = d.val;
     })
     .on("keyup", function(event, d) {
         inputWContent = d3.select(this).text();
+        wSizeInput = inputWContent / unitConvert;
         if (!isFinite(inputWContent)) return;
         const editField = wPropsMenuData.find(j => j.id === d.id) 
         editField.val = inputWContent *1
@@ -201,11 +212,12 @@ const wPropsInputs = wPropsInputsGroup.selectAll("foreignObject")
     //     updateWeldProps();
     //     updateLoadProps();
     })
-    .on("keydown", function(event) {
+    .on("keydown", function(event, d) {
         if (event.key === "Enter") {
             event.preventDefault();
             event.target.blur();
             editingWProp = false;
+            updateDesignProps(d.id, wSizeInput)
     //         editingWY = false;
     //         editingWL = false;
     //         editingWT = false;
@@ -232,8 +244,10 @@ function showHideProps() {
             .style("pointer-events", showWPropMenu ? "auto" : "none")
             .style("display", showWPropMenu ? "block" : "none")
         wPropsIconsGroup
-            .style("pointer-events", showWPropMenu ? "auto" : "none")
             .style("display", showWPropMenu ? "block" : "none")
+        weldPropsButton
+            .attr("fill-opacity", showWPropMenu ? 0.125 : 0)
+            .attr("stroke-opacity", showWPropMenu ? 0.75 : 0.25)
 
 }
 
