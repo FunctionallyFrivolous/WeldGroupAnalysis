@@ -1344,5 +1344,8 @@ function updateFringe() {
             .attr("d", drawMinMaxFlag(fringeKeyY2))
     } else fringeScaleMin = min_t
 
+    fringeKeyUnits
+        .text(`${stressSymbol}`)
+
     // updateData()
 }

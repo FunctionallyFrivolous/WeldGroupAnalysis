@@ -35,6 +35,8 @@ function showHideStress(id) {
         fringeLow
             .attr("stroke", showTFringe ? "gray" : "lightgray")
             .style("display", showTFringe || showInspect ? "block" : "none")
+        fringeKeyUnits
+            .style("display", showTFringe || showInspect ? "block" : "none")
     }
     else if(id === "direct") {
         showTDir = !showTDir
@@ -86,6 +88,8 @@ function showHideStress(id) {
             .style("display", showTFringe ? "block" : "none")
         flagValsGroup
             .style("display", showTFringe ? "block" : "none")
+        fringeKeyUnits
+            .style("display", showTFringe || showInspect ? "block" : "none")
     }
 
     updateView();
@@ -208,6 +212,11 @@ function unitSwap() {
             d.id === "strength" ? `${(d.val*stressConvert).toFixed(d.precision)}` :
             `${d.val.toFixed(d.precision)}`
         )
+
+    flagValMax
+        .text(fringeScaleMax >= max_t ? "" : `${fringeScaleMax.toFixed(units === "metric" ? 2 : 1)}`)
+    flagValMin
+        .text(fringeScaleMin <= min_t ? "" : `${fringeScaleMin.toFixed(units === "metric" ? 2 : 1)}`)
     
     // document.getElementById("debugOutputs").innerHTML = `${fringeScaleMax}`
     updateFringe()

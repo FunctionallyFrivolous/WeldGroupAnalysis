@@ -154,6 +154,7 @@ let fringeKeyY = 160
 let fringeKeyHeight = 150
 let fringeKeyY2 = fringeKeyY + fringeKeyHeight
 const fringeKeyWidth = 20
+const fringeKeyIncr = 100/5
 const fringeKeyGrad = defs.append("linearGradient")
     .attr("id", "fringeKeyGrad")
     // .attr("gradientUnits", "userSpaceOnUse")
@@ -162,19 +163,19 @@ const fringeKeyGrad = defs.append("linearGradient")
     .attr("y1", "0%")
     .attr("y2", "100%")
 fringeKeyGrad.append("stop")
-    .attr("offset", "0%")
+    .attr("offset", `${0}%`)
     .attr("stop-color", "red")
 fringeKeyGrad.append("stop")
-    .attr("offset", "25%")
+    .attr("offset", `${fringeKeyIncr*2}%`)
     .attr("stop-color", "yellow")
 fringeKeyGrad.append("stop")
-    .attr("offset", "50%")
+    .attr("offset", `${fringeKeyIncr*3}%`)
     .attr("stop-color", d3.color("green").brighter(2))
 fringeKeyGrad.append("stop")
-    .attr("offset", "75%")
+    .attr("offset", `${fringeKeyIncr*4}%`)
     .attr("stop-color", "cyan")
 fringeKeyGrad.append("stop")
-    .attr("offset", "100%")
+    .attr("offset", `${100}%`)
     .attr("stop-color", "darkblue")
 
 const fringeKeyLine = overlayGroup
@@ -381,6 +382,15 @@ const flagMin = flagMinMaxGroup
             updateData()
         })
     )
+
+const fringeKeyUnits = overlayGroup
+    .append("text")
+    .attr("font-size", "8pt")
+    .attr("x", 5)
+    .attr("y", 332)
+    .text(`${stressSymbol}`)
+    .style("pointer-events", "none")
+    .style("display", "none")
 
 updateView();
 updateWeldProps();

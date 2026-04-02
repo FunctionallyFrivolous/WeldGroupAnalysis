@@ -508,8 +508,6 @@ function updateData() {
 
     const newScaleMax = Math.min(fringeScaleMax, max_t)
     const newScaleMin = Math.max(fringeScaleMin, min_t)
-    // fringeScaleMin = min_t;
-    // fringeScaleMax = max_t;
     const fringeStops = [newScaleMin];
     for (i=1; i<fringeColors.length-1; i++) {
         fringeStops.push((newScaleMax-newScaleMin)/fringeColors.length*i+newScaleMin)
