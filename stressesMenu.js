@@ -166,6 +166,9 @@ fringeKeyGrad.append("stop")
     .attr("offset", `${0}%`)
     .attr("stop-color", "red")
 fringeKeyGrad.append("stop")
+    .attr("offset", `${fringeKeyIncr*1}%`)
+    .attr("stop-color", "orange")
+fringeKeyGrad.append("stop")
     .attr("offset", `${fringeKeyIncr*2}%`)
     .attr("stop-color", "yellow")
 fringeKeyGrad.append("stop")
@@ -261,7 +264,7 @@ const fringeInspectLab = overlayGroup
 
 function drawMinMaxFlag(y) {
 
-    const flagX = fringeKeyX+fringeKeyWidth/2+2.5
+    const flagX = fringeKeyX+fringeKeyWidth/2+1
     const flagY = y
     const flagHeight = 10
     const flagWidth = 10
@@ -283,7 +286,7 @@ const flagValsGroup = overlayGroup.append("g")
     .style("display", "none")
 const flagValMax = flagValsGroup
     .append("text")
-    .attr("x", fringeKeyX + 25)
+    .attr("x", fringeKeyX + 24)
     .attr("y", fringeKeyY)
     .attr("dy", "0.1em")
     .attr("text-anchor", "start")
@@ -293,7 +296,7 @@ const flagValMax = flagValsGroup
     .text("")
 const flagValMin = flagValsGroup
     .append("text")
-    .attr("x", fringeKeyX + 25)
+    .attr("x", fringeKeyX + 24)
     .attr("y", fringeKeyY2)
     .attr("dy", "0.1em")
     .attr("text-anchor", "start")
@@ -306,7 +309,7 @@ const flagMinMaxGroup = overlayGroup.append("g")
     .style("display", "none")
 const flagMax = flagMinMaxGroup
     .append("path")
-    .attr("stroke", "darkred")
+    .attr("stroke", "red")
     .attr("stroke-width", 1)
     .attr("fill", "white")
     .attr("d", drawMinMaxFlag(fringeKeyY))
@@ -321,14 +324,14 @@ const flagMax = flagMinMaxGroup
             if (fringeScaleMax >= max_t) {
                 fringeMaxFixed = true
                 flagMax
-                    .attr("stroke", "darkred")
+                    .attr("stroke", "red")
                     .attr("fill", "white")
             }
             else {
                 fringeMaxFixed = false
                 flagMax
                     .attr("stroke", "none")
-                    .attr("fill", "darkred")
+                    .attr("fill", "red")
             }
             flagMax
                 .attr("d", drawMinMaxFlag(newY))
@@ -341,6 +344,8 @@ const flagMax = flagMinMaxGroup
                 .text(fringeScaleMax >= max_t ? "" : `${fringeScaleMax.toFixed(units === "metric" ? 2 : 1)}`)
             flagMin
                 .style("display", fringeKeyY >= fringeKeyY2 ? "none" : "block")
+            fringeInspectLab
+                .style("display", Math.abs(fInspectLineY-fringeKeyY) > 10 ? "block" : "none")
             updateData()
         })
     )
@@ -379,6 +384,8 @@ const flagMin = flagMinMaxGroup
             flagValMin
                 .attr("y", fringeKeyY2)
                 .text(fringeScaleMin <= min_t ? "" : `${fringeScaleMin.toFixed(units === "metric" ? 2 : 1)}`)
+            fringeInspectLab
+                .style("display", Math.abs(fInspectLineY-fringeKeyY2) > 10 ? "block" : "none")
             updateData()
         })
     )
@@ -387,7 +394,7 @@ const fringeKeyUnits = overlayGroup
     .append("text")
     .attr("font-size", "8pt")
     .attr("x", 5)
-    .attr("y", 332)
+    .attr("y", 334)
     .text(`${stressSymbol}`)
     .style("pointer-events", "none")
     .style("display", "none")

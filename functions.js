@@ -1309,16 +1309,6 @@ function updateFringe() {
             .attr("y2", fringeKeyY)
         flagMax
             .attr("d", drawMinMaxFlag(fringeKeyY))
-        // if (fringeScaleMax >= max_t) {
-        //         flagMax
-        //             .attr("stroke", "darkred")
-        //             .attr("fill", "white")
-        //     }
-        //     else {
-        //         flagMax
-        //             .attr("stroke", "none")
-        //             .attr("fill", "darkred")
-        //     }
     } else fringeScaleMax = max_t
 
     if (!fringeMinFixed) {

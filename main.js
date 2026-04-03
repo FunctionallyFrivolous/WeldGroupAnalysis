@@ -302,13 +302,24 @@ function inspectDrag(x, y) {
 
     const inspPct = 1-((inspectStress-min_t) / (max_t-min_t))
 
+    fInspectLineY = 150*inspPct + 160
     fringeInspectLine
-        .attr("y1", 150*inspPct + 160)
-        .attr("y2", 150*inspPct + 160)
+        .attr("y1", fInspectLineY)
+        .attr("y2", fInspectLineY)
 
     fringeInspectLab
-        .attr("y", 150*inspPct + 160)
+        .attr("y", fInspectLineY)
         .text(`${inspectStress.toFixed(units === "metric" ? 2 : 1)} ${stressSymbol}`)
+
+    flagMax
+        .style("display", showTFringe && Math.abs(fInspectLineY-fringeKeyY) > 10 ? "block" : "none")
+    flagValMax
+        .style("display", showTFringe && Math.abs(fInspectLineY-fringeKeyY) > 10 ? "block" : "none")
+
+    flagMin
+        .style("display", showTFringe && Math.abs(fInspectLineY-fringeKeyY2) > 10 ? "block" : "none")
+    flagValMin
+        .style("display", showTFringe && Math.abs(fInspectLineY-fringeKeyY2) > 10 ? "block" : "none")
 
     // return [xNew, yNew]
 }

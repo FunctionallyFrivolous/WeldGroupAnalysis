@@ -88,7 +88,8 @@ let selectedLProp = "load1";
 
 let inspectX = 150;
 let inspectY = 250;
-let inspectDist = 390/2
+let inspectDist = 390/2;
+let fInspectLineY = 0;
 
 let wSizeInput = 0.25;
 
